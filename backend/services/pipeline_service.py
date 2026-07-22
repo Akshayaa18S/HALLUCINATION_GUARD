@@ -227,6 +227,13 @@ class PipelineService:
 
                 pipeline_state.update(stage_output)
                 self._complete_stage(stage, progress, stage_output)
+                if stage_number == 8:
+                    # Build the persisted snapshot after Stage 8 itself is
+                    # completed, preventing the client from seeing it as running.
+                    pipeline_state["execution_pipeline"] = self._build_execution_pipeline(pipeline_state)
+                    stage_output["execution_pipeline"] = pipeline_state["execution_pipeline"]
+                    stage.metadata_json = {"analysis_completed": True, "execution_pipeline": pipeline_state["execution_pipeline"]}
+                    self.db.commit()
                 if progress_callback:
                     await self._maybe_call_progress(progress_callback, self._build_stage_message(stage, "completed", progress, stage_output))
                 return
@@ -461,7 +468,7 @@ class PipelineService:
         )
         probability = hallucination_result.get("probability", 0.0)
         confidence = hallucination_result.get("confidence", 0.0)
-        is_hallucination = "yes" if hallucination_result.get("prediction") else "no"
+        is_hallucination = str(hallucination_result.get("decision", "uncertain"))
 
         result = Result(
             job_id=job_id,

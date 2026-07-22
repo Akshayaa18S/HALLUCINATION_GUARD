@@ -1,74 +1,37 @@
-"""Hallucination scoring driven directly by verification evidence.
-
-Probability logic (single source of truth - nothing downstream recomputes
-this number):
-  - starts from a small residual-uncertainty floor
-  - increases with the fraction of unsupported claims
-  - increases sharply if any claim is contradicted by relevant evidence
-  - decreases when claims are fully supported with high LLM confidence
-"""
+"""Final hallucination decision derived from aggregated verification states."""
 from __future__ import annotations
-
-import logging
 from typing import Any, Dict, List
 
-logger = logging.getLogger("hallucination_guard.hallucination_service")
-
-RESIDUAL_UNCERTAINTY = 0.05
-UNSUPPORTED_WEIGHT = 0.55
-CONTRADICTION_WEIGHT = 0.30
-MAX_CONTRADICTION_PENALTY = 0.6
-FULL_SUPPORT_CONFIDENCE_BONUS = 0.05
-
-
 class HallucinationService:
-    """Transforms verification output into an explainable hallucination score."""
-
     def score(self, query: str, generated_response: str, verification_result: Dict[str, Any], evidence: List[Dict[str, Any]]) -> Dict[str, Any]:
-        confidence = float(verification_result.get("confidence", 0.0))
-        total_claims = max(1, int(verification_result.get("claim_count", 1)))
-        unsupported_claims = int(verification_result.get("unsupported_claim_count", 0))
-        contradictions = verification_result.get("contradictions") or []
-        contradiction_count = len(contradictions)
-        mean_similarity = float(verification_result.get("mean_similarity", 0.0))
-
-        unsupported_ratio = unsupported_claims / total_claims
-        contradiction_penalty = min(MAX_CONTRADICTION_PENALTY, contradiction_count * CONTRADICTION_WEIGHT)
-        fully_supported = unsupported_claims == 0 and contradiction_count == 0
-        support_bonus = confidence * FULL_SUPPORT_CONFIDENCE_BONUS if fully_supported else 0.0
-
-        probability = (
-            RESIDUAL_UNCERTAINTY
-            + unsupported_ratio * UNSUPPORTED_WEIGHT
-            + contradiction_penalty
-            - support_bonus
-        )
-        probability = max(0.0, min(1.0, probability))
-
-        # A direct contradiction is always at least a medium/high verdict,
-        # regardless of how the rest of the response scored.
-        if contradiction_count > 0:
-            probability = max(probability, 0.65)
-
-        if probability < 0.2:
-            label = "low"
-        elif probability < 0.6:
-            label = "medium"
+        total = max(1, int(verification_result.get("claim_count", 0)))
+        supported = int(verification_result.get("supported_count", 0))
+        contradicted = int(verification_result.get("contradicted_count", 0))
+        insufficient = int(verification_result.get("insufficient_count", 0))
+        decision = str(verification_result.get("final_decision", "uncertain"))
+        retained_contradictions = verification_result.get("contradictions") or []
+        retained_support = verification_result.get("supporting_documents") or []
+        # Enforce the API's cross-field invariant even if an upstream result is malformed.
+        if not retained_contradictions and retained_support:
+            decision = "no"
+            contradicted = 0
+        elif decision == "yes" and not retained_contradictions:
+            decision = "uncertain"
+            contradicted = 0
+        confidence = max(supported, contradicted) / total
+        if decision == "yes":
+            probability, label = contradicted / total, "high"
+        elif decision == "no":
+            probability, label = 0.0, "low"
         else:
-            label = "high"
-
+            probability, label = 0.5, "uncertain"
         return {
-            "prediction": probability >= 0.5,
-            "hallucination_probability": round(probability, 4),
-            "probability": round(probability, 4),
-            "confidence": round(confidence, 4),
-            "label": label,
-            "evidence_count": len(evidence),
-            "contradiction_count": contradiction_count,
-            "unsupported_claims": unsupported_claims,
-            "claim_count": total_claims,
-            "mean_similarity": round(mean_similarity, 4),
+            "prediction": decision == "yes", "decision": decision,
+            "hallucination_probability": round(probability, 4), "probability": round(probability, 4),
+            "confidence": round(confidence, 4), "label": label, "evidence_count": len(evidence),
+            "contradiction_count": contradicted, "unsupported_claims": insufficient, "claim_count": int(verification_result.get("claim_count", 0)),
+            "supported_count": supported, "contradicted_count": contradicted, "insufficient_count": insufficient,
+            "mean_similarity": round(float(verification_result.get("mean_similarity", 0.0)), 4),
         }
-
 
 hallucination_service = HallucinationService()
