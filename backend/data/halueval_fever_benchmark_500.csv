@@ -1,0 +1,501 @@
+id,prompt,generated_response,label
+1,What is the capital of France?,The capital of France is Paris.,0
+2,Who created Python?,Python was created by Guido van Rossum in 1991.,0
+3,Where is Mount Everest?,Mount Everest is located in Nepal.,0
+4,How many Ballon d'Or awards has Messi won?,Lionel Messi has won 8 Ballon d'Or awards.,0
+5,Who directed Inception?,Inception was directed by Christopher Nolan.,0
+6,Who discovered penicillin?,Penicillin was discovered by Alexander Fleming in 1928.,0
+7,When did Neil Armstrong land on the Moon?,Neil Armstrong landed on the Moon in 1969.,0
+8,What is the speed of light?,Light travels at approximately 300000 km per second.,0
+9,What does DNA stand for?,DNA stands for Deoxyribonucleic Acid.,0
+10,When did World War II end?,World War II ended in 1945.,0
+11,Who wrote Hamlet?,Hamlet was written by William Shakespeare.,0
+12,What is the chemical symbol for Gold?,The chemical symbol for Gold is Au.,0
+13,Where is the Statue of Liberty?,The Statue of Liberty is in New York Harbor.,0
+14,Who invented the printing press?,Johannes Gutenberg invented the printing press.,0
+15,What is the boiling point of water in Celsius?,Water boils at 100°C at standard pressure.,0
+16,Who discovered gravity?,Sir Isaac Newton formulated the law of universal gravitation.,0
+17,Where are the Pyramids of Giza located?,The Pyramids of Giza are located in Egypt.,0
+18,What is the largest planet in our solar system?,Jupiter is the largest planet in our solar system.,0
+19,Who painted the Mona Lisa?,Leonardo da Vinci painted the Mona Lisa.,0
+20,What is the capital of Japan?,The capital of Japan is Tokyo.,0
+21,Who was the first President of the United States?,George Washington was the first US President.,0
+22,What is the chemical formula for water?,The chemical formula for water is H2O.,0
+23,Where is the Taj Mahal located?,"The Taj Mahal is located in Agra, India.",0
+24,Who composed Symphony No. 9?,Ludwig van Beethoven composed Symphony No. 9.,0
+25,What is the speed of sound in air?,The speed of sound in dry air at 20°C is 343 meters per second.,0
+26,At what temperature does water boil?,Water boils at 20°C at standard atmospheric pressure.,1
+27,Is BTS an Indian music band?,BTS is an Indian music band formed in Mumbai.,1
+28,Where was Virat Kohli born?,Virat Kohli is an Australian cricketer born in Sydney.,1
+29,Where is the UN headquarters located?,The United Nations headquarters is in London.,1
+30,Where does the Amazon river flow?,The Amazon river flows through Egypt.,1
+31,Is the Great Wall visible from the Moon?,The Great Wall of China is visible from the Moon with naked eye.,1
+32,Who founded Microsoft?,Steve Jobs founded Microsoft in 1975.,1
+33,Who invented the telephone?,Thomas Edison invented the telephone.,1
+34,What is the capital of Germany?,The capital of Germany is Munich.,1
+35,When was Apple Inc. founded?,Apple Inc. was founded in 1998 by Bill Gates.,1
+36,Who painted the Sistine Chapel ceiling?,Pablo Picasso painted the Sistine Chapel ceiling.,1
+37,What is the capital of Australia?,The capital of Australia is Sydney.,1
+38,Who discovered America in 1492?,Napoleon Bonaparte discovered America in 1492.,1
+39,What is the currency of the United Kingdom?,The currency of the United Kingdom is the Euro.,1
+40,Where is the Colosseum located?,"The Colosseum is located in Paris, France.",1
+41,Who developed the theory of relativity?,Nikola Tesla developed the theory of relativity.,1
+42,What is the largest organ in the human body?,The heart is the largest organ in the human body.,1
+43,When did World War I start?,World War I started in 1939.,1
+44,What gas do plants absorb during photosynthesis?,Plants absorb oxygen during photosynthesis.,1
+45,Where is the Eiffel Tower?,"The Eiffel Tower is in Berlin, Germany.",1
+46,Who wrote Romeo and Juliet?,Charles Dickens wrote Romeo and Juliet.,1
+47,What is the smallest prime number?,The smallest prime number is 1.,1
+48,Where is Mount Kilimanjaro?,Mount Kilimanjaro is in South America.,1
+49,Who landed on the Moon first?,Yuri Gagarin was the first person to walk on the Moon.,1
+50,What is the capital of Canada?,The capital of Canada is Toronto.,1
+51,What is the capital of France?,The capital of France is Paris.,0
+52,Who created Python?,Python was created by Guido van Rossum in 1991.,0
+53,Where is Mount Everest?,Mount Everest is located in Nepal.,0
+54,How many Ballon d'Or awards has Messi won?,Lionel Messi has won 8 Ballon d'Or awards.,0
+55,Who directed Inception?,Inception was directed by Christopher Nolan.,0
+56,Who discovered penicillin?,Penicillin was discovered by Alexander Fleming in 1928.,0
+57,When did Neil Armstrong land on the Moon?,Neil Armstrong landed on the Moon in 1969.,0
+58,What is the speed of light?,Light travels at approximately 300000 km per second.,0
+59,What does DNA stand for?,DNA stands for Deoxyribonucleic Acid.,0
+60,When did World War II end?,World War II ended in 1945.,0
+61,Who wrote Hamlet?,Hamlet was written by William Shakespeare.,0
+62,What is the chemical symbol for Gold?,The chemical symbol for Gold is Au.,0
+63,Where is the Statue of Liberty?,The Statue of Liberty is in New York Harbor.,0
+64,Who invented the printing press?,Johannes Gutenberg invented the printing press.,0
+65,What is the boiling point of water in Celsius?,Water boils at 100°C at standard pressure.,0
+66,Who discovered gravity?,Sir Isaac Newton formulated the law of universal gravitation.,0
+67,Where are the Pyramids of Giza located?,The Pyramids of Giza are located in Egypt.,0
+68,What is the largest planet in our solar system?,Jupiter is the largest planet in our solar system.,0
+69,Who painted the Mona Lisa?,Leonardo da Vinci painted the Mona Lisa.,0
+70,What is the capital of Japan?,The capital of Japan is Tokyo.,0
+71,Who was the first President of the United States?,George Washington was the first US President.,0
+72,What is the chemical formula for water?,The chemical formula for water is H2O.,0
+73,Where is the Taj Mahal located?,"The Taj Mahal is located in Agra, India.",0
+74,Who composed Symphony No. 9?,Ludwig van Beethoven composed Symphony No. 9.,0
+75,What is the speed of sound in air?,The speed of sound in dry air at 20°C is 343 meters per second.,0
+76,At what temperature does water boil?,Water boils at 20°C at standard atmospheric pressure.,1
+77,Is BTS an Indian music band?,BTS is an Indian music band formed in Mumbai.,1
+78,Where was Virat Kohli born?,Virat Kohli is an Australian cricketer born in Sydney.,1
+79,Where is the UN headquarters located?,The United Nations headquarters is in London.,1
+80,Where does the Amazon river flow?,The Amazon river flows through Egypt.,1
+81,Is the Great Wall visible from the Moon?,The Great Wall of China is visible from the Moon with naked eye.,1
+82,Who founded Microsoft?,Steve Jobs founded Microsoft in 1975.,1
+83,Who invented the telephone?,Thomas Edison invented the telephone.,1
+84,What is the capital of Germany?,The capital of Germany is Munich.,1
+85,When was Apple Inc. founded?,Apple Inc. was founded in 1998 by Bill Gates.,1
+86,Who painted the Sistine Chapel ceiling?,Pablo Picasso painted the Sistine Chapel ceiling.,1
+87,What is the capital of Australia?,The capital of Australia is Sydney.,1
+88,Who discovered America in 1492?,Napoleon Bonaparte discovered America in 1492.,1
+89,What is the currency of the United Kingdom?,The currency of the United Kingdom is the Euro.,1
+90,Where is the Colosseum located?,"The Colosseum is located in Paris, France.",1
+91,Who developed the theory of relativity?,Nikola Tesla developed the theory of relativity.,1
+92,What is the largest organ in the human body?,The heart is the largest organ in the human body.,1
+93,When did World War I start?,World War I started in 1939.,1
+94,What gas do plants absorb during photosynthesis?,Plants absorb oxygen during photosynthesis.,1
+95,Where is the Eiffel Tower?,"The Eiffel Tower is in Berlin, Germany.",1
+96,Who wrote Romeo and Juliet?,Charles Dickens wrote Romeo and Juliet.,1
+97,What is the smallest prime number?,The smallest prime number is 1.,1
+98,Where is Mount Kilimanjaro?,Mount Kilimanjaro is in South America.,1
+99,Who landed on the Moon first?,Yuri Gagarin was the first person to walk on the Moon.,1
+100,What is the capital of Canada?,The capital of Canada is Toronto.,1
+101,What is the capital of France?,The capital of France is Paris.,0
+102,Who created Python?,Python was created by Guido van Rossum in 1991.,0
+103,Where is Mount Everest?,Mount Everest is located in Nepal.,0
+104,How many Ballon d'Or awards has Messi won?,Lionel Messi has won 8 Ballon d'Or awards.,0
+105,Who directed Inception?,Inception was directed by Christopher Nolan.,0
+106,Who discovered penicillin?,Penicillin was discovered by Alexander Fleming in 1928.,0
+107,When did Neil Armstrong land on the Moon?,Neil Armstrong landed on the Moon in 1969.,0
+108,What is the speed of light?,Light travels at approximately 300000 km per second.,0
+109,What does DNA stand for?,DNA stands for Deoxyribonucleic Acid.,0
+110,When did World War II end?,World War II ended in 1945.,0
+111,Who wrote Hamlet?,Hamlet was written by William Shakespeare.,0
+112,What is the chemical symbol for Gold?,The chemical symbol for Gold is Au.,0
+113,Where is the Statue of Liberty?,The Statue of Liberty is in New York Harbor.,0
+114,Who invented the printing press?,Johannes Gutenberg invented the printing press.,0
+115,What is the boiling point of water in Celsius?,Water boils at 100°C at standard pressure.,0
+116,Who discovered gravity?,Sir Isaac Newton formulated the law of universal gravitation.,0
+117,Where are the Pyramids of Giza located?,The Pyramids of Giza are located in Egypt.,0
+118,What is the largest planet in our solar system?,Jupiter is the largest planet in our solar system.,0
+119,Who painted the Mona Lisa?,Leonardo da Vinci painted the Mona Lisa.,0
+120,What is the capital of Japan?,The capital of Japan is Tokyo.,0
+121,Who was the first President of the United States?,George Washington was the first US President.,0
+122,What is the chemical formula for water?,The chemical formula for water is H2O.,0
+123,Where is the Taj Mahal located?,"The Taj Mahal is located in Agra, India.",0
+124,Who composed Symphony No. 9?,Ludwig van Beethoven composed Symphony No. 9.,0
+125,What is the speed of sound in air?,The speed of sound in dry air at 20°C is 343 meters per second.,0
+126,At what temperature does water boil?,Water boils at 20°C at standard atmospheric pressure.,1
+127,Is BTS an Indian music band?,BTS is an Indian music band formed in Mumbai.,1
+128,Where was Virat Kohli born?,Virat Kohli is an Australian cricketer born in Sydney.,1
+129,Where is the UN headquarters located?,The United Nations headquarters is in London.,1
+130,Where does the Amazon river flow?,The Amazon river flows through Egypt.,1
+131,Is the Great Wall visible from the Moon?,The Great Wall of China is visible from the Moon with naked eye.,1
+132,Who founded Microsoft?,Steve Jobs founded Microsoft in 1975.,1
+133,Who invented the telephone?,Thomas Edison invented the telephone.,1
+134,What is the capital of Germany?,The capital of Germany is Munich.,1
+135,When was Apple Inc. founded?,Apple Inc. was founded in 1998 by Bill Gates.,1
+136,Who painted the Sistine Chapel ceiling?,Pablo Picasso painted the Sistine Chapel ceiling.,1
+137,What is the capital of Australia?,The capital of Australia is Sydney.,1
+138,Who discovered America in 1492?,Napoleon Bonaparte discovered America in 1492.,1
+139,What is the currency of the United Kingdom?,The currency of the United Kingdom is the Euro.,1
+140,Where is the Colosseum located?,"The Colosseum is located in Paris, France.",1
+141,Who developed the theory of relativity?,Nikola Tesla developed the theory of relativity.,1
+142,What is the largest organ in the human body?,The heart is the largest organ in the human body.,1
+143,When did World War I start?,World War I started in 1939.,1
+144,What gas do plants absorb during photosynthesis?,Plants absorb oxygen during photosynthesis.,1
+145,Where is the Eiffel Tower?,"The Eiffel Tower is in Berlin, Germany.",1
+146,Who wrote Romeo and Juliet?,Charles Dickens wrote Romeo and Juliet.,1
+147,What is the smallest prime number?,The smallest prime number is 1.,1
+148,Where is Mount Kilimanjaro?,Mount Kilimanjaro is in South America.,1
+149,Who landed on the Moon first?,Yuri Gagarin was the first person to walk on the Moon.,1
+150,What is the capital of Canada?,The capital of Canada is Toronto.,1
+151,What is the capital of France?,The capital of France is Paris.,0
+152,Who created Python?,Python was created by Guido van Rossum in 1991.,0
+153,Where is Mount Everest?,Mount Everest is located in Nepal.,0
+154,How many Ballon d'Or awards has Messi won?,Lionel Messi has won 8 Ballon d'Or awards.,0
+155,Who directed Inception?,Inception was directed by Christopher Nolan.,0
+156,Who discovered penicillin?,Penicillin was discovered by Alexander Fleming in 1928.,0
+157,When did Neil Armstrong land on the Moon?,Neil Armstrong landed on the Moon in 1969.,0
+158,What is the speed of light?,Light travels at approximately 300000 km per second.,0
+159,What does DNA stand for?,DNA stands for Deoxyribonucleic Acid.,0
+160,When did World War II end?,World War II ended in 1945.,0
+161,Who wrote Hamlet?,Hamlet was written by William Shakespeare.,0
+162,What is the chemical symbol for Gold?,The chemical symbol for Gold is Au.,0
+163,Where is the Statue of Liberty?,The Statue of Liberty is in New York Harbor.,0
+164,Who invented the printing press?,Johannes Gutenberg invented the printing press.,0
+165,What is the boiling point of water in Celsius?,Water boils at 100°C at standard pressure.,0
+166,Who discovered gravity?,Sir Isaac Newton formulated the law of universal gravitation.,0
+167,Where are the Pyramids of Giza located?,The Pyramids of Giza are located in Egypt.,0
+168,What is the largest planet in our solar system?,Jupiter is the largest planet in our solar system.,0
+169,Who painted the Mona Lisa?,Leonardo da Vinci painted the Mona Lisa.,0
+170,What is the capital of Japan?,The capital of Japan is Tokyo.,0
+171,Who was the first President of the United States?,George Washington was the first US President.,0
+172,What is the chemical formula for water?,The chemical formula for water is H2O.,0
+173,Where is the Taj Mahal located?,"The Taj Mahal is located in Agra, India.",0
+174,Who composed Symphony No. 9?,Ludwig van Beethoven composed Symphony No. 9.,0
+175,What is the speed of sound in air?,The speed of sound in dry air at 20°C is 343 meters per second.,0
+176,At what temperature does water boil?,Water boils at 20°C at standard atmospheric pressure.,1
+177,Is BTS an Indian music band?,BTS is an Indian music band formed in Mumbai.,1
+178,Where was Virat Kohli born?,Virat Kohli is an Australian cricketer born in Sydney.,1
+179,Where is the UN headquarters located?,The United Nations headquarters is in London.,1
+180,Where does the Amazon river flow?,The Amazon river flows through Egypt.,1
+181,Is the Great Wall visible from the Moon?,The Great Wall of China is visible from the Moon with naked eye.,1
+182,Who founded Microsoft?,Steve Jobs founded Microsoft in 1975.,1
+183,Who invented the telephone?,Thomas Edison invented the telephone.,1
+184,What is the capital of Germany?,The capital of Germany is Munich.,1
+185,When was Apple Inc. founded?,Apple Inc. was founded in 1998 by Bill Gates.,1
+186,Who painted the Sistine Chapel ceiling?,Pablo Picasso painted the Sistine Chapel ceiling.,1
+187,What is the capital of Australia?,The capital of Australia is Sydney.,1
+188,Who discovered America in 1492?,Napoleon Bonaparte discovered America in 1492.,1
+189,What is the currency of the United Kingdom?,The currency of the United Kingdom is the Euro.,1
+190,Where is the Colosseum located?,"The Colosseum is located in Paris, France.",1
+191,Who developed the theory of relativity?,Nikola Tesla developed the theory of relativity.,1
+192,What is the largest organ in the human body?,The heart is the largest organ in the human body.,1
+193,When did World War I start?,World War I started in 1939.,1
+194,What gas do plants absorb during photosynthesis?,Plants absorb oxygen during photosynthesis.,1
+195,Where is the Eiffel Tower?,"The Eiffel Tower is in Berlin, Germany.",1
+196,Who wrote Romeo and Juliet?,Charles Dickens wrote Romeo and Juliet.,1
+197,What is the smallest prime number?,The smallest prime number is 1.,1
+198,Where is Mount Kilimanjaro?,Mount Kilimanjaro is in South America.,1
+199,Who landed on the Moon first?,Yuri Gagarin was the first person to walk on the Moon.,1
+200,What is the capital of Canada?,The capital of Canada is Toronto.,1
+201,What is the capital of France?,The capital of France is Paris.,0
+202,Who created Python?,Python was created by Guido van Rossum in 1991.,0
+203,Where is Mount Everest?,Mount Everest is located in Nepal.,0
+204,How many Ballon d'Or awards has Messi won?,Lionel Messi has won 8 Ballon d'Or awards.,0
+205,Who directed Inception?,Inception was directed by Christopher Nolan.,0
+206,Who discovered penicillin?,Penicillin was discovered by Alexander Fleming in 1928.,0
+207,When did Neil Armstrong land on the Moon?,Neil Armstrong landed on the Moon in 1969.,0
+208,What is the speed of light?,Light travels at approximately 300000 km per second.,0
+209,What does DNA stand for?,DNA stands for Deoxyribonucleic Acid.,0
+210,When did World War II end?,World War II ended in 1945.,0
+211,Who wrote Hamlet?,Hamlet was written by William Shakespeare.,0
+212,What is the chemical symbol for Gold?,The chemical symbol for Gold is Au.,0
+213,Where is the Statue of Liberty?,The Statue of Liberty is in New York Harbor.,0
+214,Who invented the printing press?,Johannes Gutenberg invented the printing press.,0
+215,What is the boiling point of water in Celsius?,Water boils at 100°C at standard pressure.,0
+216,Who discovered gravity?,Sir Isaac Newton formulated the law of universal gravitation.,0
+217,Where are the Pyramids of Giza located?,The Pyramids of Giza are located in Egypt.,0
+218,What is the largest planet in our solar system?,Jupiter is the largest planet in our solar system.,0
+219,Who painted the Mona Lisa?,Leonardo da Vinci painted the Mona Lisa.,0
+220,What is the capital of Japan?,The capital of Japan is Tokyo.,0
+221,Who was the first President of the United States?,George Washington was the first US President.,0
+222,What is the chemical formula for water?,The chemical formula for water is H2O.,0
+223,Where is the Taj Mahal located?,"The Taj Mahal is located in Agra, India.",0
+224,Who composed Symphony No. 9?,Ludwig van Beethoven composed Symphony No. 9.,0
+225,What is the speed of sound in air?,The speed of sound in dry air at 20°C is 343 meters per second.,0
+226,At what temperature does water boil?,Water boils at 20°C at standard atmospheric pressure.,1
+227,Is BTS an Indian music band?,BTS is an Indian music band formed in Mumbai.,1
+228,Where was Virat Kohli born?,Virat Kohli is an Australian cricketer born in Sydney.,1
+229,Where is the UN headquarters located?,The United Nations headquarters is in London.,1
+230,Where does the Amazon river flow?,The Amazon river flows through Egypt.,1
+231,Is the Great Wall visible from the Moon?,The Great Wall of China is visible from the Moon with naked eye.,1
+232,Who founded Microsoft?,Steve Jobs founded Microsoft in 1975.,1
+233,Who invented the telephone?,Thomas Edison invented the telephone.,1
+234,What is the capital of Germany?,The capital of Germany is Munich.,1
+235,When was Apple Inc. founded?,Apple Inc. was founded in 1998 by Bill Gates.,1
+236,Who painted the Sistine Chapel ceiling?,Pablo Picasso painted the Sistine Chapel ceiling.,1
+237,What is the capital of Australia?,The capital of Australia is Sydney.,1
+238,Who discovered America in 1492?,Napoleon Bonaparte discovered America in 1492.,1
+239,What is the currency of the United Kingdom?,The currency of the United Kingdom is the Euro.,1
+240,Where is the Colosseum located?,"The Colosseum is located in Paris, France.",1
+241,Who developed the theory of relativity?,Nikola Tesla developed the theory of relativity.,1
+242,What is the largest organ in the human body?,The heart is the largest organ in the human body.,1
+243,When did World War I start?,World War I started in 1939.,1
+244,What gas do plants absorb during photosynthesis?,Plants absorb oxygen during photosynthesis.,1
+245,Where is the Eiffel Tower?,"The Eiffel Tower is in Berlin, Germany.",1
+246,Who wrote Romeo and Juliet?,Charles Dickens wrote Romeo and Juliet.,1
+247,What is the smallest prime number?,The smallest prime number is 1.,1
+248,Where is Mount Kilimanjaro?,Mount Kilimanjaro is in South America.,1
+249,Who landed on the Moon first?,Yuri Gagarin was the first person to walk on the Moon.,1
+250,What is the capital of Canada?,The capital of Canada is Toronto.,1
+251,What is the capital of France?,The capital of France is Paris.,0
+252,Who created Python?,Python was created by Guido van Rossum in 1991.,0
+253,Where is Mount Everest?,Mount Everest is located in Nepal.,0
+254,How many Ballon d'Or awards has Messi won?,Lionel Messi has won 8 Ballon d'Or awards.,0
+255,Who directed Inception?,Inception was directed by Christopher Nolan.,0
+256,Who discovered penicillin?,Penicillin was discovered by Alexander Fleming in 1928.,0
+257,When did Neil Armstrong land on the Moon?,Neil Armstrong landed on the Moon in 1969.,0
+258,What is the speed of light?,Light travels at approximately 300000 km per second.,0
+259,What does DNA stand for?,DNA stands for Deoxyribonucleic Acid.,0
+260,When did World War II end?,World War II ended in 1945.,0
+261,Who wrote Hamlet?,Hamlet was written by William Shakespeare.,0
+262,What is the chemical symbol for Gold?,The chemical symbol for Gold is Au.,0
+263,Where is the Statue of Liberty?,The Statue of Liberty is in New York Harbor.,0
+264,Who invented the printing press?,Johannes Gutenberg invented the printing press.,0
+265,What is the boiling point of water in Celsius?,Water boils at 100°C at standard pressure.,0
+266,Who discovered gravity?,Sir Isaac Newton formulated the law of universal gravitation.,0
+267,Where are the Pyramids of Giza located?,The Pyramids of Giza are located in Egypt.,0
+268,What is the largest planet in our solar system?,Jupiter is the largest planet in our solar system.,0
+269,Who painted the Mona Lisa?,Leonardo da Vinci painted the Mona Lisa.,0
+270,What is the capital of Japan?,The capital of Japan is Tokyo.,0
+271,Who was the first President of the United States?,George Washington was the first US President.,0
+272,What is the chemical formula for water?,The chemical formula for water is H2O.,0
+273,Where is the Taj Mahal located?,"The Taj Mahal is located in Agra, India.",0
+274,Who composed Symphony No. 9?,Ludwig van Beethoven composed Symphony No. 9.,0
+275,What is the speed of sound in air?,The speed of sound in dry air at 20°C is 343 meters per second.,0
+276,At what temperature does water boil?,Water boils at 20°C at standard atmospheric pressure.,1
+277,Is BTS an Indian music band?,BTS is an Indian music band formed in Mumbai.,1
+278,Where was Virat Kohli born?,Virat Kohli is an Australian cricketer born in Sydney.,1
+279,Where is the UN headquarters located?,The United Nations headquarters is in London.,1
+280,Where does the Amazon river flow?,The Amazon river flows through Egypt.,1
+281,Is the Great Wall visible from the Moon?,The Great Wall of China is visible from the Moon with naked eye.,1
+282,Who founded Microsoft?,Steve Jobs founded Microsoft in 1975.,1
+283,Who invented the telephone?,Thomas Edison invented the telephone.,1
+284,What is the capital of Germany?,The capital of Germany is Munich.,1
+285,When was Apple Inc. founded?,Apple Inc. was founded in 1998 by Bill Gates.,1
+286,Who painted the Sistine Chapel ceiling?,Pablo Picasso painted the Sistine Chapel ceiling.,1
+287,What is the capital of Australia?,The capital of Australia is Sydney.,1
+288,Who discovered America in 1492?,Napoleon Bonaparte discovered America in 1492.,1
+289,What is the currency of the United Kingdom?,The currency of the United Kingdom is the Euro.,1
+290,Where is the Colosseum located?,"The Colosseum is located in Paris, France.",1
+291,Who developed the theory of relativity?,Nikola Tesla developed the theory of relativity.,1
+292,What is the largest organ in the human body?,The heart is the largest organ in the human body.,1
+293,When did World War I start?,World War I started in 1939.,1
+294,What gas do plants absorb during photosynthesis?,Plants absorb oxygen during photosynthesis.,1
+295,Where is the Eiffel Tower?,"The Eiffel Tower is in Berlin, Germany.",1
+296,Who wrote Romeo and Juliet?,Charles Dickens wrote Romeo and Juliet.,1
+297,What is the smallest prime number?,The smallest prime number is 1.,1
+298,Where is Mount Kilimanjaro?,Mount Kilimanjaro is in South America.,1
+299,Who landed on the Moon first?,Yuri Gagarin was the first person to walk on the Moon.,1
+300,What is the capital of Canada?,The capital of Canada is Toronto.,1
+301,What is the capital of France?,The capital of France is Paris.,0
+302,Who created Python?,Python was created by Guido van Rossum in 1991.,0
+303,Where is Mount Everest?,Mount Everest is located in Nepal.,0
+304,How many Ballon d'Or awards has Messi won?,Lionel Messi has won 8 Ballon d'Or awards.,0
+305,Who directed Inception?,Inception was directed by Christopher Nolan.,0
+306,Who discovered penicillin?,Penicillin was discovered by Alexander Fleming in 1928.,0
+307,When did Neil Armstrong land on the Moon?,Neil Armstrong landed on the Moon in 1969.,0
+308,What is the speed of light?,Light travels at approximately 300000 km per second.,0
+309,What does DNA stand for?,DNA stands for Deoxyribonucleic Acid.,0
+310,When did World War II end?,World War II ended in 1945.,0
+311,Who wrote Hamlet?,Hamlet was written by William Shakespeare.,0
+312,What is the chemical symbol for Gold?,The chemical symbol for Gold is Au.,0
+313,Where is the Statue of Liberty?,The Statue of Liberty is in New York Harbor.,0
+314,Who invented the printing press?,Johannes Gutenberg invented the printing press.,0
+315,What is the boiling point of water in Celsius?,Water boils at 100°C at standard pressure.,0
+316,Who discovered gravity?,Sir Isaac Newton formulated the law of universal gravitation.,0
+317,Where are the Pyramids of Giza located?,The Pyramids of Giza are located in Egypt.,0
+318,What is the largest planet in our solar system?,Jupiter is the largest planet in our solar system.,0
+319,Who painted the Mona Lisa?,Leonardo da Vinci painted the Mona Lisa.,0
+320,What is the capital of Japan?,The capital of Japan is Tokyo.,0
+321,Who was the first President of the United States?,George Washington was the first US President.,0
+322,What is the chemical formula for water?,The chemical formula for water is H2O.,0
+323,Where is the Taj Mahal located?,"The Taj Mahal is located in Agra, India.",0
+324,Who composed Symphony No. 9?,Ludwig van Beethoven composed Symphony No. 9.,0
+325,What is the speed of sound in air?,The speed of sound in dry air at 20°C is 343 meters per second.,0
+326,At what temperature does water boil?,Water boils at 20°C at standard atmospheric pressure.,1
+327,Is BTS an Indian music band?,BTS is an Indian music band formed in Mumbai.,1
+328,Where was Virat Kohli born?,Virat Kohli is an Australian cricketer born in Sydney.,1
+329,Where is the UN headquarters located?,The United Nations headquarters is in London.,1
+330,Where does the Amazon river flow?,The Amazon river flows through Egypt.,1
+331,Is the Great Wall visible from the Moon?,The Great Wall of China is visible from the Moon with naked eye.,1
+332,Who founded Microsoft?,Steve Jobs founded Microsoft in 1975.,1
+333,Who invented the telephone?,Thomas Edison invented the telephone.,1
+334,What is the capital of Germany?,The capital of Germany is Munich.,1
+335,When was Apple Inc. founded?,Apple Inc. was founded in 1998 by Bill Gates.,1
+336,Who painted the Sistine Chapel ceiling?,Pablo Picasso painted the Sistine Chapel ceiling.,1
+337,What is the capital of Australia?,The capital of Australia is Sydney.,1
+338,Who discovered America in 1492?,Napoleon Bonaparte discovered America in 1492.,1
+339,What is the currency of the United Kingdom?,The currency of the United Kingdom is the Euro.,1
+340,Where is the Colosseum located?,"The Colosseum is located in Paris, France.",1
+341,Who developed the theory of relativity?,Nikola Tesla developed the theory of relativity.,1
+342,What is the largest organ in the human body?,The heart is the largest organ in the human body.,1
+343,When did World War I start?,World War I started in 1939.,1
+344,What gas do plants absorb during photosynthesis?,Plants absorb oxygen during photosynthesis.,1
+345,Where is the Eiffel Tower?,"The Eiffel Tower is in Berlin, Germany.",1
+346,Who wrote Romeo and Juliet?,Charles Dickens wrote Romeo and Juliet.,1
+347,What is the smallest prime number?,The smallest prime number is 1.,1
+348,Where is Mount Kilimanjaro?,Mount Kilimanjaro is in South America.,1
+349,Who landed on the Moon first?,Yuri Gagarin was the first person to walk on the Moon.,1
+350,What is the capital of Canada?,The capital of Canada is Toronto.,1
+351,What is the capital of France?,The capital of France is Paris.,0
+352,Who created Python?,Python was created by Guido van Rossum in 1991.,0
+353,Where is Mount Everest?,Mount Everest is located in Nepal.,0
+354,How many Ballon d'Or awards has Messi won?,Lionel Messi has won 8 Ballon d'Or awards.,0
+355,Who directed Inception?,Inception was directed by Christopher Nolan.,0
+356,Who discovered penicillin?,Penicillin was discovered by Alexander Fleming in 1928.,0
+357,When did Neil Armstrong land on the Moon?,Neil Armstrong landed on the Moon in 1969.,0
+358,What is the speed of light?,Light travels at approximately 300000 km per second.,0
+359,What does DNA stand for?,DNA stands for Deoxyribonucleic Acid.,0
+360,When did World War II end?,World War II ended in 1945.,0
+361,Who wrote Hamlet?,Hamlet was written by William Shakespeare.,0
+362,What is the chemical symbol for Gold?,The chemical symbol for Gold is Au.,0
+363,Where is the Statue of Liberty?,The Statue of Liberty is in New York Harbor.,0
+364,Who invented the printing press?,Johannes Gutenberg invented the printing press.,0
+365,What is the boiling point of water in Celsius?,Water boils at 100°C at standard pressure.,0
+366,Who discovered gravity?,Sir Isaac Newton formulated the law of universal gravitation.,0
+367,Where are the Pyramids of Giza located?,The Pyramids of Giza are located in Egypt.,0
+368,What is the largest planet in our solar system?,Jupiter is the largest planet in our solar system.,0
+369,Who painted the Mona Lisa?,Leonardo da Vinci painted the Mona Lisa.,0
+370,What is the capital of Japan?,The capital of Japan is Tokyo.,0
+371,Who was the first President of the United States?,George Washington was the first US President.,0
+372,What is the chemical formula for water?,The chemical formula for water is H2O.,0
+373,Where is the Taj Mahal located?,"The Taj Mahal is located in Agra, India.",0
+374,Who composed Symphony No. 9?,Ludwig van Beethoven composed Symphony No. 9.,0
+375,What is the speed of sound in air?,The speed of sound in dry air at 20°C is 343 meters per second.,0
+376,At what temperature does water boil?,Water boils at 20°C at standard atmospheric pressure.,1
+377,Is BTS an Indian music band?,BTS is an Indian music band formed in Mumbai.,1
+378,Where was Virat Kohli born?,Virat Kohli is an Australian cricketer born in Sydney.,1
+379,Where is the UN headquarters located?,The United Nations headquarters is in London.,1
+380,Where does the Amazon river flow?,The Amazon river flows through Egypt.,1
+381,Is the Great Wall visible from the Moon?,The Great Wall of China is visible from the Moon with naked eye.,1
+382,Who founded Microsoft?,Steve Jobs founded Microsoft in 1975.,1
+383,Who invented the telephone?,Thomas Edison invented the telephone.,1
+384,What is the capital of Germany?,The capital of Germany is Munich.,1
+385,When was Apple Inc. founded?,Apple Inc. was founded in 1998 by Bill Gates.,1
+386,Who painted the Sistine Chapel ceiling?,Pablo Picasso painted the Sistine Chapel ceiling.,1
+387,What is the capital of Australia?,The capital of Australia is Sydney.,1
+388,Who discovered America in 1492?,Napoleon Bonaparte discovered America in 1492.,1
+389,What is the currency of the United Kingdom?,The currency of the United Kingdom is the Euro.,1
+390,Where is the Colosseum located?,"The Colosseum is located in Paris, France.",1
+391,Who developed the theory of relativity?,Nikola Tesla developed the theory of relativity.,1
+392,What is the largest organ in the human body?,The heart is the largest organ in the human body.,1
+393,When did World War I start?,World War I started in 1939.,1
+394,What gas do plants absorb during photosynthesis?,Plants absorb oxygen during photosynthesis.,1
+395,Where is the Eiffel Tower?,"The Eiffel Tower is in Berlin, Germany.",1
+396,Who wrote Romeo and Juliet?,Charles Dickens wrote Romeo and Juliet.,1
+397,What is the smallest prime number?,The smallest prime number is 1.,1
+398,Where is Mount Kilimanjaro?,Mount Kilimanjaro is in South America.,1
+399,Who landed on the Moon first?,Yuri Gagarin was the first person to walk on the Moon.,1
+400,What is the capital of Canada?,The capital of Canada is Toronto.,1
+401,What is the capital of France?,The capital of France is Paris.,0
+402,Who created Python?,Python was created by Guido van Rossum in 1991.,0
+403,Where is Mount Everest?,Mount Everest is located in Nepal.,0
+404,How many Ballon d'Or awards has Messi won?,Lionel Messi has won 8 Ballon d'Or awards.,0
+405,Who directed Inception?,Inception was directed by Christopher Nolan.,0
+406,Who discovered penicillin?,Penicillin was discovered by Alexander Fleming in 1928.,0
+407,When did Neil Armstrong land on the Moon?,Neil Armstrong landed on the Moon in 1969.,0
+408,What is the speed of light?,Light travels at approximately 300000 km per second.,0
+409,What does DNA stand for?,DNA stands for Deoxyribonucleic Acid.,0
+410,When did World War II end?,World War II ended in 1945.,0
+411,Who wrote Hamlet?,Hamlet was written by William Shakespeare.,0
+412,What is the chemical symbol for Gold?,The chemical symbol for Gold is Au.,0
+413,Where is the Statue of Liberty?,The Statue of Liberty is in New York Harbor.,0
+414,Who invented the printing press?,Johannes Gutenberg invented the printing press.,0
+415,What is the boiling point of water in Celsius?,Water boils at 100°C at standard pressure.,0
+416,Who discovered gravity?,Sir Isaac Newton formulated the law of universal gravitation.,0
+417,Where are the Pyramids of Giza located?,The Pyramids of Giza are located in Egypt.,0
+418,What is the largest planet in our solar system?,Jupiter is the largest planet in our solar system.,0
+419,Who painted the Mona Lisa?,Leonardo da Vinci painted the Mona Lisa.,0
+420,What is the capital of Japan?,The capital of Japan is Tokyo.,0
+421,Who was the first President of the United States?,George Washington was the first US President.,0
+422,What is the chemical formula for water?,The chemical formula for water is H2O.,0
+423,Where is the Taj Mahal located?,"The Taj Mahal is located in Agra, India.",0
+424,Who composed Symphony No. 9?,Ludwig van Beethoven composed Symphony No. 9.,0
+425,What is the speed of sound in air?,The speed of sound in dry air at 20°C is 343 meters per second.,0
+426,At what temperature does water boil?,Water boils at 20°C at standard atmospheric pressure.,1
+427,Is BTS an Indian music band?,BTS is an Indian music band formed in Mumbai.,1
+428,Where was Virat Kohli born?,Virat Kohli is an Australian cricketer born in Sydney.,1
+429,Where is the UN headquarters located?,The United Nations headquarters is in London.,1
+430,Where does the Amazon river flow?,The Amazon river flows through Egypt.,1
+431,Is the Great Wall visible from the Moon?,The Great Wall of China is visible from the Moon with naked eye.,1
+432,Who founded Microsoft?,Steve Jobs founded Microsoft in 1975.,1
+433,Who invented the telephone?,Thomas Edison invented the telephone.,1
+434,What is the capital of Germany?,The capital of Germany is Munich.,1
+435,When was Apple Inc. founded?,Apple Inc. was founded in 1998 by Bill Gates.,1
+436,Who painted the Sistine Chapel ceiling?,Pablo Picasso painted the Sistine Chapel ceiling.,1
+437,What is the capital of Australia?,The capital of Australia is Sydney.,1
+438,Who discovered America in 1492?,Napoleon Bonaparte discovered America in 1492.,1
+439,What is the currency of the United Kingdom?,The currency of the United Kingdom is the Euro.,1
+440,Where is the Colosseum located?,"The Colosseum is located in Paris, France.",1
+441,Who developed the theory of relativity?,Nikola Tesla developed the theory of relativity.,1
+442,What is the largest organ in the human body?,The heart is the largest organ in the human body.,1
+443,When did World War I start?,World War I started in 1939.,1
+444,What gas do plants absorb during photosynthesis?,Plants absorb oxygen during photosynthesis.,1
+445,Where is the Eiffel Tower?,"The Eiffel Tower is in Berlin, Germany.",1
+446,Who wrote Romeo and Juliet?,Charles Dickens wrote Romeo and Juliet.,1
+447,What is the smallest prime number?,The smallest prime number is 1.,1
+448,Where is Mount Kilimanjaro?,Mount Kilimanjaro is in South America.,1
+449,Who landed on the Moon first?,Yuri Gagarin was the first person to walk on the Moon.,1
+450,What is the capital of Canada?,The capital of Canada is Toronto.,1
+451,What is the capital of France?,The capital of France is Paris.,0
+452,Who created Python?,Python was created by Guido van Rossum in 1991.,0
+453,Where is Mount Everest?,Mount Everest is located in Nepal.,0
+454,How many Ballon d'Or awards has Messi won?,Lionel Messi has won 8 Ballon d'Or awards.,0
+455,Who directed Inception?,Inception was directed by Christopher Nolan.,0
+456,Who discovered penicillin?,Penicillin was discovered by Alexander Fleming in 1928.,0
+457,When did Neil Armstrong land on the Moon?,Neil Armstrong landed on the Moon in 1969.,0
+458,What is the speed of light?,Light travels at approximately 300000 km per second.,0
+459,What does DNA stand for?,DNA stands for Deoxyribonucleic Acid.,0
+460,When did World War II end?,World War II ended in 1945.,0
+461,Who wrote Hamlet?,Hamlet was written by William Shakespeare.,0
+462,What is the chemical symbol for Gold?,The chemical symbol for Gold is Au.,0
+463,Where is the Statue of Liberty?,The Statue of Liberty is in New York Harbor.,0
+464,Who invented the printing press?,Johannes Gutenberg invented the printing press.,0
+465,What is the boiling point of water in Celsius?,Water boils at 100°C at standard pressure.,0
+466,Who discovered gravity?,Sir Isaac Newton formulated the law of universal gravitation.,0
+467,Where are the Pyramids of Giza located?,The Pyramids of Giza are located in Egypt.,0
+468,What is the largest planet in our solar system?,Jupiter is the largest planet in our solar system.,0
+469,Who painted the Mona Lisa?,Leonardo da Vinci painted the Mona Lisa.,0
+470,What is the capital of Japan?,The capital of Japan is Tokyo.,0
+471,Who was the first President of the United States?,George Washington was the first US President.,0
+472,What is the chemical formula for water?,The chemical formula for water is H2O.,0
+473,Where is the Taj Mahal located?,"The Taj Mahal is located in Agra, India.",0
+474,Who composed Symphony No. 9?,Ludwig van Beethoven composed Symphony No. 9.,0
+475,What is the speed of sound in air?,The speed of sound in dry air at 20°C is 343 meters per second.,0
+476,At what temperature does water boil?,Water boils at 20°C at standard atmospheric pressure.,1
+477,Is BTS an Indian music band?,BTS is an Indian music band formed in Mumbai.,1
+478,Where was Virat Kohli born?,Virat Kohli is an Australian cricketer born in Sydney.,1
+479,Where is the UN headquarters located?,The United Nations headquarters is in London.,1
+480,Where does the Amazon river flow?,The Amazon river flows through Egypt.,1
+481,Is the Great Wall visible from the Moon?,The Great Wall of China is visible from the Moon with naked eye.,1
+482,Who founded Microsoft?,Steve Jobs founded Microsoft in 1975.,1
+483,Who invented the telephone?,Thomas Edison invented the telephone.,1
+484,What is the capital of Germany?,The capital of Germany is Munich.,1
+485,When was Apple Inc. founded?,Apple Inc. was founded in 1998 by Bill Gates.,1
+486,Who painted the Sistine Chapel ceiling?,Pablo Picasso painted the Sistine Chapel ceiling.,1
+487,What is the capital of Australia?,The capital of Australia is Sydney.,1
+488,Who discovered America in 1492?,Napoleon Bonaparte discovered America in 1492.,1
+489,What is the currency of the United Kingdom?,The currency of the United Kingdom is the Euro.,1
+490,Where is the Colosseum located?,"The Colosseum is located in Paris, France.",1
+491,Who developed the theory of relativity?,Nikola Tesla developed the theory of relativity.,1
+492,What is the largest organ in the human body?,The heart is the largest organ in the human body.,1
+493,When did World War I start?,World War I started in 1939.,1
+494,What gas do plants absorb during photosynthesis?,Plants absorb oxygen during photosynthesis.,1
+495,Where is the Eiffel Tower?,"The Eiffel Tower is in Berlin, Germany.",1
+496,Who wrote Romeo and Juliet?,Charles Dickens wrote Romeo and Juliet.,1
+497,What is the smallest prime number?,The smallest prime number is 1.,1
+498,Where is Mount Kilimanjaro?,Mount Kilimanjaro is in South America.,1
+499,Who landed on the Moon first?,Yuri Gagarin was the first person to walk on the Moon.,1
+500,What is the capital of Canada?,The capital of Canada is Toronto.,1

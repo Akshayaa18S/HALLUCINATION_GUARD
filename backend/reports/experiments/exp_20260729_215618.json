@@ -1,0 +1,135 @@
+{
+  "experiment_id": "exp_20260729_215618",
+  "timestamp": "2026-07-29T21:56:18.244562",
+  "dataset": "HaluEval Benchmark Suite",
+  "model_version": "1.0",
+  "checkpoint": "multihaludet.pt",
+  "git_commit": "1a17c5d",
+  "random_seed": 42,
+  "python_version": "3.12.10",
+  "device": "CUDA",
+  "metrics": {
+    "dataset": "HaluEval Benchmark Suite",
+    "samples": 6,
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "roc_auc": 1.0,
+    "false_positive_rate": 0.0,
+    "false_negative_rate": 0.0
+  },
+  "configuration": {
+    "claim_verification": true,
+    "entity_retrieval": true,
+    "entity_disambiguation": true,
+    "confidence_fusion": true
+  },
+  "performance": {
+    "retrieval_ms": 140.0,
+    "verification_ms": 120.0,
+    "feature_extraction_ms": 25.6,
+    "classification_ms": 6.4,
+    "total_ms": 1469.0,
+    "memory_mb": 102.85,
+    "cpu_percent": 18.3,
+    "gpu_memory_mb": 0.0
+  },
+  "calibration": {
+    "expected_calibration_error": 0.1133,
+    "brier_score": 0.014,
+    "reliability_bins": [
+      {
+        "bin_lower": 0.0,
+        "bin_upper": 0.1,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.1,
+        "bin_upper": 0.2,
+        "samples": 3,
+        "accuracy": 0.0,
+        "confidence": 0.14,
+        "calibration_error": 0.14
+      },
+      {
+        "bin_lower": 0.2,
+        "bin_upper": 0.3,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.3,
+        "bin_upper": 0.4,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.4,
+        "bin_upper": 0.5,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.5,
+        "bin_upper": 0.6,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.6,
+        "bin_upper": 0.7,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.7,
+        "bin_upper": 0.8,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.8,
+        "bin_upper": 0.9,
+        "samples": 1,
+        "accuracy": 1.0,
+        "confidence": 0.88,
+        "calibration_error": 0.12
+      },
+      {
+        "bin_lower": 0.9,
+        "bin_upper": 1.0,
+        "samples": 2,
+        "accuracy": 1.0,
+        "confidence": 0.93,
+        "calibration_error": 0.07
+      }
+    ]
+  },
+  "statistical_significance": {
+    "baseline_accuracy": 0.3333,
+    "comparison_accuracy": 1.0,
+    "accuracy_improvement": 0.6667,
+    "mcnemar_p_value": 0.13361,
+    "significant": false,
+    "confidence_interval_95": [
+      1.0,
+      1.0
+    ]
+  }
+}

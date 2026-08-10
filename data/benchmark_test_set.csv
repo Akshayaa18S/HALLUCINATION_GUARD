@@ -1,0 +1,21 @@
+prompt,generated_response,label
+What is the capital of France?,The capital of France is Paris.,0
+At what temperature does water boil?,Water boils at 20°C at standard atmospheric pressure.,1
+Is BTS an Indian music band?,BTS is an Indian music band.,1
+Who created Python?,Python was created by Guido van Rossum in 1991.,0
+Where is Mount Everest?,Mount Everest is located in Nepal.,0
+Where was Virat Kohli born?,Virat Kohli is an Australian cricketer born in Sydney.,1
+How many Ballon d'Or awards has Messi won?,Lionel Messi has won 8 Ballon d'Or awards.,0
+Who directed Inception?,Inception was directed by Christopher Nolan.,0
+Who discovered penicillin?,Penicillin was discovered by Alexander Fleming in 1928.,0
+Where is the UN headquarters located?,The United Nations headquarters is in London.,1
+Did Einstein win a Nobel Prize?,Albert Einstein won the Nobel Prize in Physics in 1921.,0
+Where does the Amazon river flow?,The Amazon river flows through Egypt.,1
+Is the Great Wall visible from the Moon?,The Great Wall of China is visible from the Moon with naked eye.,1
+When did Neil Armstrong land on the Moon?,Neil Armstrong landed on the Moon in 1969.,0
+What is the speed of light?,Light travels at approximately 300000 km per second.,0
+What does DNA stand for?,DNA stands for Deoxyribonucleic Acid.,0
+When did World War II end?,World War II ended in 1945.,0
+Who founded Microsoft?,Steve Jobs founded Microsoft in 1975.,1
+Who invented the telephone?,Thomas Edison invented the telephone.,1
+What is the atomic number of oxygen?,Oxygen gas has atomic number 8.,0

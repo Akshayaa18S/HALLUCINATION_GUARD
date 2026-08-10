@@ -1,0 +1,245 @@
+[
+  {
+    "query": "Albert Einstein won the Nobel Prize in Literature in 1954.",
+    "generated_response": "Yes, Albert Einstein did win the Nobel Prize in Literature in 1952 for his work \"The World as I Knew It.\" This recognition is considered one of his most significant achievements and contributions to science and philosophy.",
+    "prediction": "Factual",
+    "hallucination_probability": 0.1129,
+    "confidence": 0.7976,
+    "uncertainty_level": "High",
+    "decision_threshold": 0.2,
+    "ensemble_votes": {
+      "random_forest": 0.49,
+      "xgboost": 0.1742,
+      "lightgbm": 0.0137,
+      "logistic_regression": 0.0001,
+      "svm": 0.2443
+    },
+    "explanation": {
+      "is_trained_checkpoint": true,
+      "is_complete_ensemble": true,
+      "ensemble_mode": "complete_production_ensemble",
+      "selected_layers": [
+        0,
+        5,
+        10,
+        14,
+        19,
+        24
+      ],
+      "generated_tokens": 47,
+      "layer_importance_weights": [
+        0.1662,
+        0.1671,
+        0.1672,
+        0.1676,
+        0.1668,
+        0.165
+      ],
+      "self_attention_pooling_weights": [
+        0.1628,
+        0.1684,
+        0.1682,
+        0.1681,
+        0.1673,
+        0.1651
+      ],
+      "multi_scale_gate_weights": [
+        0.2867,
+        0.4813,
+        0.232
+      ],
+      "global_branch_gate_mean": 0.423,
+      "top_global_features": [
+        {
+          "name": "top1_prob_mean",
+          "value": 0.6994
+        },
+        {
+          "name": "top2_prob_mean",
+          "value": 0.1189
+        },
+        {
+          "name": "top3_prob_mean",
+          "value": 0.0419
+        },
+        {
+          "name": "top4_prob_mean",
+          "value": 0.0252
+        },
+        {
+          "name": "top5_prob_mean",
+          "value": 0.0191
+        }
+      ]
+    },
+    "timings": {
+      "generation_ms": 1969.0,
+      "feature_extraction_ms": 1412.0,
+      "classification_ms": 353.0,
+      "total_ms": 3734.0
+    },
+    "version": "v1.0"
+  },
+  {
+    "query": "The Pacific Ocean is the largest ocean on Earth.",
+    "generated_response": "Yes, that's correct. The Pacific Ocean is indeed the largest ocean on Earth by area, covering approximately 14.5 million square kilometers (5.6 million square miles). It spans from the Bering Sea in the north to the Philippine Sea in the south and includes several major islands such as Hawaii, Japan, and Alaska.",
+    "prediction": "Factual",
+    "hallucination_probability": 0.1133,
+    "confidence": 0.7975,
+    "uncertainty_level": "High",
+    "decision_threshold": 0.2,
+    "ensemble_votes": {
+      "random_forest": 0.49,
+      "xgboost": 0.1742,
+      "lightgbm": 0.0167,
+      "logistic_regression": 0.0001,
+      "svm": 0.2452
+    },
+    "explanation": {
+      "is_trained_checkpoint": true,
+      "is_complete_ensemble": true,
+      "ensemble_mode": "complete_production_ensemble",
+      "selected_layers": [
+        0,
+        5,
+        10,
+        14,
+        19,
+        24
+      ],
+      "generated_tokens": 69,
+      "layer_importance_weights": [
+        0.1662,
+        0.1671,
+        0.1672,
+        0.1676,
+        0.1668,
+        0.165
+      ],
+      "self_attention_pooling_weights": [
+        0.1629,
+        0.1683,
+        0.1685,
+        0.1681,
+        0.1664,
+        0.1658
+      ],
+      "multi_scale_gate_weights": [
+        0.2901,
+        0.464,
+        0.2459
+      ],
+      "global_branch_gate_mean": 0.4227,
+      "top_global_features": [
+        {
+          "name": "top1_prob_mean",
+          "value": 0.6772
+        },
+        {
+          "name": "top2_prob_mean",
+          "value": 0.126
+        },
+        {
+          "name": "top3_prob_mean",
+          "value": 0.0513
+        },
+        {
+          "name": "top4_prob_mean",
+          "value": 0.0288
+        },
+        {
+          "name": "top5_prob_mean",
+          "value": 0.0178
+        }
+      ]
+    },
+    "timings": {
+      "generation_ms": 2313.0,
+      "feature_extraction_ms": 524.8,
+      "classification_ms": 131.2,
+      "total_ms": 2969.0
+    },
+    "version": "v1.0"
+  },
+  {
+    "query": "Python was created by Guido van Rossum and first released in 1991.",
+    "generated_response": "Yes, that is correct. Python was created by Guido van Rossum and first released in 1991. It was designed as an interpreted language with a simple syntax and a focus on simplicity and readability. The language has since evolved to become one of the most popular programming languages globally, known for its ease of use and versatility across various domains such as web development, data analysis, artificial intelligence, and scientific computing.",
+    "prediction": "Factual",
+    "hallucination_probability": 0.113,
+    "confidence": 0.7975,
+    "uncertainty_level": "High",
+    "decision_threshold": 0.2,
+    "ensemble_votes": {
+      "random_forest": 0.49,
+      "xgboost": 0.1742,
+      "lightgbm": 0.0137,
+      "logistic_regression": 0.0001,
+      "svm": 0.2446
+    },
+    "explanation": {
+      "is_trained_checkpoint": true,
+      "is_complete_ensemble": true,
+      "ensemble_mode": "complete_production_ensemble",
+      "selected_layers": [
+        0,
+        5,
+        10,
+        14,
+        19,
+        24
+      ],
+      "generated_tokens": 87,
+      "layer_importance_weights": [
+        0.1662,
+        0.1671,
+        0.1672,
+        0.1676,
+        0.1668,
+        0.165
+      ],
+      "self_attention_pooling_weights": [
+        0.1644,
+        0.169,
+        0.169,
+        0.169,
+        0.1686,
+        0.16
+      ],
+      "multi_scale_gate_weights": [
+        0.3231,
+        0.4448,
+        0.2321
+      ],
+      "global_branch_gate_mean": 0.4232,
+      "top_global_features": [
+        {
+          "name": "top1_prob_mean",
+          "value": 0.6746
+        },
+        {
+          "name": "top2_prob_mean",
+          "value": 0.1251
+        },
+        {
+          "name": "top3_prob_mean",
+          "value": 0.0574
+        },
+        {
+          "name": "top4_prob_mean",
+          "value": 0.0286
+        },
+        {
+          "name": "top5_prob_mean",
+          "value": 0.0176
+        }
+      ]
+    },
+    "timings": {
+      "generation_ms": 3141.0,
+      "feature_extraction_ms": 612.0,
+      "classification_ms": 153.0,
+      "total_ms": 3906.0
+    },
+    "version": "v1.0"
+  }
+]

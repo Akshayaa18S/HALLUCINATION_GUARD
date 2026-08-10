@@ -1,0 +1,20 @@
+Metric,Value
+dataset,HaluEval Benchmark Suite
+samples,6
+accuracy,1.0
+precision,1.0
+recall,1.0
+f1,1.0
+roc_auc,1.0
+false_positive_rate,0.0
+false_negative_rate,0.0
+perf_retrieval_ms,140.0
+perf_verification_ms,120.0
+perf_feature_extraction_ms,25.6
+perf_classification_ms,6.4
+perf_total_ms,1469.0
+perf_memory_mb,102.6
+perf_cpu_percent,21.2
+perf_gpu_memory_mb,0.0
+calib_expected_calibration_error,0.1133
+calib_brier_score,0.014

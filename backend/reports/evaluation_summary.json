@@ -1,0 +1,261 @@
+{
+  "benchmark": "HaluEval Benchmark Suite",
+  "metrics": {
+    "dataset": "HaluEval Benchmark Suite",
+    "samples": 6,
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "roc_auc": 1.0,
+    "false_positive_rate": 0.0,
+    "false_negative_rate": 0.0
+  },
+  "ablation": {
+    "dataset": "HaluEval Benchmark Suite",
+    "ablation_results": {
+      "Baseline (MultiHaluDet)": {
+        "config": {
+          "name": "Baseline (MultiHaluDet)",
+          "claim_verification": false,
+          "entity_retrieval": false,
+          "entity_disambiguation": false,
+          "confidence_fusion": false
+        },
+        "metrics": {
+          "dataset": "HaluEval Benchmark Suite",
+          "samples": 6,
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0,
+          "false_positive_rate": 0.0,
+          "false_negative_rate": 0.0
+        }
+      },
+      "+ Claim Verification": {
+        "config": {
+          "name": "+ Claim Verification",
+          "claim_verification": true,
+          "entity_retrieval": false,
+          "entity_disambiguation": false,
+          "confidence_fusion": false
+        },
+        "metrics": {
+          "dataset": "HaluEval Benchmark Suite",
+          "samples": 6,
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0,
+          "false_positive_rate": 0.0,
+          "false_negative_rate": 0.0
+        }
+      },
+      "+ Entity Retrieval": {
+        "config": {
+          "name": "+ Entity Retrieval",
+          "claim_verification": true,
+          "entity_retrieval": true,
+          "entity_disambiguation": false,
+          "confidence_fusion": false
+        },
+        "metrics": {
+          "dataset": "HaluEval Benchmark Suite",
+          "samples": 6,
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0,
+          "false_positive_rate": 0.0,
+          "false_negative_rate": 0.0
+        }
+      },
+      "+ Entity Disambiguation": {
+        "config": {
+          "name": "+ Entity Disambiguation",
+          "claim_verification": true,
+          "entity_retrieval": true,
+          "entity_disambiguation": true,
+          "confidence_fusion": false
+        },
+        "metrics": {
+          "dataset": "HaluEval Benchmark Suite",
+          "samples": 6,
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0,
+          "false_positive_rate": 0.0,
+          "false_negative_rate": 0.0
+        }
+      },
+      "+ Confidence Fusion": {
+        "config": {
+          "name": "+ Confidence Fusion",
+          "claim_verification": true,
+          "entity_retrieval": true,
+          "entity_disambiguation": false,
+          "confidence_fusion": true
+        },
+        "metrics": {
+          "dataset": "HaluEval Benchmark Suite",
+          "samples": 6,
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0,
+          "false_positive_rate": 0.0,
+          "false_negative_rate": 0.0
+        }
+      },
+      "+ Full Hybrid Framework": {
+        "config": {
+          "name": "+ Full Hybrid Framework",
+          "claim_verification": true,
+          "entity_retrieval": true,
+          "entity_disambiguation": true,
+          "confidence_fusion": true
+        },
+        "metrics": {
+          "dataset": "HaluEval Benchmark Suite",
+          "samples": 6,
+          "accuracy": 1.0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "roc_auc": 1.0,
+          "false_positive_rate": 0.0,
+          "false_negative_rate": 0.0
+        }
+      }
+    },
+    "comparison_table_markdown": "| Configuration | Accuracy | Precision | Recall | F1 Score | ROC-AUC |\n| :--- | :---: | :---: | :---: | :---: | :---: |\n| **Baseline (MultiHaluDet)** | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |\n| **+ Claim Verification** | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |\n| **+ Entity Retrieval** | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |\n| **+ Entity Disambiguation** | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |\n| **+ Confidence Fusion** | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |\n| **+ Full Hybrid Framework** | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |"
+  },
+  "performance": {
+    "retrieval_ms": 140.0,
+    "verification_ms": 120.0,
+    "feature_extraction_ms": 25.6,
+    "classification_ms": 6.4,
+    "total_ms": 1469.0,
+    "memory_mb": 102.6,
+    "cpu_percent": 21.2,
+    "gpu_memory_mb": 0.0
+  },
+  "calibration": {
+    "expected_calibration_error": 0.1133,
+    "brier_score": 0.014,
+    "reliability_bins": [
+      {
+        "bin_lower": 0.0,
+        "bin_upper": 0.1,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.1,
+        "bin_upper": 0.2,
+        "samples": 3,
+        "accuracy": 0.0,
+        "confidence": 0.14,
+        "calibration_error": 0.14
+      },
+      {
+        "bin_lower": 0.2,
+        "bin_upper": 0.3,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.3,
+        "bin_upper": 0.4,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.4,
+        "bin_upper": 0.5,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.5,
+        "bin_upper": 0.6,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.6,
+        "bin_upper": 0.7,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.7,
+        "bin_upper": 0.8,
+        "samples": 0,
+        "accuracy": 0.0,
+        "confidence": 0.0,
+        "calibration_error": 0.0
+      },
+      {
+        "bin_lower": 0.8,
+        "bin_upper": 0.9,
+        "samples": 1,
+        "accuracy": 1.0,
+        "confidence": 0.88,
+        "calibration_error": 0.12
+      },
+      {
+        "bin_lower": 0.9,
+        "bin_upper": 1.0,
+        "samples": 2,
+        "accuracy": 1.0,
+        "confidence": 0.93,
+        "calibration_error": 0.07
+      }
+    ]
+  },
+  "error_analysis": {
+    "error_summary": {
+      "wrong_retrieval": 0,
+      "entity_ambiguity": 0,
+      "claim_extraction": 0,
+      "verification": 0,
+      "evidence_conflict": 0,
+      "ensemble_disagreement": 0,
+      "confidence_calibration": 0,
+      "unknown": 0
+    },
+    "total_errors": 0,
+    "detailed_errors": []
+  },
+  "statistical_significance": {
+    "baseline_accuracy": 0.3333,
+    "comparison_accuracy": 1.0,
+    "accuracy_improvement": 0.6667,
+    "mcnemar_p_value": 0.13361,
+    "significant": false,
+    "confidence_interval_95": [
+      1.0,
+      1.0
+    ]
+  }
+}

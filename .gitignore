@@ -1,0 +1,37 @@
+# Virtual Environments
+venv/
+.venv/
+.venv*/
+env/
+ENV/
+
+# Python Bytecode & Caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Zip Archives & Large Files
+*.zip
+*.7z
+*.tar
+*.gz
+
+# IDE / Editor Settings
+.idea/
+.vscode/
+*.swp
+
+# Database, Logs & Runtime Artifacts
+*.db
+*.sqlite3
+database/*.db
+logs/
+*.log
+cache/
+scratch/
+.env
+
+# Model Checkpoints (except .gitkeep)
+backend/multihaludet/checkpoints/*.pt
+!backend/multihaludet/checkpoints/.gitkeep

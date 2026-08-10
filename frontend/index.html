@@ -1,18 +1,342 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hallucination Guard | AI Truth Verifier</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hallucination Guard · AI Truth Verifier</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<!-- ============ AUTH OVERLAY ============ -->
+<div id="authOverlay" class="auth-overlay">
+  <div class="auth-card">
+    <div class="brand auth-brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+          <path d="M12 2 3 6v6c0 5.2 3.6 9.7 9 11 5.4-1.3 9-5.8 9-11V6l-9-4Z" fill="url(#g2)"/>
+          <path d="m9 12 2 2 4-4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs><linearGradient id="g2" x1="3" y1="2" x2="21" y2="23"><stop stop-color="#7C6CFF"/><stop offset="1" stop-color="#3AA0FF"/></linearGradient></defs>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">Hallucination Guard</div>
+        <div class="brand-sub">AI Truth Verifier</div>
+      </div>
+    </div>
+
+    <div class="tabs auth-tabs" id="authTabs">
+      <button class="tab is-active" data-auth="login">Log In</button>
+      <button class="tab" data-auth="signup">Sign Up</button>
+    </div>
+
+    <form id="loginForm" class="auth-form">
+      <label class="field-label">Email</label>
+      <input type="email" id="loginEmail" placeholder="you@example.com" required autocomplete="username" />
+      <label class="field-label">Password</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password" />
+      <p class="auth-error" id="loginError"></p>
+      <button type="submit" class="btn btn-primary auth-submit">Log In →</button>
+    </form>
+
+    <form id="signupForm" class="auth-form" style="display:none">
+      <label class="field-label">Email</label>
+      <input type="email" id="signupEmail" placeholder="you@example.com" required autocomplete="username" />
+      <label class="field-label">Password</label>
+      <input type="password" id="signupPassword" placeholder="At least 8 characters" required minlength="8" autocomplete="new-password" />
+      <p class="auth-error" id="signupError"></p>
+      <button type="submit" class="btn btn-primary auth-submit">Create Account →</button>
+    </form>
+
+    <p class="auth-footnote">Accounts and analysis history live on your own backend instance at <span id="authApiBase"></span>.</p>
+  </div>
+</div>
+
+<div class="app" id="appRoot" style="display:none">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+          <path d="M12 2 3 6v6c0 5.2 3.6 9.7 9 11 5.4-1.3 9-5.8 9-11V6l-9-4Z" fill="url(#g1)"/>
+          <path d="m9 12 2 2 4-4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs><linearGradient id="g1" x1="3" y1="2" x2="21" y2="23"><stop stop-color="#7C6CFF"/><stop offset="1" stop-color="#3AA0FF"/></linearGradient></defs>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">Hallucination Guard</div>
+        <div class="brand-sub">AI Truth Verifier</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item is-active" data-page="new-analysis">
+        <span class="nav-icon">＋</span> New Analysis
+      </button>
+      <button class="nav-item" data-page="dashboard">
+        <span class="nav-icon">◔</span> Dashboard
+      </button>
+      <button class="nav-item" data-page="new-analysis" data-tab="text">
+        <span class="nav-icon">▤</span> Text Analysis
+      </button>
+      <button class="nav-item" data-page="new-analysis" data-tab="image">
+        <span class="nav-icon">▧</span> Image Analysis
+      </button>
+      <button class="nav-item" data-page="history">
+        <span class="nav-icon">↺</span> History
+      </button>
+      <button class="nav-item" data-page="reports">
+        <span class="nav-icon">▥</span> Reports
+      </button>
+      <button class="nav-item" data-page="datasets">
+        <span class="nav-icon">▦</span> Datasets
+      </button>
+      <button class="nav-item" data-page="settings">
+        <span class="nav-icon">⚙</span> Settings
+      </button>
+      <button class="nav-item" data-page="api-docs">
+        <span class="nav-icon">?</span> API Docs
+      </button>
+      <button class="nav-item" data-page="help">
+        <span class="nav-icon">?</span> Help &amp; Support
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="user-card" id="userCard" title="Click to log out">
+        <div class="avatar" id="userAvatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">—</div>
+          <div class="user-plan">Log out</div>
+        </div>
+        <span class="chev">▾</span>
+      </div>
+      <div class="darkmode-row">
+        <span>◐ Dark Mode</span>
+        <button id="themeToggle" class="switch is-on" aria-label="Toggle dark mode"><span class="knob"></span></button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">New Analysis</h1>
+        <p id="pageSubtitle">Real-time hallucination detection in progress</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="conn-status" id="connStatus" title="Backend connection">
+          <span class="dot"></span><span class="conn-label">Checking backend…</span>
+        </div>
+        <button class="btn btn-ghost" id="exportBtn">⭳ Export Report</button>
+        <button class="icon-btn" id="sunBtn">☀</button>
+        <button class="icon-btn icon-btn-accent" id="moonBtn">🌙</button>
+      </div>
+    </header>
+
+    <!-- ---------- PAGE: New Analysis ---------- -->
+    <section id="page-new-analysis" class="page is-active">
+      <div class="grid-top">
+
+        <!-- Prompt card -->
+        <div class="card prompt-card">
+          <div class="tabs" id="modeTabs">
+            <button class="tab is-active" data-mode="text">Text</button>
+            <button class="tab" data-mode="image">Image</button>
+            <button class="tab" data-mode="textimage">Text + Image</button>
+          </div>
+
+          <div class="prompt-body">
+            <div class="prompt-input-wrap">
+              <label class="field-label">Enter your prompt</label>
+              <textarea id="promptInput" maxlength="2000" placeholder="Ask anything — e.g. Who invented the telephone?"></textarea>
+              <div class="char-count"><span id="charCount">0</span>/2000</div>
+              <button class="btn btn-primary run-btn" id="runBtn">Run Analysis →</button>
+            </div>
+            <div class="bot-illustration">
+              <svg viewBox="0 0 160 170" width="150" height="150">
+                <ellipse cx="80" cy="150" rx="55" ry="8" fill="#5B4FE9" opacity=".15"/>
+                <circle cx="80" cy="55" r="8" fill="#8B7CFF"/>
+                <rect x="76" y="30" width="8" height="22" rx="4" fill="#8B7CFF"/>
+                <rect x="30" y="55" width="100" height="80" rx="26" fill="url(#botg)"/>
+                <rect x="46" y="75" width="68" height="42" rx="16" fill="#0B1220"/>
+                <circle cx="65" cy="96" r="7" fill="#7CE7FF"/>
+                <circle cx="95" cy="96" r="7" fill="#7CE7FF"/>
+                <rect x="18" y="75" width="12" height="34" rx="6" fill="#6C5CE0"/>
+                <rect x="130" y="75" width="12" height="34" rx="6" fill="#6C5CE0"/>
+                <defs><linearGradient id="botg" x1="30" y1="55" x2="130" y2="135"><stop stop-color="#8B7CFF"/><stop offset="1" stop-color="#4C3FD8"/></linearGradient></defs>
+              </svg>
+              <div class="chat-bubble">💬</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Model info card -->
+        <div class="card model-info-card">
+          <h3>Model Information</h3>
+          <dl class="kv">
+            <dt>LLM Model</dt><dd id="mLlm">—</dd>
+            <dt>Detection Model</dt><dd>MultiHaluDet (Ensemble)</dd>
+            <dt>RAG Source</dt><dd>Wikipedia + FEVER</dd>
+            <dt>Language</dt><dd>English</dd>
+            <dt>Request ID</dt><dd id="mReqId">—</dd>
+          </dl>
+        </div>
+
+        <!-- Overall result card -->
+        <div class="card result-card">
+          <h3><span class="pulse-icon">〰</span> Overall Result</h3>
+          <div id="resultBadge" class="result-badge is-idle">Awaiting analysis</div>
+
+          <div class="gauge-wrap">
+            <div class="gauge-label">Confidence Score</div>
+            <svg viewBox="0 0 200 110" class="gauge">
+              <path d="M10,100 A90,90 0 0 1 190,100" fill="none" stroke="#1c2333" stroke-width="14" stroke-linecap="round"/>
+              <path id="gaugeArc" d="M10,100 A90,90 0 0 1 190,100" fill="none" stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283"/>
+              <defs>
+                <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#38d67a"/>
+                  <stop offset="50%" stop-color="#f5c542"/>
+                  <stop offset="100%" stop-color="#ef4444"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="gauge-center">
+              <div class="gauge-value" id="gaugeValue">--%</div>
+              <div class="gauge-sub" id="gaugeSub">&nbsp;</div>
+            </div>
+            <div class="gauge-scale"><span>0%</span><span>50%</span><span>100%</span></div>
+          </div>
+
+          <div class="card retrieved-evidence">
+            <div class="evidence-head">
+              <h3>Retrieved Evidence</h3>
+              <select id="evidenceFilter">
+                <option value="all">All Sources</option>
+                <option value="wikipedia">Wikipedia</option>
+                <option value="fever">FEVER</option>
+              </select>
+            </div>
+            <div id="evidenceList" class="evidence-list">
+              <div class="empty-hint">Evidence retrieved during verification will appear here.</div>
+            </div>
+          </div>
+
+          <div class="card request-details">
+            <h3>Request Details</h3>
+            <dl class="kv">
+              <dt>Input Type</dt><dd id="rInputType">Text</dd>
+              <dt>Tokens (Input)</dt><dd id="rTokIn">—</dd>
+              <dt>Tokens (Output)</dt><dd id="rTokOut">—</dd>
+              <dt>Analysis Time</dt><dd id="rAnalysisTime">—</dd>
+              <dt>Request Time</dt><dd id="rReqTime">—</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-bottom">
+        <!-- Execution pipeline -->
+        <div class="card pipeline-card">
+          <div class="pipeline-head">
+            <h3>Execution Pipeline</h3>
+            <span class="live-pill" id="livePill"><span class="dot"></span> Live</span>
+          </div>
+          <ol id="pipelineList" class="pipeline-list">
+            <li class="pipeline-empty">Run an analysis to see each stage execute in real time.</li>
+          </ol>
+          <div class="pipeline-total">Total Execution Time: <b id="totalExecTime">00:00:00</b></div>
+        </div>
+
+        <!-- Detail tabs -->
+        <div class="card detail-card">
+          <div class="tabs detail-tabs" id="detailTabs">
+            <button class="tab is-active" data-detail="response">Generated Response</button>
+            <button class="tab" data-detail="details">Detection Details</button>
+            <button class="tab" data-detail="scores">Model Scores</button>
+            <button class="tab" data-detail="explain">Explainability</button>
+          </div>
+
+          <div class="detail-panel is-active" id="panel-response">
+            <div class="subcard">
+              <div class="subcard-row">
+                <span class="muted-label">Generated Response</span>
+                <button class="copy-btn" data-copy="genResponse">⧉</button>
+              </div>
+              <p id="genResponse" class="response-text">Submit a prompt to generate and fact-check a response.</p>
+            </div>
+            <div class="subcard">
+              <div class="subcard-row">
+                <span class="muted-label">Correct Answer (Verified)</span>
+                <button class="copy-btn" data-copy="verifiedAnswer">⧉</button>
+              </div>
+              <p id="verifiedAnswer" class="response-text verified-text">—</p>
+            </div>
+            <div class="subcard">
+              <div class="subcard-row"><span class="muted-label">Reason</span></div>
+              <p id="reasonText" class="response-text">—</p>
+            </div>
+          </div>
+
+          <div class="detail-panel" id="panel-details">
+            <div id="claimsList" class="claims-list">
+              <div class="empty-hint">Per-claim verification detail will appear here after analysis.</div>
+            </div>
+          </div>
+
+          <div class="detail-panel" id="panel-scores">
+            <div class="scores-row">
+              <div class="scores-bars" id="scoreBars"></div>
+              <div class="donut-wrap">
+                <div class="donut-title">Final Ensemble</div>
+                <svg viewBox="0 0 120 120" class="donut">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#1c2333" stroke-width="12"/>
+                  <circle id="donutArc" cx="60" cy="60" r="50" fill="none" stroke="url(#donutGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314" transform="rotate(-90 60 60)"/>
+                  <defs><linearGradient id="donutGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7C6CFF"/><stop offset="1" stop-color="#3AA0FF"/></linearGradient></defs>
+                </svg>
+                <div class="donut-center" id="donutValue">--%</div>
+                <div class="donut-sub" id="donutSub">&nbsp;</div>
+              </div>
+            </div>
+            <p class="fine-print">Per-model confidence is a calibrated breakdown derived from the verification pipeline's evidence-quality, cross-source agreement and support-count signals — not separately trained classifiers.</p>
+          </div>
+
+          <div class="detail-panel" id="panel-explain">
+            <div id="explainList" class="explain-list">
+              <div class="empty-hint">SHAP-style explainability insights will appear here after analysis.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">ℹ️ Each step is processed in real-time. You can track the progress of the analysis pipeline on the left.</div>
+    </section>
+
+    <!-- ---------- PAGE: History ---------- -->
+    <section id="page-history" class="page">
+      <div class="card">
+        <h3>Analysis History</h3>
+        <div class="table-wrapper">
+          <table class="history-table">
+            <thead><tr><th>Query</th><th>Hallucination Score</th><th>Confidence</th><th>Date</th></tr></thead>
+            <tbody id="historyBody"><tr><td colspan="4" class="empty-hint">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- PAGE: generic placeholder ---------- -->
+    <section id="page-placeholder" class="page">
+      <div class="card placeholder-card">
+        <h3 id="placeholderTitle">Coming soon</h3>
+        <p>This section isn't wired to the backend yet — the live pipeline lives under <b>New Analysis</b>.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
 </html>

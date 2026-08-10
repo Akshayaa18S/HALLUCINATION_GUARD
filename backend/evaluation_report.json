@@ -1,0 +1,158 @@
+{
+  "framework_version": "v4.0 (Research Grade)",
+  "overall_metrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "auroc": 1.0,
+    "pr_auc": 1.0,
+    "mcc": 1.0,
+    "cohen_kappa": 1.0,
+    "confusion_matrix": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "tn": 7
+    }
+  },
+  "calibration_metrics": {
+    "ece": 0.073,
+    "brier_score": 0.0063
+  },
+  "retrieval_metrics": {
+    "recall_at_k": 1.0,
+    "mrr": 1.0,
+    "ndcg_at_k": 0.9599
+  },
+  "ablation_results": {
+    "full_framework": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "auroc": 1.0,
+      "pr_auc": 1.0,
+      "mcc": 1.0,
+      "cohen_kappa": 1.0,
+      "confusion_matrix": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 7
+      }
+    },
+    "no_entity_linking": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "auroc": 1.0,
+      "pr_auc": 1.0,
+      "mcc": 1.0,
+      "cohen_kappa": 1.0,
+      "confusion_matrix": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 7
+      }
+    },
+    "no_evidence_graph": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "auroc": 1.0,
+      "pr_auc": 1.0,
+      "mcc": 1.0,
+      "cohen_kappa": 1.0,
+      "confusion_matrix": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 7
+      }
+    },
+    "no_meta_fusion": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "auroc": 1.0,
+      "pr_auc": 1.0,
+      "mcc": 1.0,
+      "cohen_kappa": 1.0,
+      "confusion_matrix": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 7
+      }
+    },
+    "no_checkers": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "auroc": 1.0,
+      "pr_auc": 1.0,
+      "mcc": 1.0,
+      "cohen_kappa": 1.0,
+      "confusion_matrix": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 7
+      }
+    },
+    "no_claim_weighting": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "auroc": 1.0,
+      "pr_auc": 1.0,
+      "mcc": 1.0,
+      "cohen_kappa": 1.0,
+      "confusion_matrix": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 7
+      }
+    },
+    "baseline_nli_only": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "auroc": 1.0,
+      "pr_auc": 1.0,
+      "mcc": 1.0,
+      "cohen_kappa": 1.0,
+      "confusion_matrix": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 7
+      }
+    },
+    "baseline_retrieval_only": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "auroc": 1.0,
+      "pr_auc": 1.0,
+      "mcc": 1.0,
+      "cohen_kappa": 1.0,
+      "confusion_matrix": {
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "tn": 7
+      }
+    }
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "query": "BTS is an Indian music band.",
+  "generated_response": "No, BTS is not an Indian music band. BTS stands for Bangtan Sonyeondan, which is a South Korean boy group formed by SM Entertainment in 2013.",
+  "corrected_response": "BTS is a South Korean boy band formed by Big Hit Entertainment (now HYBE) that debuted in 2013. The group is not from India.",
+  "prediction": "Hallucinated",
+  "hallucination_prediction": "Hallucinated",
+  "overall_verdict": "Hallucination Detected",
+  "response_verification": "Insufficient Evidence",
+  "hallucination_probability": 0.4487,
+  "confidence": 0.2,
+  "confidence_percent": "20.00%",
+  "confidence_breakdown": {
+    "retrieval_confidence": 0.0,
+    "verification_confidence": 0.2,
+    "overall_confidence": 0.2
+  },
+  "uncertainty_level": "High",
+  "severity": "Moderate",
+  "decision_threshold": 0.2,
+  "reasoning": [
+    "Extracted claims confirmed BTS is from South Korea and formed by Big Hit Entertainment, contradicting the mention of JYP/SM Entertainment."
+  ],
+  "technical_explanation": [
+    "Dual-signal mathematical fusion probability P_final (44.87%) = 0.7 * P_internal (48.03%) + 0.30 * P_evidence (37.50%)",
+    "Evidence disagreement P_evidence (37.50%) derived via claim conflict ratio P_evidence = 1.0 - S_evidence, where S_evidence = (N_supported + 0.5 * N_partial) / N_claims",
+    "Multi-factor confidence (20.00%) calibrated via ensemble agreement (0.40), threshold margin (0.31), and evidence score (0.62)",
+    "Claim-level decomposition split complex sentences into atomic factual claims, each independently verified against retrieved evidence."
+  ],
+  "response_analysis": [
+    {
+      "statement": "No, BTS is not an Indian music band.",
+      "claim": "No, BTS is not an Indian music band.",
+      "status": "INSUFFICIENT",
+      "confidence": 0.2,
+      "supported_by": {
+        "source": "BTS",
+        "sentences": [],
+        "evidence_strength": 0.0,
+        "provenance": null
+      }
+    },
+    {
+      "statement": "BTS stands for Bangtan Sonyeondan, which is a South Korean boy group.",
+      "claim": "BTS stands for Bangtan Sonyeondan, which is a South Korean boy group.",
+      "status": "INSUFFICIENT",
+      "confidence": 0.2,
+      "supported_by": {
+        "source": "BTS",
+        "sentences": [],
+        "evidence_strength": 0.0,
+        "provenance": null
+      }
+    },
+    {
+      "statement": "BTS was formed by SM Entertainment.",
+      "claim": "BTS was formed by SM Entertainment.",
+      "status": "INSUFFICIENT",
+      "confidence": 0.2,
+      "supported_by": {
+        "source": "BTS",
+        "sentences": [],
+        "evidence_strength": 0.0,
+        "provenance": null
+      }
+    },
+    {
+      "statement": "BTS was formed in 2013.",
+      "claim": "BTS was formed in 2013.",
+      "status": "INSUFFICIENT",
+      "confidence": 0.2,
+      "supported_by": {
+        "source": "BTS",
+        "sentences": [],
+        "evidence_strength": 0.0,
+        "provenance": null
+      }
+    }
+  ],
+  "retrieved_evidence": [
+    {
+      "source": "wikipedia",
+      "title": "BTS",
+      "url": "https://en.wikipedia.org/wiki/BTS",
+      "relevance": 0.0,
+      "entity_type": "General",
+      "entity_validation": "Failed",
+      "entity_similarity": 0.0,
+      "retrieval_attempt": 1,
+      "retrieval_success": false,
+      "evidence_excerpt": "No direct Wikipedia match found for entity 'BTS'.",
+      "supporting_sentences": [],
+      "evidence_strength": 0.0,
+      "relation_info": null,
+      "provenance": null,
+      "text": "No direct Wikipedia extract found for query 'BTS is an Indian music band.'."
+    }
+  ],
+  "ensemble_votes": {
+    "random_forest": 0.39,
+    "xgboost": 0.246,
+    "logistic_regression": 0.9945,
+    "svm": 0.2897
+  },
+  "explanation": {
+    "ensemble_summary": {
+      "agreement": "Low",
+      "dominant_model": "logistic_regression",
+      "fusion_method": "Dual-signal weighted soft voting"
+    },
+    "is_trained_checkpoint": true,
+    "is_complete_ensemble": false,
+    "ensemble_mode": "reduced_dev_mode",
+    "selected_layers": [
+      0,
+      7,
+      14,
+      22,
+      29,
+      36
+    ],
+    "generated_tokens": 39,
+    "layer_importance_weights": [
+      0.1657,
+      0.1675,
+      0.167,
+      0.169,
+      0.166,
+      0.1648
+    ],
+    "self_attention_pooling_weights": [
+      0.1853,
+      0.1108,
+      0.1189,
+      0.1896,
+      0.1967,
+      0.1986
+    ],
+    "multi_scale_gate_weights": [
+      0.2161,
+      0.3227,
+      0.4612
+    ],
+    "global_branch_gate_mean": 0.4969,
+    "top_global_features": [
+      {
+        "name": "top1_prob_mean",
+        "value": 0.9079
+      },
+      {
+        "name": "top2_prob_mean",
+        "value": 0.0536
+      },
+      {
+        "name": "top3_prob_mean",
+        "value": 0.0159
+      },
+      {
+        "name": "top4_prob_mean",
+        "value": 0.006
+      },
+      {
+        "name": "top5_prob_mean",
+        "value": 0.0043
+      }
+    ]
+  },
+  "timings": {
+    "retrieval_ms": 3688.0,
+    "retrieval_source": "wikipedia_live",
+    "generation_ms": 2657.0,
+    "feature_extraction_ms": 49.6,
+    "classification_ms": 12.4,
+    "total_ms": 6407.0
+  },
+  "model_info": {
+    "version": "1.0",
+    "detector": "MultiHaluDet",
+    "checkpoint": "multihaludet.pt",
+    "fusion_weight": 0.7,
+    "decision_threshold": 0.2
+  },
+  "version": "v1.0",
+  "pipeline_trace": {
+    "entity": "BTS",
+    "expected_type": "GENERIC",
+    "retrieval_candidates": [
+      {
+        "title": "BTS",
+        "accepted": false,
+        "reason": "Entity type mismatch or low similarity",
+        "similarity": 0.0,
+        "detected_type": "General"
+      }
+    ],
+    "claims": 4,
+    "supported": 0,
+    "contradicted": 0,
+    "insufficient_evidence": 0,
+    "retrieval_retry": false,
+    "sentence_ranking": []
+  }
+}

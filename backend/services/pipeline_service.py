@@ -25,6 +25,12 @@ from services.knowledge_base import knowledge_base
 from services.verification_service import verification_service
 from services.hallucination_service import hallucination_service
 from services.explainability_service import explainability_service
+# MultiHaluDet base-paper branch: local in-process generation (needed
+# for hidden-state/logit access - Ollama's HTTP API can't provide that)
+# plus the hidden-state trajectory probing pipeline itself. See
+# multihaludet/__init__.py for the full stage breakdown.
+from multihaludet.generation_backend import GenerationBundle
+from multihaludet.service import multihaludet_service
 from schemas.event_schemas import (
     StageEvent,
     FinalResultEvent,
@@ -67,6 +73,7 @@ class PipelineService:
         self.verification_service = verification_service
         self.hallucination_service = hallucination_service
         self.explainability_service = explainability_service
+        self.multihaludet_service = multihaludet_service
 
     async def execute(self, job_id: str, progress_callback: StageCallback = None) -> Dict[str, Any]:
         """Run the pipeline for a job and persist all stage outputs."""
@@ -357,54 +364,164 @@ class PipelineService:
         }
 
     async def _stage_2(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        generated_response = self._generate_response(state)
-        state["generated_response"] = generated_response
-        return {"generated_response": generated_response}
+        query = self._normalize_query(state)
+        has_image = bool(state.get("input_image_path"))
+        prompt = query.strip() or "the provided input"
+        if has_image:
+            prompt = f"{prompt}\n\n(Note: an image was attached to this request, but only the text is visible here.)"
+
+        # Blocking torch call - keep it off the event loop. This is the
+        # SAME forward pass stage 3/4 read hidden states from below, so
+        # the internal signal reflects the response actually returned,
+        # not a second, separately-sampled generation.
+        bundle: GenerationBundle = await asyncio.to_thread(self.multihaludet_service.generate, prompt)
+
+        state["_generation_bundle"] = bundle
+        state["generated_response"] = bundle.text
+        return {
+            "generated_response": bundle.text,
+            "generation_backend": "multihaludet_local_hf",
+            "prompt_token_count": bundle.prompt_token_count,
+            "generated_token_count": int(bundle.step_logits.shape[0]),
+        }
+
+    def _get_multihaludet_result(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        """Run (and cache) the full MultiHaluDet forward pass for this job's
+        generation bundle. Stage 3 and stage 4 report different slices of
+        the same result rather than recomputing it twice."""
+        cached = state.get("_multihaludet_result")
+        if cached is not None:
+            return cached
+        bundle: GenerationBundle | None = state.get("_generation_bundle")
+        if bundle is None:
+            # Defensive: should not happen since stage 2 always sets this,
+            # but never crash the pipeline over a missing internal cache.
+            result: Dict[str, Any] = {
+                "internal_hallucination_probability": 0.5,
+                "internal_confidence": 0.0,
+                "is_trained": False,
+                "note": "no_generation_bundle",
+                "selected_layers": [],
+                "num_total_layers": 0,
+                "generated_tokens": 0,
+                "ensemble_member_names": [],
+                "ensemble_member_probabilities": {},
+                "layer_importance_weights": [],
+                "self_attention_pooling_weights": [],
+                "multi_scale_gate_weights": [],
+                "global_feature_names": [],
+                "global_feature_values": [],
+            }
+        else:
+            result = self.multihaludet_service.score(bundle)
+        state["_multihaludet_result"] = result
+        return result
 
     async def _stage_3(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        query = self._normalize_query(state)
-        tokens = self._tokenize(query)
+        # Dynamic/multi-depth layer sampling + sequential representation:
+        # real hidden-state statistics from the local model's forward
+        # pass (multihaludet/layer_sampling.py), not placeholder numbers.
+        result = await asyncio.to_thread(self._get_multihaludet_result, state)
         hidden_states = {
-            "token_embeddings": [round(float(index + 1) / max(1, len(tokens)), 4) for index in range(min(4, len(tokens)))],
-            "attention_maps": [round(0.15 + (index / max(1, len(tokens))) * 0.55, 4) for index in range(min(4, len(tokens)))],
-            "token_count": len(tokens),
+            "selected_layers": result["selected_layers"],
+            "num_total_layers": result["num_total_layers"],
+            "generated_token_count": result["generated_tokens"],
+            "layer_norm_trajectory": {
+                name: value
+                for name, value in zip(result.get("global_feature_names", []), result.get("global_feature_values", []))
+                if name.startswith("layer_norm") or name.startswith("anchor_")
+            },
         }
         state["hidden_states"] = hidden_states
         return hidden_states
 
     async def _stage_4(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        query = self._normalize_query(state)
-        tokens = self._tokenize(query)
-        response = state.get("generated_response", "")
+        # Multi-scale attention -> layer-weighted Transformer encoder ->
+        # self-attention pooling -> global branch -> gated fusion, i.e.
+        # the rest of the base paper's architecture, applied to the same
+        # cached forward pass from stage 3.
+        result = await asyncio.to_thread(self._get_multihaludet_result, state)
         extracted_features = {
-            "dynamic_layer_sampling": [round(len(tokens) / 10, 3), round(len(response.split()) / 10, 3), round(len(query) / 20, 3)],
-            "multi_scale_attention": [round(0.1 + (index / max(1, len(tokens))) * 0.4, 3) for index in range(min(3, len(tokens)))],
-            "transformer_encoder": [round(0.2 + (index / max(1, len(tokens))) * 0.6, 3) for index in range(3)],
-            "self_attention_pooling": [round(0.25 + (index / 3) * 0.3, 3) for index in range(3)],
+            "multi_scale_attention_gate_weights": result["multi_scale_gate_weights"],
+            "layer_weighted_transformer_importance": result["layer_importance_weights"],
+            "self_attention_pooling_weights": result["self_attention_pooling_weights"],
+            "global_branch_gate_mean": result.get("global_branch_gate_mean"),
+            "global_feature_summary": dict(
+                zip(result.get("global_feature_names", []), result.get("global_feature_values", []))
+            ),
+            "internal_hallucination_probability": result["internal_hallucination_probability"],
+            "internal_confidence": result["internal_confidence"],
+            "model_is_trained": result["is_trained"],
+            "model_checkpoint_path": result.get("checkpoint_path"),
         }
         state["extracted_features"] = extracted_features
         return extracted_features
 
     async def _stage_5(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        # Signal 1 (external): does retrieved evidence support/contradict
+        # the generated claims? (RAG/evidence-verification branch)
         fact_check = self._get_fact_check(state)
-        hallucination_result = self.hallucination_service.score(
+        external_result = self.hallucination_service.score(
             self._normalize_query(state),
             state.get("generated_response", ""),
             fact_check,
             fact_check.get("evidence") or [],
         )
-        hallucination_result.update({
-            "model_votes": {
-                "random_forest": hallucination_result["prediction"],
-                "xgboost": hallucination_result["prediction"],
-                "lightgbm": hallucination_result["prediction"],
-                "logistic_regression": hallucination_result["prediction"],
-                "svm": hallucination_result["prediction"],
-            },
-            "stacking": "rag_verdict",
-        })
+
+        # Signal 2 (internal): what does the LLM's own hidden-state
+        # trajectory suggest? (MultiHaluDet branch, stages 3-4 above)
+        internal_result = self._get_multihaludet_result(state)
+
+        hallucination_result = self._fuse_internal_and_external(internal_result, external_result)
         state["hallucination_result"] = hallucination_result
         return hallucination_result
+
+    def _fuse_internal_and_external(
+        self, internal_result: Dict[str, Any], external_result: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Dual-signal fusion: combine MultiHaluDet's internal probability
+        with the RAG/evidence branch's external probability. A simple,
+        transparent weighted average by design - `fusion_internal_weight`
+        in config/settings.py is the one knob, so the fusion behavior is
+        auditable rather than a second opaque model. Confidence is
+        similarly a weighted blend, discounted whenever the two signals
+        disagree strongly (that disagreement is itself informative and
+        shouldn't be averaged away silently)."""
+        w = max(0.0, min(1.0, settings.fusion_internal_weight))
+        internal_p = float(internal_result.get("internal_hallucination_probability", 0.5))
+        external_p = float(external_result.get("probability", 0.5))
+        fused_probability = w * internal_p + (1 - w) * external_p
+
+        internal_conf = float(internal_result.get("internal_confidence", 0.0))
+        external_conf = float(external_result.get("confidence", 0.0))
+        disagreement = abs(internal_p - external_p)
+        fused_confidence = max(0.0, (w * internal_conf + (1 - w) * external_conf) * (1 - disagreement))
+
+        if fused_probability >= 0.66:
+            decision, label = "yes", "high"
+        elif fused_probability <= 0.33:
+            decision, label = "no", "low"
+        else:
+            decision, label = external_result.get("decision", "uncertain"), "uncertain"
+
+        result = dict(external_result)
+        result.update({
+            "prediction": decision == "yes",
+            "decision": decision,
+            "label": label,
+            "hallucination_probability": round(fused_probability, 4),
+            "probability": round(fused_probability, 4),
+            "confidence": round(fused_confidence, 4),
+            "internal_score": round(internal_p, 4),
+            "internal_confidence": round(internal_conf, 4),
+            "external_score": round(external_p, 4),
+            "external_confidence": round(external_conf, 4),
+            "fusion_internal_weight": w,
+            "model_votes": internal_result.get("ensemble_member_probabilities", {}),
+            "model_is_trained": internal_result.get("is_trained", False),
+            "stacking": "dual_signal_fusion(multihaludet_internal, rag_external)",
+        })
+        return result
 
     async def _stage_6(self, state: Dict[str, Any]) -> Dict[str, Any]:
         query = self._normalize_query(state)
@@ -444,11 +561,29 @@ class PipelineService:
             evidence,
         )
 
+        internal_result = self._get_multihaludet_result(state)
+        hallucination_result = state.get("hallucination_result", {})
+        internal_note = (
+            "MultiHaluDet branch is architecture-only (no trained checkpoint "
+            "loaded) - internal_score reflects randomly-initialized weights, "
+            "not a validated hallucination judgment."
+            if not internal_result.get("is_trained")
+            else "MultiHaluDet branch is running a trained checkpoint."
+        )
         explanation = {
             "shap_values": [round(0.1 + index * 0.12, 2) for index in range(3)],
             "important_tokens": self._tokenize(query)[:5],
             "attention_heatmap": "generated/in-memory-heatmap.png",
             "explanation_text": explanation_text,
+            "internal_signal_summary": {
+                "internal_score": hallucination_result.get("internal_score"),
+                "external_score": hallucination_result.get("external_score"),
+                "fusion_internal_weight": hallucination_result.get("fusion_internal_weight"),
+                "top_layer_importance": sorted(
+                    internal_result.get("layer_importance_weights", []), reverse=True
+                )[:3],
+                "note": internal_note,
+            },
         }
         state["explanation"] = explanation
         return explanation
@@ -494,14 +629,6 @@ class PipelineService:
         self.db.commit()
         self.db.refresh(result)
         return result
-
-    def _generate_response(self, state: Dict[str, Any]) -> str:
-        query = self._normalize_query(state)
-        has_image = bool(state.get("input_image_path"))
-        prompt = query.strip() or "the provided input"
-        if has_image:
-            prompt = f"{prompt}\n\n(Note: an image was attached to this request, but only the text is visible here.)"
-        return self.ollama_service.generate(prompt)
 
     def _get_fact_check(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Run (and cache) the evidence-driven fact-check/hallucination verdict for this job."""
