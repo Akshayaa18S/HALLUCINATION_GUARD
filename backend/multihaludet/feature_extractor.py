@@ -286,21 +286,31 @@ class ExplicitFeatureExtractor:
             if self.nli_pipeline is not None:
                 try:
                     c_probs, e_probs, n_probs = [], [], []
+                    # Resolve id2label mapping dynamically from model config if available
+                    id2label_map = {}
+                    if hasattr(self.nli_pipeline, "model") and hasattr(self.nli_pipeline.model, "config"):
+                        raw_id2label = getattr(self.nli_pipeline.model.config, "id2label", None) or {}
+                        for k, v in raw_id2label.items():
+                            id2label_map[str(k).lower()] = str(v).lower()
+                            id2label_map[f"label_{k}".lower()] = str(v).lower()
+
                     for claim in resp_sentences[:5]:  # Process top 5 claims
                         res = self.nli_pipeline({"text": evidence[:1000], "text_pair": claim})
                         score_dict = {}
                         for item in res:
                             lbl = str(item["label"]).lower()
                             val = float(item["score"])
-                            if "contradiction" in lbl or lbl == "label_0":
+                            target = id2label_map.get(lbl, lbl)
+                            if "contradiction" in target or target == "label_0":
                                 score_dict["contradiction"] = val
-                            elif "entailment" in lbl or lbl == "label_1":
+                            elif "entailment" in target or target == "label_1":
                                 score_dict["entailment"] = val
-                            elif "neutral" in lbl or lbl == "label_2":
+                            elif "neutral" in target or target == "label_2":
                                 score_dict["neutral"] = val
                         c_probs.append(score_dict.get("contradiction", 0.0))
                         e_probs.append(score_dict.get("entailment", 0.0))
                         n_probs.append(score_dict.get("neutral", 0.0))
+
 
                     nli_contradiction = float(max(c_probs)) if c_probs else 0.0
                     nli_entailment = float(np.mean(e_probs)) if e_probs else 0.50
