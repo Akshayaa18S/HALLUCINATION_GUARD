@@ -257,3 +257,35 @@ def test_17_bce_with_logits_loss_neural_compatibility_path(tiny_model_kwargs):
     loss = torch.nn.functional.binary_cross_entropy_with_logits(meta_logit, torch.tensor(1.0))
     loss.backward()
     assert meta_logit.grad_fn is not None
+
+
+
+def test_18_system_specific_schemas_in_comparative_evaluation():
+    """Verifies that comparative systems A, B, C, D validate custom feature dimensions without zero padding."""
+    from multihaludet.ensemble import evaluate_comparative_systems, ClassicalEnsemble
+    from multihaludet.feature_extractor import FeatureSchemaError
+
+    np.random.seed(42)
+    # Total matrix shape [100, 271] (256 Qwen deep + 15 explicit)
+    X_total = np.random.randn(100, 271).astype(np.float32)
+    y_labels = np.array([0, 1] * 50, dtype=np.int64)
+
+    comp_res = evaluate_comparative_systems(X_total, y_labels, n_splits=3, seed=42, allow_reduced=True)
+
+    assert "System_A_Qwen_Baseline" in comp_res
+    assert "System_B_DeBERTa_NLI_Only" in comp_res
+    assert "System_C_NLI_Plus_Evidence" in comp_res
+    assert "System_D_Full_Fused_MultiHaluDet" in comp_res
+
+    for sys_name, sys_m in comp_res.items():
+        assert "error" not in sys_m, f"System {sys_name} failed with error: {sys_m.get('error')}"
+        assert 0.0 <= sys_m["auc"] <= 1.0
+        assert 0.0 <= sys_m["pr_auc"] <= 1.0
+        assert 0.0 <= sys_m["f1"] <= 1.0
+        assert 0.0 <= sys_m["accuracy"] <= 1.0
+
+    # Test schema guard rejection when feature count is wrong
+    ens_strict = ClassicalEnsemble(seed=42, allow_reduced_ensemble=True, expected_feature_dim=271, system_name="StrictTest")
+    X_wrong = np.random.randn(50, 15).astype(np.float32)
+    with pytest.raises(FeatureSchemaError, match="SYSTEM FEATURE SCHEMA MISMATCH"):
+        ens_strict.fit_oof(X_wrong, np.array([0, 1] * 25), n_splits=2)

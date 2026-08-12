@@ -662,7 +662,8 @@ def train(args: argparse.Namespace) -> None:
 
     logger.info("=== 4-SYSTEM COMPARATIVE OUT-OF-FOLD (OOF) PERFORMANCE TABLE ===")
     for sys_name, sys_m in comp_systems.items():
-        logger.info("  %-35s | OOF AUC: %.4f | OOF Acc: %.4f | F1: %.4f", sys_name, sys_m.get("auc", 0.5), sys_m.get("accuracy", 0.5), sys_m.get("f1", 0.0))
+        logger.info("  %-35s | OOF AUC: %.4f | PR-AUC: %.4f | F1: %.4f | Acc: %.4f", sys_name, sys_m.get("auc", 0.5), sys_m.get("pr_auc", 0.5), sys_m.get("f1", 0.0), sys_m.get("accuracy", 0.5))
+
 
     # Train Classical Stacking Ensemble on True OOF Features
     logger.info("=== TRAINING CLASSICAL STACKING ENSEMBLE (ON TRUE OOF FEATURES) ===")
