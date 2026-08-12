@@ -259,9 +259,6 @@ class ClassicalEnsemble:
         self.schema_hash = FEATURE_SCHEMA_HASH
 
 
-        self.scaler = StandardScaler()
-        X_arr = self.scaler.fit_transform(X_arr)
-
         self.base_models = self._init_base_models()
         self.active_member_names = [name for name in self.MEMBER_NAMES if name in self.base_models]
         num_members = len(self.active_member_names)
@@ -272,15 +269,16 @@ class ClassicalEnsemble:
         oof_probs = np.zeros((len(X_arr), num_members), dtype=np.float32)
         skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=seed)
 
-        # 1. Generate OOF predictions
+        # 1. Generate OOF predictions with fold-isolated scaling
         for fold, (train_idx, val_idx) in enumerate(skf.split(X_arr, y_arr)):
-            X_tr, y_tr = X_arr[train_idx], y_arr[train_idx]
-            X_va, y_va = X_arr[val_idx], y_arr[val_idx]
+            fold_scaler = StandardScaler()
+            X_tr = fold_scaler.fit_transform(X_arr[train_idx])
+            X_va = fold_scaler.transform(X_arr[val_idx])
 
             for m_idx, name in enumerate(self.active_member_names):
                 # Instantiate fresh fold copy of the model
                 fold_model = self._create_fresh_model(name)
-                fold_model.fit(X_tr, y_tr)
+                fold_model.fit(X_tr, y_arr[train_idx])
 
                 if hasattr(fold_model, "predict_proba"):
                     probs = fold_model.predict_proba(X_va)
@@ -328,6 +326,16 @@ class ClassicalEnsemble:
 
         meta_oof_preds = (meta_oof_probs >= self.optimal_threshold).astype(int)
 
+        prob_unique = len(np.unique(np.round(meta_oof_probs, 4)))
+        prob_stats = {
+            "min": float(meta_oof_probs.min()),
+            "max": float(meta_oof_probs.max()),
+            "mean": float(meta_oof_probs.mean()),
+            "std": float(meta_oof_probs.std()),
+            "unique_prob_count": prob_unique,
+            "positive_count": int(np.sum(meta_oof_preds)),
+        }
+
         oof_metrics = {
             "accuracy": float(accuracy_score(y_arr, meta_oof_preds)),
             "precision": float(precision_score(y_arr, meta_oof_preds, zero_division=0)),
@@ -337,6 +345,7 @@ class ClassicalEnsemble:
             "optimal_threshold": float(best_tau),
             "threshold_method": "youden_j",
             "selection_dataset": "validation_oof",
+            "probability_diagnostics": prob_stats,
         }
 
         # Evaluate base models OOF
@@ -352,12 +361,15 @@ class ClassicalEnsemble:
                 "auc": float(roc_auc_score(y_arr, m_probs)) if len(set(y_arr)) > 1 else 0.5,
             }
 
-        # 3. Retrain base models on full data
+        # 3. Retrain scaler and base models on full development data for production refit
+        self.scaler = StandardScaler()
+        X_scaled_full = self.scaler.fit_transform(X_arr)
         for name in self.active_member_names:
             full_model = self._create_fresh_model(name)
-            full_model.fit(X_arr, y_arr)
+            full_model.fit(X_scaled_full, y_arr)
             self.base_models[name] = full_model
         self.is_fitted = True
+
         return {
             "meta_oof_metrics": oof_metrics,
             "base_oof_metrics": base_oof_metrics,

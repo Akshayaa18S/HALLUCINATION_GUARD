@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-12T15:47:37.132604+00:00",
+  "timestamp": "2026-08-12T15:58:32.466953+00:00",
   "model_name": "Qwen/Qwen2.5-3B-Instruct",
   "sampled_layers": 6,
   "num_examples_total": 500,
@@ -65,93 +65,93 @@
     "lightgbm": "4.7.0"
   },
   "feature_diagnostics": {
-    "faithful_feature_mean": 0.012751992791891098,
-    "faithful_feature_std": 0.10839049518108368,
-    "hallucinated_feature_mean": 0.012701909057796001,
-    "hallucinated_feature_std": 0.10828063637018204,
+    "faithful_feature_mean": 0.012750156223773956,
+    "faithful_feature_std": 0.10839071124792099,
+    "hallucinated_feature_mean": 0.01269993744790554,
+    "hallucinated_feature_std": 0.10828086733818054,
     "faithful_mean_l2_norm": 1.7965269088745117,
     "hallucinated_mean_l2_norm": 1.7946043014526367,
-    "centroid_distance": 0.030165553092956543,
-    "avg_cosine_similarity_within_faithful": 0.7471783757209778,
-    "avg_cosine_similarity_within_hallucinated": 0.7445829510688782,
-    "avg_cosine_similarity_across_classes": 0.7457380294799805,
-    "overall_feature_variance": 0.0030222092755138874,
+    "centroid_distance": 0.030891690403223038,
+    "avg_cosine_similarity_within_faithful": 0.7465773224830627,
+    "avg_cosine_similarity_within_hallucinated": 0.7438589930534363,
+    "avg_cosine_similarity_across_classes": 0.7450679540634155,
+    "overall_feature_variance": 0.003030245890840888,
     "near_zero_variance_dimensions": 14,
     "probe_metrics": {
-      "accuracy": 0.49,
-      "precision": 0.4900990099009901,
-      "recall": 0.3944223107569721,
-      "f1": 0.4370860927152318,
-      "auc": 0.4857037712603402
+      "accuracy": 0.504,
+      "precision": 0.5055762081784386,
+      "recall": 0.5418326693227091,
+      "f1": 0.5230769230769231,
+      "auc": 0.5049360789772637
     }
   },
   "probability_diagnostics": {
-    "min": 0.20000000298023224,
-    "max": 0.6363636255264282,
-    "mean": 0.4309137761592865,
-    "std": 0.20845575630664825,
+    "min": 0.0,
+    "max": 1.0,
+    "mean": 0.4981272220611572,
+    "std": 0.49987736344337463,
     "percentage_predicted_positive": 49.8
   },
   "fold_validation_metrics": [
     {
       "accuracy": 0.53,
-      "precision": 0.5454545454545454,
-      "recall": 0.36,
-      "f1": 0.43373493975903615,
-      "auc": 0.48799999999999993,
+      "precision": 0.5882352941176471,
+      "recall": 0.2,
+      "f1": 0.29850746268656714,
+      "auc": 0.42279999999999995,
       "n": 100,
-      "logistic_regression_val_auc": 0.47200000000000003,
-      "logistic_regression_val_acc": 0.48,
-      "linear_svm_val_auc": 0.478,
-      "linear_svm_val_acc": 0.51
+      "logistic_regression_val_auc": 0.372,
+      "logistic_regression_val_acc": 0.43,
+      "linear_svm_val_auc": 0.3404,
+      "linear_svm_val_acc": 0.38
     },
     {
-      "accuracy": 0.49,
-      "precision": 0.4,
-      "recall": 0.04,
-      "f1": 0.07272727272727272,
-      "auc": 0.5252,
+      "accuracy": 0.51,
+      "precision": 0.5555555555555556,
+      "recall": 0.1,
+      "f1": 0.1694915254237288,
+      "auc": 0.46799999999999997,
       "n": 100,
-      "logistic_regression_val_auc": 0.55,
-      "logistic_regression_val_acc": 0.56,
-      "linear_svm_val_auc": 0.5188,
-      "linear_svm_val_acc": 0.55
-    },
-    {
-      "accuracy": 0.5,
-      "precision": 0.5,
-      "recall": 1.0,
-      "f1": 0.6666666666666666,
-      "auc": 0.45,
-      "n": 100,
-      "logistic_regression_val_auc": 0.36119999999999997,
-      "logistic_regression_val_acc": 0.37,
-      "linear_svm_val_auc": 0.38559999999999994,
-      "linear_svm_val_acc": 0.46
-    },
-    {
-      "accuracy": 0.46,
-      "precision": 0.4230769230769231,
-      "recall": 0.22,
-      "f1": 0.2894736842105263,
-      "auc": 0.4584,
-      "n": 100,
-      "logistic_regression_val_auc": 0.3892,
-      "logistic_regression_val_acc": 0.47,
-      "linear_svm_val_auc": 0.3784,
-      "linear_svm_val_acc": 0.4
+      "logistic_regression_val_auc": 0.4336,
+      "logistic_regression_val_acc": 0.44,
+      "linear_svm_val_auc": 0.3772,
+      "linear_svm_val_acc": 0.43
     },
     {
       "accuracy": 0.52,
-      "precision": 0.5205479452054794,
-      "recall": 0.7450980392156863,
-      "f1": 0.6129032258064516,
-      "auc": 0.4929971988795518,
+      "precision": 0.5714285714285714,
+      "recall": 0.16,
+      "f1": 0.25,
+      "auc": 0.5132,
       "n": 100,
-      "logistic_regression_val_auc": 0.5066026410564226,
-      "logistic_regression_val_acc": 0.46,
-      "linear_svm_val_auc": 0.46998799519807927,
-      "linear_svm_val_acc": 0.47
+      "logistic_regression_val_auc": 0.49479999999999996,
+      "logistic_regression_val_acc": 0.52,
+      "linear_svm_val_auc": 0.4466,
+      "linear_svm_val_acc": 0.43
+    },
+    {
+      "accuracy": 0.37,
+      "precision": 0.4155844155844156,
+      "recall": 0.64,
+      "f1": 0.5039370078740157,
+      "auc": 0.36440000000000006,
+      "n": 100,
+      "logistic_regression_val_auc": 0.3164,
+      "logistic_regression_val_acc": 0.35,
+      "linear_svm_val_auc": 0.36679999999999996,
+      "linear_svm_val_acc": 0.43
+    },
+    {
+      "accuracy": 0.51,
+      "precision": 0.51,
+      "recall": 1.0,
+      "f1": 0.6754966887417219,
+      "auc": 0.49179671868747504,
+      "n": 100,
+      "logistic_regression_val_auc": 0.4413765506202481,
+      "logistic_regression_val_acc": 0.49,
+      "linear_svm_val_auc": 0.4425770308123249,
+      "linear_svm_val_acc": 0.48
     }
   ],
   "comparative_system_metrics": {
@@ -171,11 +171,11 @@
       "error": "PUBLICATION FEATURE SCHEMA MISMATCH (ClassicalEnsemble.fit_oof): Expected 271 features (schema multihaludet_v3.2), got 15 features. Dual/legacy schemas are strictly forbidden in publication runs."
     },
     "System_D_Full_Fused_MultiHaluDet": {
-      "accuracy": 0.55,
-      "precision": 0.5528455284552846,
-      "recall": 0.5418326693227091,
-      "f1": 0.5472837022132797,
-      "auc": 0.5667210675370805,
+      "accuracy": 0.57,
+      "precision": 0.5743801652892562,
+      "recall": 0.5537848605577689,
+      "f1": 0.563894523326572,
+      "auc": 0.5946735147762364,
       "optimal_threshold": 0.51,
       "threshold_method": "youden_j",
       "selection_dataset": "validation_oof"
@@ -183,47 +183,47 @@
   },
   "oof_base_learner_metrics": {
     "random_forest": {
-      "accuracy": 0.5,
-      "precision": 0.502283105022831,
-      "recall": 0.43824701195219123,
-      "f1": 0.46808510638297873,
-      "auc": 0.5047760764172227
+      "accuracy": 0.506,
+      "precision": 0.5052910052910053,
+      "recall": 0.7609561752988048,
+      "f1": 0.6073131955484896,
+      "auc": 0.4883198131170099
     },
     "xgboost": {
-      "accuracy": 0.47,
-      "precision": 0.45977011494252873,
-      "recall": 0.3187250996015936,
-      "f1": 0.3764705882352941,
-      "auc": 0.4623753980063681
+      "accuracy": 0.476,
+      "precision": 0.48661800486618007,
+      "recall": 0.796812749003984,
+      "f1": 0.6042296072507553,
+      "auc": 0.4432390918254692
     },
     "lightgbm": {
-      "accuracy": 0.496,
-      "precision": 0.498220640569395,
-      "recall": 0.5577689243027888,
-      "f1": 0.5263157894736842,
-      "auc": 0.4814157026512424
+      "accuracy": 0.468,
+      "precision": 0.4825174825174825,
+      "recall": 0.8247011952191236,
+      "f1": 0.6088235294117647,
+      "auc": 0.45367125874013986
     },
     "logistic_regression": {
-      "accuracy": 0.502,
-      "precision": 0.5043859649122807,
-      "recall": 0.4581673306772908,
-      "f1": 0.4801670146137787,
-      "auc": 0.4858797740763852
+      "accuracy": 0.496,
+      "precision": 0.4979757085020243,
+      "recall": 0.4900398406374502,
+      "f1": 0.4939759036144578,
+      "auc": 0.5025680410886574
     },
     "svm": {
-      "accuracy": 0.498,
-      "precision": 0.5,
-      "recall": 0.8127490039840638,
-      "f1": 0.6191198786039454,
-      "auc": 0.4972079553272852
+      "accuracy": 0.502,
+      "precision": 0.5104166666666666,
+      "recall": 0.1952191235059761,
+      "f1": 0.2824207492795389,
+      "auc": 0.5137922206755308
     }
   },
   "oof_meta_learner_metrics": {
-    "accuracy": 0.55,
-    "precision": 0.5528455284552846,
-    "recall": 0.5418326693227091,
-    "f1": 0.5472837022132797,
-    "auc": 0.5667210675370805,
+    "accuracy": 0.57,
+    "precision": 0.5743801652892562,
+    "recall": 0.5537848605577689,
+    "f1": 0.563894523326572,
+    "auc": 0.5946735147762364,
     "optimal_threshold": 0.51,
     "threshold_method": "youden_j",
     "selection_dataset": "validation_oof"

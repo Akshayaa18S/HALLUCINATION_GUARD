@@ -285,11 +285,16 @@ class ExplicitFeatureExtractor:
                     nli_neutral = float(np.mean(n_probs)) if n_probs else 0.50
                     nli_available = 1.0
                 except Exception as exc:
+                    if self.strict_nli:
+                        raise RuntimeError(
+                            f"STRICT NLI FAIL-CLOSED ERROR: DeBERTa NLI inference failed under strict_nli=True ({exc}). "
+                            "Silent fallback to pseudo-NLI features is strictly forbidden in publication runs."
+                        ) from exc
                     logger.debug("NLI DeBERTa pipeline error: %s", exc)
 
-            if nli_available == 0.0 and self.sentence_model is not None and ev_sentences:
+            if nli_available == 0.0 and not self.strict_nli and self.sentence_model is not None and ev_sentences:
                 try:
-                    # Embedding alignment fallback for claim-level NLI
+                    # Embedding alignment fallback for claim-level NLI (Development Mode ONLY)
                     c_scores = []
                     for claim in resp_sentences[:5]:
                         emb_c = self.sentence_model.encode([claim], normalize_embeddings=True)[0]
@@ -307,10 +312,16 @@ class ExplicitFeatureExtractor:
                     pass
 
         if nli_available == 0.0:
-            # Fallback when no model/evidence: use query semantic alignment if present
+            if self.strict_nli:
+                raise RuntimeError(
+                    "STRICT NLI FAIL-CLOSED ERROR: NLI features are unavailable under strict_nli=True. "
+                    "Pseudo-NLI fallbacks (1.0 - sem_sim) are strictly disabled for publication runs."
+                )
+            # Fallback when no model/evidence (Development Mode ONLY): use query semantic alignment
             nli_contradiction = float(np.clip(1.0 - sem_sim, 0.0, 1.0))
             nli_entailment = float(np.clip(sem_sim, 0.0, 1.0))
             nli_neutral = float(np.clip(1.0 - abs(sem_sim - 0.5) * 2, 0.0, 1.0))
+
 
         return {
             "semantic_similarity": round(sem_sim, 4),
