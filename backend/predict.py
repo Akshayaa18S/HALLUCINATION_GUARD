@@ -113,30 +113,9 @@ def run_inference(
 
     raw_prob = float(result.get("internal_hallucination_probability", 0.5))
 
-    # Smart mock calibration fallback for CPU/mock evaluation mode
-    combined_text = (prompt + " " + (response_text or bundle.text)).lower()
-    hallu_triggers = [
-        "20°c", "20c", "indian music band", "mumbai", "australian cricketer", "sydney",
-        "london", "egypt", "naked eye", "steve jobs founded microsoft", "thomas edison",
-        "munich", "bill gates", "picasso", "napoleon", "euro", "paris, france", "colosseum",
-        "nikola tesla", "heart is the largest", "1939", "oxygen", "eiffel tower is in berlin",
-        "charles dickens", "smallest prime number is 1", "south america", "yuri gagarin", "toronto"
-    ]
-    is_known_hallu = any(t in combined_text for t in hallu_triggers)
-    is_known_factual = any(t in combined_text for t in ["paris", "guido van rossum", "nepal", "8 ballon", "nolan", "1928", "1969", "dna", "1945", "shakespeare", "au", "gutenberg", "100°c", "100c", "newton", "giza", "jupiter", "da vinci", "tokyo", "washington", "h2o", "agra", "beethoven", "343"])
-
-    if raw_prob <= 0.05 and is_known_hallu:
-        prob = 0.9420
-        conf = 0.9250
-        votes = {"random_forest": 0.92, "xgboost": 0.96, "lightgbm": 0.95, "logistic_regression": 0.91, "svm": 0.97}
-    elif raw_prob <= 0.05 and is_known_factual:
-        prob = 0.0090
-        conf = 0.9540
-        votes = {"random_forest": 0.01, "xgboost": 0.007, "lightgbm": 0.005, "logistic_regression": 0.008, "svm": 0.012}
-    else:
-        prob = raw_prob
-        conf = float(result.get("internal_confidence", 0.5))
-        votes = result.get("ensemble_member_probabilities", {})
+    prob = raw_prob
+    conf = float(result.get("internal_confidence", 0.5))
+    votes = result.get("ensemble_member_probabilities", {})
 
     p_internal = prob
     is_hallu = prob >= threshold
