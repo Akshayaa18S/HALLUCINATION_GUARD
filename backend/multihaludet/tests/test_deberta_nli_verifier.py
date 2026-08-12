@@ -38,6 +38,14 @@ def test_deberta_nli_semantic_behavior():
 
     assert f3["nli_neutral_score"] > 0.40, f"Expected high neutral score for unrelated pair, got {f3['nli_neutral_score']}"
 
+    # Regression assertions: verify all three probabilities are retrieved and bounded in [0, 1]
+    for feat_dict in [f1, f2, f3]:
+        for k in ["nli_contradiction_score", "nli_entailment_score", "nli_neutral_score"]:
+            assert 0.0 <= feat_dict[k] <= 1.0, f"Score {k} out of bounds: {feat_dict[k]}"
+        prob_sum = feat_dict["nli_contradiction_score"] + feat_dict["nli_entailment_score"] + feat_dict["nli_neutral_score"]
+        assert abs(prob_sum - 1.0) < 1e-2, f"Probabilities do not sum to 1.0 (got {prob_sum})"
+
+
 
 def test_strict_nli_fail_closed_on_inference_error(monkeypatch):
     """Test 1: Asserts strict_nli=True fails closed (raises RuntimeError) on inference failure."""

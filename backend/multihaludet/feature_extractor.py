@@ -294,8 +294,13 @@ class ExplicitFeatureExtractor:
                             id2label_map[str(k).lower()] = str(v).lower()
                             id2label_map[f"label_{k}".lower()] = str(v).lower()
 
+                    num_labels = getattr(getattr(self.nli_pipeline, "model", None), "config", None)
+                    top_k_val = getattr(num_labels, "num_labels", 3) or 3
+
                     for claim in resp_sentences[:5]:  # Process top 5 claims
-                        res = self.nli_pipeline({"text": evidence[:1000], "text_pair": claim})
+                        res = self.nli_pipeline({"text": evidence[:1000], "text_pair": claim}, top_k=top_k_val)
+                        if isinstance(res, list) and len(res) > 0 and isinstance(res[0], list):
+                            res = res[0]
                         score_dict = {}
                         for item in res:
                             lbl = str(item["label"]).lower()
@@ -307,6 +312,7 @@ class ExplicitFeatureExtractor:
                                 score_dict["entailment"] = val
                             elif "neutral" in target or target == "label_2":
                                 score_dict["neutral"] = val
+
                         c_probs.append(score_dict.get("contradiction", 0.0))
                         e_probs.append(score_dict.get("entailment", 0.0))
                         n_probs.append(score_dict.get("neutral", 0.0))
