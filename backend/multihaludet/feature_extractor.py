@@ -11,19 +11,67 @@ Computes 7 high-impact explicit feature signals:
 7. Citation / Evidence Coverage Ratio
 """
 
-from __future__ import annotations
-
+import hashlib
+import json
 import logging
+import os
 import re
+from pathlib import Path
 from typing import Any
 
 import numpy as np
 
 logger = logging.getLogger(__name__)
 
+
+class FeatureSchemaError(Exception):
+    """Raised when a feature vector or loaded checkpoint does not match the canonical locked schema."""
+    pass
+
+
+def load_canonical_schema() -> dict[str, Any]:
+    schema_path = Path(__file__).resolve().parent.parent / "config" / "feature_schema.json"
+    if not schema_path.exists():
+        return {
+            "schema_version": "multihaludet_v3.1",
+            "total_feature_dim": 265,
+            "deep_feature_dim": 256,
+            "explicit_feature_dim": 9,
+            "explicit_feature_names": [
+                "semantic_similarity",
+                "max_retrieval_confidence",
+                "avg_retrieval_confidence",
+                "entity_overlap_ratio",
+                "temporal_consistency_score",
+                "numeric_relative_error",
+                "citation_coverage_ratio",
+                "nli_contradiction_score",
+                "nli_entailment_score",
+            ],
+        }
+    with open(schema_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+CANONICAL_FEATURE_SCHEMA = load_canonical_schema()
+_SCHEMA_BYTES = json.dumps(CANONICAL_FEATURE_SCHEMA, sort_keys=True).encode("utf-8")
+FEATURE_SCHEMA_HASH = hashlib.sha256(_SCHEMA_BYTES).hexdigest()
+EXPECTED_TOTAL_FEATURE_DIM = int(CANONICAL_FEATURE_SCHEMA.get("total_feature_dim", 265))
+
+
+def verify_feature_dim(dim: int, context: str = "Inference") -> None:
+    if dim != EXPECTED_TOTAL_FEATURE_DIM:
+        raise FeatureSchemaError(
+            f"PUBLICATION FEATURE SCHEMA MISMATCH ({context}): "
+            f"Expected {EXPECTED_TOTAL_FEATURE_DIM} features (schema {CANONICAL_FEATURE_SCHEMA.get('schema_version')}), "
+            f"got {dim} features. Dual/legacy schemas are strictly forbidden in publication runs."
+        )
+
+
 # Lazy global model singletons
 _SPACY_NLP = None
 _SENTENCE_MODEL = None
+
 
 
 def get_spacy_nlp():
@@ -126,8 +174,13 @@ class ExplicitFeatureExtractor:
         coverage_ratio = float(len(matched_words) / len(c_words)) if c_words else 1.0
 
         # 7. NLI Contradiction & Entailment Signals
-        nli_contradiction = 1.0 - coverage_ratio if entity_overlap < 0.3 else 0.10
-        nli_entailment = coverage_ratio * (0.5 + 0.5 * entity_overlap)
+        if evidence:
+            nli_contradiction = 1.0 - coverage_ratio if entity_overlap < 0.3 else 0.10
+            nli_entailment = coverage_ratio * (0.5 + 0.5 * entity_overlap)
+        else:
+            # Fallback when evidence is not provided (or skip_retrieval=True): use query-response semantic alignment
+            nli_contradiction = float(np.clip(1.0 - sem_sim, 0.0, 1.0))
+            nli_entailment = float(np.clip(sem_sim, 0.0, 1.0))
 
         return {
             "semantic_similarity": round(sem_sim, 4),

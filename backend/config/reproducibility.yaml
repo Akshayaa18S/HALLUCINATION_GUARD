@@ -1,0 +1,60 @@
+# Master Reproducibility Configuration for MultiHaluDet Publication Pipeline
+version: "1.0.0"
+date: "2026-08-11"
+
+backbone:
+  training_backbone: "Qwen/Qwen2.5-3B-Instruct"
+  feature_extraction_backbone: "Qwen/Qwen2.5-3B-Instruct"
+  benchmark_generation_backbone: "Qwen/Qwen2.5-3B-Instruct"
+  inference_backbone: "Qwen/Qwen2.5-3B-Instruct"
+  precision: "float16"
+  max_new_tokens: 256
+
+seeds:
+  primary: 42
+  robustness_list: [42, 123, 2024, 3407]
+
+architecture:
+  num_sampled_layers: 6
+  attention_scales: [1, 2, 4]
+  encoder_dim: 256
+  encoder_heads: 4
+  encoder_layers: 2
+  global_top_k: 5
+  global_hidden_dim: 64
+  ensemble_members: 5
+
+training:
+  batch_size: 32
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  epochs: 10
+  mixup_alpha: 0.2
+  loss_weights:
+    bce: 1.0
+    focal: 0.5
+    asymmetric: 0.5
+    contrastive: 0.2
+
+ensemble_base_learners:
+  - random_forest
+  - gradient_boosting
+  - xgboost
+  - lightgbm
+  - logistic_regression
+
+nli:
+  model: "cross-encoder/nli-deberta-v3-large"
+
+retrieval:
+  bm25_k1: 1.5
+  bm25_b: 0.75
+  dense_model: "sentence-transformers/all-MiniLM-L6-v2"
+  top_k: 5
+
+calibration:
+  methods:
+    - raw
+    - temperature_scaling
+    - platt_scaling
+    - isotonic_regression

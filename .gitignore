@@ -32,6 +32,6 @@ cache/
 scratch/
 .env
 
-# Model Checkpoints (except .gitkeep)
-backend/multihaludet/checkpoints/*.pt
-!backend/multihaludet/checkpoints/.gitkeep
+# Model Checkpoints and PyTorch Binary Files (except .gitkeep)
+*.pt
+!**/checkpoints/.gitkeep

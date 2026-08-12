@@ -242,13 +242,21 @@ class ClassicalEnsemble:
         from sklearn.linear_model import LogisticRegression
         from sklearn.model_selection import StratifiedKFold
         from sklearn.preprocessing import StandardScaler
-        from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
+        from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score, confusion_matrix
 
         X_arr = np.asarray(X, dtype=np.float32)
         y_arr = np.asarray(y, dtype=np.int64)
 
         if len(X_arr) < n_splits:
             raise ValueError(f"Number of samples ({len(X_arr)}) must be >= n_splits ({n_splits})")
+
+        from multihaludet.feature_extractor import FeatureSchemaError, FEATURE_SCHEMA_HASH, verify_feature_dim
+        if not self.allow_reduced_ensemble:
+            verify_feature_dim(X_arr.shape[1], context="ClassicalEnsemble.fit_oof")
+
+        self.feature_dim = X_arr.shape[1]
+        self.schema_version = "multihaludet_v3.1"
+        self.schema_hash = FEATURE_SCHEMA_HASH
 
         self.scaler = StandardScaler()
         X_arr = self.scaler.fit_transform(X_arr)
@@ -286,9 +294,38 @@ class ClassicalEnsemble:
         self.meta_model = LogisticRegression(max_iter=1000, random_state=seed)
         self.meta_model.fit(oof_probs, y_arr)
 
-        # Evaluate OOF Meta learner
-        meta_oof_probs = self.meta_model.predict_proba(oof_probs)[:, 1]
-        meta_oof_preds = (meta_oof_probs >= 0.5).astype(int)
+        # Evaluate raw OOF Meta learner probabilities
+        raw_meta_oof_probs = self.meta_model.predict_proba(oof_probs)[:, 1]
+
+        # Fit probability calibrator (Isotonic / Platt Scaling) on OOF predictions
+        try:
+            from sklearn.isotonic import IsotonicRegression
+            self.calibrator = IsotonicRegression(out_of_bounds="clip")
+            self.calibrator.fit(raw_meta_oof_probs, y_arr)
+            meta_oof_probs = self.calibrator.transform(raw_meta_oof_probs)
+        except Exception:
+            self.calibrator = None
+            meta_oof_probs = raw_meta_oof_probs
+
+        # Evaluate multi-threshold optimization strategies on OOF validation
+        threshold_candidates = {}
+        for tau in np.linspace(0.10, 0.90, 81):
+            preds = (meta_oof_probs >= tau).astype(int)
+            sens = recall_score(y_arr, preds, zero_division=0)
+            tn, fp, fn, tp = confusion_matrix(y_arr, preds, labels=[0, 1]).ravel()
+            spec = tn / (tn + fp) if (tn + fp) > 0 else 0.0
+            j_stat = sens + spec - 1.0
+            bal_acc = (sens + spec) / 2.0
+            f1 = f1_score(y_arr, preds, zero_division=0)
+            threshold_candidates[float(tau)] = {"j_stat": j_stat, "bal_acc": bal_acc, "f1": f1}
+
+        # Select optimal threshold using Youden's J statistic
+        best_tau = max(threshold_candidates.keys(), key=lambda k: threshold_candidates[k]["j_stat"])
+        self.optimal_threshold = float(best_tau)
+        self.threshold_method = "youden_j"
+        self.selection_dataset = "validation_oof"
+
+        meta_oof_preds = (meta_oof_probs >= self.optimal_threshold).astype(int)
 
         oof_metrics = {
             "accuracy": float(accuracy_score(y_arr, meta_oof_preds)),
@@ -296,6 +333,9 @@ class ClassicalEnsemble:
             "recall": float(recall_score(y_arr, meta_oof_preds, zero_division=0)),
             "f1": float(f1_score(y_arr, meta_oof_preds, zero_division=0)),
             "auc": float(roc_auc_score(y_arr, meta_oof_probs)) if len(set(y_arr)) > 1 else 0.5,
+            "optimal_threshold": float(best_tau),
+            "threshold_method": "youden_j",
+            "selection_dataset": "validation_oof",
         }
 
         # Evaluate base models OOF
@@ -359,28 +399,51 @@ class ClassicalEnsemble:
             X_arr = X_arr.reshape(1, -1)
 
         if hasattr(self, "scaler") and self.scaler is not None:
+            expected_n = getattr(self.scaler, "n_features_in_", None)
+            if expected_n is not None and not self.allow_reduced_ensemble and X_arr.shape[1] != expected_n:
+                from multihaludet.feature_extractor import FeatureSchemaError
+                raise FeatureSchemaError(
+                    f"StandardScaler schema mismatch in predict_proba: "
+                    f"scaler expected {expected_n} features, but input has {X_arr.shape[1]} features. "
+                    f"Legacy/dual checkpoint schemas are forbidden for publication runs."
+                )
             X_arr = self.scaler.transform(X_arr)
 
         num_samples = len(X_arr)
         num_members = len(self.active_member_names)
         member_matrix = np.zeros((num_samples, num_members), dtype=np.float32)
 
+        # Self-healing for unpickled LogisticRegression models missing multi_class attribute across sklearn versions
+        for m in list(self.base_models.values()) + ([self.meta_model] if self.meta_model is not None else []):
+            if m is not None and m.__class__.__name__ == "LogisticRegression" and not hasattr(m, "multi_class"):
+                setattr(m, "multi_class", "auto")
+
         member_probs_dict: dict[str, list[float]] = {}
-        for m_idx, name in enumerate(self.active_member_names):
-            model = self.base_models[name]
-            if hasattr(model, "predict_proba"):
-                probs = model.predict_proba(X_arr)
-                if probs.ndim == 2 and probs.shape[1] > 1:
-                    p = probs[:, 1]
+        try:
+            for m_idx, name in enumerate(self.active_member_names):
+                model = self.base_models[name]
+                if hasattr(model, "predict_proba"):
+                    probs = model.predict_proba(X_arr)
+                    if probs.ndim == 2 and probs.shape[1] > 1:
+                        p = probs[:, 1]
+                    else:
+                        p = probs.ravel()
                 else:
-                    p = probs.ravel()
-            else:
-                p = model.predict(X_arr).astype(np.float32)
+                    p = model.predict(X_arr).astype(np.float32)
 
-            member_matrix[:, m_idx] = p
-            member_probs_dict[name] = [float(v) for v in p]
+                member_matrix[:, m_idx] = p
+                member_probs_dict[name] = [float(v) for v in p]
 
-        meta_probs = self.meta_model.predict_proba(member_matrix)[:, 1]
+            meta_probs = self.meta_model.predict_proba(member_matrix)[:, 1]
+            if hasattr(self, "calibrator") and self.calibrator is not None:
+                meta_probs = self.calibrator.transform(meta_probs)
+        except AttributeError as attr_err:
+            from multihaludet.feature_extractor import FeatureSchemaError
+            raise FeatureSchemaError(
+                f"Incompatible scikit-learn model artifact version detected ({attr_err}). "
+                "The loaded checkpoint was trained under a different scikit-learn version. "
+                "Please retrain model checkpoints in this environment using: python -m multihaludet.training.train"
+            ) from attr_err
 
         if single_input:
             return {
@@ -401,6 +464,7 @@ class ClassicalEnsemble:
         """Saves base models and meta-learner into joblib files inside ensemble_dir."""
         from pathlib import Path
         import joblib
+        from multihaludet.feature_extractor import FEATURE_SCHEMA_HASH
 
         d = Path(ensemble_dir)
         d.mkdir(parents=True, exist_ok=True)
@@ -414,12 +478,22 @@ class ClassicalEnsemble:
         if hasattr(self, "scaler") and self.scaler is not None:
             joblib.dump(self.scaler, d / "scaler.joblib")
 
+        if hasattr(self, "calibrator") and self.calibrator is not None:
+            joblib.dump(self.calibrator, d / "calibrator.joblib")
+
         meta_info = {
             "seed": self.seed,
+            "allow_reduced_ensemble": self.allow_reduced_ensemble,
             "active_member_names": self.active_member_names,
             "is_fitted": self.is_fitted,
             "is_complete_ensemble": self.is_complete_ensemble,
             "mode": self.mode,
+            "feature_dim": getattr(self, "feature_dim", 265),
+            "schema_version": getattr(self, "schema_version", "multihaludet_v3.1"),
+            "schema_hash": getattr(self, "schema_hash", FEATURE_SCHEMA_HASH),
+            "optimal_threshold": getattr(self, "optimal_threshold", 0.50),
+            "threshold_method": getattr(self, "threshold_method", "youden_j"),
+            "selection_dataset": getattr(self, "selection_dataset", "validation_oof"),
         }
         joblib.dump(meta_info, d / "ensemble_info.joblib")
 
@@ -427,6 +501,7 @@ class ClassicalEnsemble:
         """Loads base models and meta-learner from joblib files inside ensemble_dir."""
         from pathlib import Path
         import joblib
+        from multihaludet.feature_extractor import FEATURE_SCHEMA_HASH, EXPECTED_TOTAL_FEATURE_DIM, FeatureSchemaError
 
         d = Path(ensemble_dir)
         if not d.exists() or not d.is_dir():
@@ -439,9 +514,42 @@ class ClassicalEnsemble:
         try:
             meta_info = joblib.load(meta_info_path)
             self.seed = meta_info.get("seed", 42)
+            self.allow_reduced_ensemble = meta_info.get("allow_reduced_ensemble", getattr(self, "allow_reduced_ensemble", False))
             self.active_member_names = meta_info.get("active_member_names", [])
             self.is_complete_ensemble = meta_info.get("is_complete_ensemble", False)
             self.mode = meta_info.get("mode", "unknown")
+            self.optimal_threshold = float(meta_info.get("optimal_threshold", 0.50))
+            self.threshold_method = meta_info.get("threshold_method", "youden_j")
+            self.selection_dataset = meta_info.get("selection_dataset", "validation_oof")
+            saved_dim = meta_info.get("feature_dim", None)
+
+            scaler_path = d / "scaler.joblib"
+            if scaler_path.exists():
+                self.scaler = joblib.load(scaler_path)
+                scaler_n = getattr(self.scaler, "n_features_in_", None)
+                if scaler_n is not None and not self.allow_reduced_ensemble and scaler_n != EXPECTED_TOTAL_FEATURE_DIM:
+                    logger.warning(
+                        "Checkpoint scaler feature dim (%d) != expected (%d). Invalidating checkpoint.",
+                        scaler_n, EXPECTED_TOTAL_FEATURE_DIM
+                    )
+                    self.is_fitted = False
+                    return False
+            else:
+                self.scaler = None
+
+            calib_path = d / "calibrator.joblib"
+            if calib_path.exists():
+                self.calibrator = joblib.load(calib_path)
+            else:
+                self.calibrator = None
+
+            if saved_dim is not None and not self.allow_reduced_ensemble and saved_dim != EXPECTED_TOTAL_FEATURE_DIM:
+                logger.warning(
+                    "Checkpoint meta_info feature_dim (%d) != expected (%d). Invalidating checkpoint.",
+                    saved_dim, EXPECTED_TOTAL_FEATURE_DIM
+                )
+                self.is_fitted = False
+                return False
 
             self.base_models = {}
             for name in self.active_member_names:
@@ -455,11 +563,9 @@ class ClassicalEnsemble:
                 return False
             self.meta_model = joblib.load(meta_path)
 
-            scaler_path = d / "scaler.joblib"
-            if scaler_path.exists():
-                self.scaler = joblib.load(scaler_path)
-            else:
-                self.scaler = None
+            for m in list(self.base_models.values()) + ([self.meta_model] if self.meta_model is not None else []):
+                if m is not None and m.__class__.__name__ == "LogisticRegression" and not hasattr(m, "multi_class"):
+                    setattr(m, "multi_class", "auto")
 
             self.is_fitted = True
             return True

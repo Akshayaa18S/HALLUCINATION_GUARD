@@ -1,0 +1,47 @@
+% Table 3: MultiHaluDet Systematic Ablation Studies
+\begin{table}[htbp]
+\caption{Systematic Component Ablation Performance on Validation Set}
+\begin{center}
+\begin{tabular}{llrrrr}
+\toprule
+\textbf{Study} & \textbf{Variant} & \textbf{ROC-AUC} & \textbf{AUPRC} & \textbf{F1} & \textbf{$\Delta$ AUC} \\
+\midrule
+Layer Depth Sampling & 2 Layers & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
+Layer Depth Sampling & 4 Layers & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Layer Depth Sampling & 6 Layers (Full) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Layer Depth Sampling & 8 Layers & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Layer Depth Sampling & All Layers & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Multi-Scale Attention Pooling & No Attention Pooling & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
+Multi-Scale Attention Pooling & Single Scale [1] & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Multi-Scale Attention Pooling & Multi-Scale [1, 2] & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Multi-Scale Attention Pooling & Multi-Scale [1, 2, 4] (Full) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Multi-Scale Attention Pooling & Multi-Scale [1, 2, 4, 8] & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Feature Branch Combination & Hidden States Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Feature Branch Combination & Logits Only & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
+Feature Branch Combination & Hidden + Logits & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Feature Branch Combination & Hidden + Attention & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Feature Branch Combination & Full (Hidden + Logits + Attn) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Loss Function Composition & BCE Only & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
+Loss Function Composition & BCE + Focal & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Loss Function Composition & BCE + Focal + Asymmetric & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Loss Function Composition & BCE + Focal + Asymmetric + Contrastive (Full) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Ensemble Base Learner & Random Forest Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Ensemble Base Learner & Gradient Boosting Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Ensemble Base Learner & XGBoost Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Ensemble Base Learner & LightGBM Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Ensemble Base Learner & Logistic Regression Only & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
+Ensemble Base Learner & 5-Member OOF Ensemble (Full) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Retrieval Pipeline Component & Wikipedia Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Retrieval Pipeline Component & FEVER Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Retrieval Pipeline Component & BM25 Only & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
+Retrieval Pipeline Component & Dense Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Retrieval Pipeline Component & BM25 + Dense & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Retrieval Pipeline Component & BM25 + Dense + Reranker (Full) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Verification Mechanism & Cosine Similarity Only & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
+Verification Mechanism & NLI Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Verification Mechanism & Cosine + NLI (Full) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+\bottomrule
+\end{tabular}
+\label{tab:ablations}
+\end{center}
+\end{table}

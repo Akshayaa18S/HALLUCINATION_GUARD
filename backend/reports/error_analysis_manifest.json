@@ -1,0 +1,13 @@
+{
+  "protocol_version": "v3.1_frozen",
+  "random_seed": 42,
+  "sample_size": 100,
+  "strata": {
+    "false_positive": 25,
+    "false_negative": 25,
+    "retrieval_failure": 20,
+    "unverifiable_ambiguous": 15,
+    "high_confidence_error": 15
+  },
+  "double_annotation_count": 50
+}

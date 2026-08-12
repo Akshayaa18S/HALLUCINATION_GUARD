@@ -87,16 +87,18 @@ def run_inference(
     response_text: str | None = None,
     decision_threshold: float | None = None,
     include_trace: bool = False,
+    skip_retrieval: bool = False,
 ) -> dict[str, Any]:
     """Runs end-to-end LLM generation (or accepts response_text), hidden-state extraction, MultiHaluDet classification,
     Wikipedia evidence retrieval, and grounded response verification."""
     start_total = time.monotonic()
 
-    # Step 1: LLM Generation / Direct Response Override
+    # Step 1: LLM Generation / Direct Response Scoring
     start_gen = time.monotonic()
-    bundle = backend.generate_with_states(prompt, system=system_prompt)
     if response_text is not None and response_text.strip():
-        bundle.text = response_text.strip()
+        bundle = backend.score_existing_response(prompt, response_text.strip(), system=system_prompt)
+    else:
+        bundle = backend.generate_with_states(prompt, system=system_prompt)
     generation_ms = (time.monotonic() - start_gen) * 1000.0
 
     # Step 2 & 3: MultiHaluDet Deep Feature Extraction & Ensemble Classification
@@ -115,6 +117,23 @@ def run_inference(
     is_hallu = prob >= threshold
 
     uncertainty_lvl = compute_uncertainty_level(conf)
+
+    if skip_retrieval:
+        return {
+            "query": prompt,
+            "generated_response": bundle.text,
+            "hallucination_prediction": "Hallucinated" if is_hallu else "Factual",
+            "hallucination_probability": round(prob, 4),
+            "confidence": round(conf, 4),
+            "uncertainty_level": uncertainty_lvl,
+            "decision_threshold": threshold,
+            "ensemble_votes": result.get("ensemble_member_probabilities", {}),
+            "timings": {
+                "generation_ms": round(generation_ms, 1),
+                "evaluation_ms": round(eval_ms, 1),
+                "total_ms": round((time.monotonic() - start_total) * 1000.0, 1),
+            },
+        }
 
     # Step 4: Disambiguated Entity Linking & Provider Evidence Retrieval
     start_retrieval = time.monotonic()
@@ -515,8 +534,8 @@ class MultiHaluDetPredictor:
         logger.info("Checkpoint Path: %s", ckpt_path)
         logger.info("=" * 60)
 
-    def predict(self, prompt: str, system_prompt: str | None = None, response_text: str | None = None) -> dict[str, Any]:
-        return run_inference(self.backend, self.model, prompt, system_prompt=system_prompt, response_text=response_text)
+    def predict(self, prompt: str, system_prompt: str | None = None, response_text: str | None = None, skip_retrieval: bool = False) -> dict[str, Any]:
+        return run_inference(self.backend, self.model, prompt, system_prompt=system_prompt, response_text=response_text, skip_retrieval=skip_retrieval)
 
 
 def print_formatted_result(res: dict[str, Any]) -> None:

@@ -61,6 +61,7 @@ def evaluate_dataset(csv_path: str, predictor: MultiHaluDetPredictor | None = No
 
     logger.info("Evaluating %d samples from dataset '%s'...", len(samples), csv_path)
 
+    failed_samples = 0
     for idx, sample in enumerate(samples, 1):
         query = sample.get("query", sample.get("prompt", ""))
         gen_resp = sample.get("generated_response", sample.get("response", ""))
@@ -72,9 +73,9 @@ def evaluate_dataset(csv_path: str, predictor: MultiHaluDetPredictor | None = No
             prob = float(res.get("hallucination_probability", 0.50))
             pred = 1 if prob >= float(res.get("decision_threshold", 0.20)) else 0
         except Exception as exc:
-            logger.warning("Sample %d failed: %s", idx, exc)
-            prob = 0.50
-            pred = 0
+            failed_samples += 1
+            logger.error("PUBLICATION RUN ERROR - Sample %d failed: %s", idx, exc)
+            raise RuntimeError(f"PUBLICATION RUN INVALID: Sample {idx} failed during inference ({exc}). Partial runs are strictly forbidden.")
 
         elapsed_ms = (time.monotonic() - start_time) * 1000.0
         latencies.append(elapsed_ms)
@@ -92,6 +93,12 @@ def evaluate_dataset(csv_path: str, predictor: MultiHaluDetPredictor | None = No
             "latency_ms": round(elapsed_ms, 1),
             "is_correct": bool(label == pred),
         })
+
+    # Strict Integrity Checks
+    assert failed_samples == 0, f"PUBLICATION RUN INVALID: {failed_samples} failed samples."
+    assert len(y_true) == len(samples), f"Expected {len(samples)} samples, got {len(y_true)} true labels."
+    assert len(y_pred) == len(samples), f"Expected {len(samples)} samples, got {len(y_pred)} predictions."
+    assert len(y_prob) == len(samples), f"Expected {len(samples)} samples, got {len(y_prob)} probabilities."
 
     # Decision Threshold Optimization Sweep (0.20 to 0.50)
     threshold_sweep: dict[str, dict[str, float]] = {}

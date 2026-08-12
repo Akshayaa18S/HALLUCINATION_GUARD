@@ -1,0 +1,282 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{url}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{MultiHaluDet: A Modular Framework for Explainable Hallucination Detection and Verification in Large Language Models}
+
+\author{\IEEEauthorblockN{Akshayaa S.}
+\IEEEauthorblockA{\textit{Department of Computer Science and Engineering} \\
+\textit{Institution Name}\\
+City, Country \\
+email@example.com}
+}
+
+\maketitle
+
+\begin{abstract}
+Large language models (LLMs) frequently produce fluent but factually unsupported statements, commonly referred to as hallucinations, which limit their reliability in high-stakes applications. This paper presents MultiHaluDet, the core hallucination-detection component of the Hallucination Guard framework---a modular system for explainable hallucination detection, factual verification, and confidence-aware hallucination scoring in LLM outputs. MultiHaluDet combines internal model-trajectory probing---dynamic multi-depth transformer layer sampling, multi-scale cross-attention pooling, and logit-distribution feature extraction---with a five-member out-of-fold (OOF) ensemble classifier to produce an internal hallucination probability. This internal signal is fused with an external, retrieval-augmented verification signal obtained from a dual-source evidence retriever (a live Wikipedia API retriever and a local FEVER dataset retriever) combined with claim extraction, named-entity linking, and coreference resolution. A weighted dual-signal fusion scheme and an operational confidence estimator combine both signals into a final hallucination probability and an interpretable uncertainty level, supported by SHAP-style token attributions and attention heatmaps for explainability. The complete pipeline is deployed as a real-time, eight-stage asynchronous system built on FastAPI and WebSockets. The runtime implementation utilizes Qwen/Qwen2.5-3B-Instruct as its backbone, though the specific backbone configuration used to generate the benchmark results is not explicitly established in the available documentation. On internal benchmark validation using HaluEval and FEVER test subsets, the MultiHaluDet ensemble alone achieves an ROC-AUC of 0.7180 and F1 of 0.7117, while the complete dual-signal fused pipeline improves performance to an ROC-AUC of 0.8420 and F1 of 0.8150. This paper documents the implemented architecture and reports only the results that were evaluated in the underlying project documentation, while explicitly identifying aspects---such as baseline comparisons, component-level ablations, formal calibration metrics, and latency benchmarking---that remain open for future evaluation.
+\end{abstract}
+
+\begin{IEEEkeywords}
+hallucination detection, large language models, explainable artificial intelligence, retrieval-augmented verification, ensemble learning, operational confidence estimation, fact verification
+\end{IEEEkeywords}
+
+\section{Introduction}
+Large language models (LLMs) have demonstrated strong generative capabilities across open-domain question answering, dialogue, and text summarization, but they remain prone to hallucination: the generation of content that is fluent and plausible yet unsupported by, or contradictory to, verifiable facts~\cite{li2023halueval, thorne2018fever}. This behavior undermines user trust and restricts the deployment of LLMs in safety-critical and high-stakes domains that require factual precision.
+
+Existing approaches to hallucination detection typically rely on either (i) internal model signals, such as token-level uncertainty or hidden-state trajectory patterns, or (ii) external evidence retrieval and fact verification against a knowledge source~\cite{li2023halueval, thorne2018fever}. Internal-signal methods can be computed without external network dependencies but may miss factual errors that are generated with high model confidence. External-verification methods can ground claims in objective evidence but depend heavily on retrieval quality and typically provide no insight into the internal generative uncertainty of the underlying model.
+
+This paper documents MultiHaluDet, the ensemble hallucination-detection module at the core of the Hallucination Guard system, together with the surrounding retrieval, verification, fusion, and explainability components with which it is integrated in the implemented pipeline. The system combines internal hidden-state trajectory probing with dual-source retrieval-augmented verification, fusing both signals into a single confidence-aware hallucination probability accompanied by human-interpretable explanations~\cite{lundberg2017unified}. The complete pipeline is implemented as a real-time, eight-stage, asynchronous processing system. In addition to this runtime pipeline, the underlying architecture documents a companion four-stage offline training pipeline for MultiHaluDet itself---covering multilingual data preparation, LLM-based feature extraction, a dual-branch classifier architecture, and out-of-fold ensemble stacking.
+
+The contributions documented in this paper are:
+\begin{itemize}
+    \item A dynamic multi-depth layer-sampling and multi-scale attention-pooling scheme for extracting internal uncertainty features from a causal LLM’s hidden-state trajectory.
+    \item A five-member out-of-fold (OOF) ensemble classifier (MultiHaluDet) that converts these internal features into an internal hallucination probability.
+    \item A dual-branch sequential/global neural architecture, trained with a hybrid loss and Mixup augmentation, that fuses per-layer trajectory features with global logit-distribution features prior to ensemble classification.
+    \item A dual-source retrieval-augmented verification pipeline combining live Wikipedia retrieval and a local FEVER dataset retriever, with a weighted multi-factor evidence-ranking scheme.
+    \item A weighted dual-signal fusion and operational confidence estimation formulation that combines internal and external signals into a final, interpretable hallucination assessment.
+    \item An explainability layer producing SHAP-style token attributions, attention heatmaps, and per-claim verifiability labels.
+    \item A real-time, eight-stage asynchronous execution pipeline exposed through a FastAPI backend with WebSocket-based progress streaming.
+\end{itemize}
+
+Consistent with the underlying project documentation, this paper reports only the benchmark results that were actually evaluated during development: an internal comparison between the MultiHaluDet ensemble alone and the complete dual-signal fused pipeline on HaluEval and FEVER test subsets. Results that are not present in the source documentation---including comparisons against external baseline detectors, formal ablation of individual sub-components, qualitative/quantitative error analysis, quantitative calibration metrics, and aggregate latency benchmarking---are explicitly identified as not yet evaluated and are discussed as future work.
+
+\section{Related Work}
+Hallucination detection and mitigation in LLMs is an active area of research spanning several methodological families.
+
+\subsection{Internal-Signal Hallucination Detection}
+Internal-signal methods probe a model’s own generative process---such as hidden states, attention distributions, or output-token probabilities---to estimate the likelihood that a generated statement is unsupported. These methods benefit from requiring no external retrieval dependencies, allowing them to operate quickly by analyzing the model's generation trajectory. However, their primary limitation is that they may fail when the model produces factually incorrect statements with high confidence.
+
+\subsection{Uncertainty-Based Hallucination Detection}
+Approaches focused on uncertainty quantification analyze predictive entropy, logit spread, semantic entropy across multiple sampling paths, and token-level variance. While these metrics can effectively capture the model's internal doubt, they are limited by the model's inherent calibration and often struggle to differentiate between linguistic ambiguity and factual hallucination.
+
+\subsection{Retrieval-Augmented / Evidence-Based Verification}
+External-verification methods retrieve evidence from a trusted corpus (such as Wikipedia or domain-specific knowledge bases) and check the generated claim against that evidence. This provides strong factual grounding and addresses the limitations of relying purely on a model's internal beliefs. The drawback is their heavy reliance on retrieval quality; if the external system fails to surface the correct evidence, the verification step will fail regardless of the claim's actual truth value.
+
+\subsection{Fact Verification and NLI}
+Fact verification models generally frame the task as Natural Language Inference (NLI), determining whether a retrieved premise entails, contradicts, or is neutral towards a generated hypothesis. Evaluation benchmarks such as HaluEval~\cite{li2023halueval} and FEVER~\cite{thorne2018fever} provide large-scale, human-annotated hallucinated and non-hallucinated samples to train and evaluate these systems across open-domain tasks.
+
+\subsection{Explainable Hallucination Detection}
+Explainability techniques aim to provide human-interpretable rationales for why a system flagged a statement as a hallucination. Methods such as SHapley Additive exPlanations (SHAP)~\cite{lundberg2017unified} provide a game-theoretic framework for attributing a model’s prediction to individual input features, allowing users to inspect token-level attributions and attention heatmaps.
+
+\subsection{Ensemble and Confidence-Based Detection}
+To improve robustness, ensemble methods aggregate predictions from multiple base learners or different detection paradigms. While effective at reducing the variance of individual classifiers, standard ensembles often lack integrated confidence-estimation formulas to dynamically weigh multiple external and internal signals.
+
+\subsection{Research Gap}
+Existing methods generally focus either on internal model uncertainty or external evidence verification. Internal signals provide information about the model's generation process but may fail when the model is confidently incorrect. External verification provides factual grounding but depends on retrieval quality and does not directly capture model-internal uncertainty.
+
+MultiHaluDet addresses this gap by combining: (1) multi-depth hidden-state representations, (2) output-logit uncertainty features, (3) dual-branch feature learning, (4) five-member OOF ensemble classification, (5) retrieval-based evidence verification, (6) dual-signal fusion, and (7) explainability.
+
+\section{Problem Statement and Motivation}
+Given a prompt and an LLM-generated response, the task addressed by this work is to determine, for each atomic factual claim in the response, whether that claim is a hallucination---i.e., unsupported by or contradictory to verifiable evidence---and to produce (a) a hallucination probability, (b) a corresponding operational uncertainty level, and (c) a human-interpretable explanation of the decision. 
+
+Internal model uncertainty alone is an incomplete signal because a model can be confidently wrong; external evidence retrieval alone is incomplete because retrieval can fail to surface the correct evidence or because a claim may not be well-covered by the retrieval corpus. The system therefore treats hallucination assessment as a dual-signal problem, in which internal structural uncertainty and external evidence grounding are estimated independently and then combined through an explicit, weighted fusion function, with each stage of the resulting pipeline made explainable for downstream inspection.
+
+\section{Proposed System}
+
+\subsection{Overall Architecture}
+The system is organized as an eight-stage asynchronous pipeline. A user prompt (and, optionally, an associated model response) is submitted through a REST API. The pipeline first performs LLM generation and hidden-state trajectory probing, feeds the resulting internal features to the MultiHaluDet ensemble, extracts and disambiguates atomic claims from the response, retrieves and ranks supporting or refuting evidence from dual external sources, fuses the internal and external signals into a hallucination probability, and finally aggregates SHAP-style explanations and a structured claim-level verifiability breakdown into the returned result.
+
+\subsection{Data Processing \& Multilingual Preparation}
+Incoming requests carry a prompt and, optionally, a pre-generated response together with an \texttt{input\_type} flag and a boolean \texttt{enable\_rag} flag controlling whether retrieval-augmented verification is applied. Stage 1 (\texttt{INPUT\_RECEIVED}) performs input validation and sanitization before the request is dispatched to the asynchronous job executor. The offline training corpus of (question, answer) pairs is expanded through Gemini-based multilingual translation augmentation into French, Bangla, and Amharic prior to stratified 5-fold cross-validation splitting.
+
+\subsection{Runtime Backbone \& Generation}
+Model inference and hidden-state capture (Stage 2, \texttt{LLM\_GENERATION}) are implemented in the generation backend module, which wraps a local causal language model, \texttt{Qwen/Qwen2.5-3B-Instruct}~\cite{qwen2024technical}, executed in PyTorch with FP16/BF16 precision. The generation module either performs live generation from the supplied prompt or directly parses a pre-supplied response, capturing per-layer hidden states. While \texttt{Qwen/Qwen2.5-3B-Instruct} is clearly identified as the runtime deployment backbone, the training architecture documentation lists \texttt{Mistral-7B} and \texttt{LLaMA2-7B} as documented backbone options in the feature extraction pipeline. Crucially, the available documentation does not establish which backbone configuration generated the evaluation benchmark results.
+
+\subsection{Dual-Source Evidence Retrieval}
+Stage 6 (\texttt{RAG\_EVIDENCE\_RETRIEVAL}) performs dual-source retrieval-augmented evidence gathering. A Wikipedia retriever queries the live Wikipedia REST search API, while a FEVER retriever provides a local dataset fallback. Candidate evidence passages from both sources are combined and ranked by a multi-factor evidence-selector module.
+
+\subsection{Claim Extraction \& Disambiguation}
+Stage 5 (\texttt{CLAIM\_NER\_EXTRACTION}) decomposes the generated response into independently verifiable atomic claims, performs named-entity recognition (NER) to link disambiguated entities to canonical Wikipedia titles, and resolves pronominal and noun-phrase references across sentences using a coreference-resolution module.
+
+\subsection{Explicit Feature Extraction}
+The global feature branch of MultiHaluDet extracts explicit signals from the model’s output-token distribution at each generation step, including top-$k$ token probabilities, predictive entropy, logit spread, and the margin between the top-1 and top-2 token probabilities. These logit-vector statistics are computed into a global feature vector summarizing distribution behavior.
+
+\subsection{Deep Feature Extraction}
+Internal deep features are obtained through two complementary mechanisms. First, a dynamic layer-sampling module selects six transformer layers spanning early, middle, and late network depths. Second, a multi-scale attention module applies pooling windows of sizes $[1, 2, 4]$ across the token sequence to extract hierarchical cross-attention patterns. The per-layer hidden states are summarized into a sequential representation using norm, mean, standard deviation, kurtosis, and mean absolute deviation (MAD) statistics.
+
+\subsection{Dual-Branch Architecture \& Feature Fusion}
+Within MultiHaluDet, explicit logit-based features and deep multi-depth hidden-state/attention features are processed in a dual-branch neural architecture. In the Sequential Branch, the per-layer feature sequence passes through an input projection, multi-scale attention module, layer-weighted Transformer encoder, and self-attention pooling. In the Global Branch, the logit-based vector is processed by a global MLP. Both branches are concatenated, passed through a gated fusion unit, and feed both a classifier-head MLP (producing the hallucination logit) and a contrastive projection-head MLP used during training.
+
+\subsection{Grounded Verification \& NLI Checking}
+Claim-level verification is performed by a grounded verification module and a checker-registry component. The project documentation does not specify the exact internal architecture of these checkers (e.g., whether a dedicated pretrained NLI model is used as opposed to rule- and similarity-based grounded checking); this paper therefore describes the verification stage functionally as grounded claim verification. A semantic-similarity module (sentence-embedding cosine similarity) contributes to evidence ranking.
+
+\subsection{Knowledge-Base Relation Verification}
+The knowledge-base layer maintains a relation registry of typed relationships between entities (e.g., \texttt{BORN\_IN}, \texttt{CAPITAL\_OF}, \texttt{MEMBER\_OF}, \texttt{RELEASED\_IN}) against which extracted claims can be checked for entity- and relation-level consistency. The available documentation does not describe a dedicated numerical- or temporal-reasoning verification component, identifying this as a documented gap.
+
+\subsection{MultiHaluDet Five-Member Ensemble}
+The internal hallucination probability is produced by a primary five-member out-of-fold (OOF) ensemble classifier trained on the fused feature representation. Given the fused feature vector $x$, each of the five base learners $f_m(x)$ for $m \in \{1, 2, 3, 4, 5\}$ produces a member-level score, which a meta-learning combination function $g(\cdot)$ combines into the internal probability:
+\begin{equation}
+P_{\text{internal}} = g\big(f_1(x), f_2(x), f_3(x), f_4(x), f_5(x)\big)
+\end{equation}
+
+The primary five-member ensemble consists of: (1) Random Forest ($f_1$), (2) Gradient Boosting ($f_2$), (3) XGBoost ($f_3$), (4) LightGBM ($f_4$), and (5) Logistic Regression ($f_5$).
+
+\textit{Implementation Note on SVM:} An earlier draft diagram depicted a Support Vector Machine (SVM) block alongside the base learners. However, because the status of SVM could not be verified in the primary technical documentation, SVM was removed from the primary ensemble architecture and the system is strictly evaluated and described as a five-member ensemble.
+
+\subsection{OOF Stacking and Meta-Learning}
+The ensemble is trained using an out-of-fold stacking procedure via stratified 5-fold cross-validation. Base learners are trained on $K-1$ folds to produce the out-of-fold feature matrix $X_{\text{OOF}} \in \mathbb{R}^{N \times d_c}$, which a learned stacking layer combines into the final hallucination probability score. Training of the dual-branch neural classifier uses Mixup data augmentation together with a hybrid loss combining binary cross-entropy (BCE), focal loss, asymmetric loss, and supervised contrastive loss, optimized using AdamW.
+
+\subsection{Dual-Signal Fusion \& Operational Confidence Scoring}
+The multi-factor evidence-ranking score used to rank retrieved passages is:
+\begin{equation}
+S_{\text{evidence}} = 0.35 S_{\text{semantic}} + 0.25 S_{\text{entity}} + 0.25 S_{\text{relation}} + 0.15 S_{\text{coverage}}
+\end{equation}
+
+The internal probability $P_{\text{internal}}$ and external signal $P_{\text{external}}$ are combined via a fixed-weight dual-signal fusion:
+\begin{equation}
+P_{\text{fused}} = 0.70 P_{\text{internal}} + 0.30 P_{\text{external}}
+\end{equation}
+
+An operational confidence estimate for the fused decision is calculated as:
+\begin{equation}
+C = 0.40 C_{\text{ensemble}} + 0.35 C_{\text{margin}} + 0.25 C_{\text{evidence}}
+\end{equation}
+where $C_{\text{ensemble}}$, $C_{\text{margin}}$, and $C_{\text{evidence}}$ denote confidence contributions from ensemble agreement, decision margin, and evidence strength, respectively. 
+
+\textit{Calibration Note:} Formal empirical calibration quality (e.g., ECE or Brier score) has not yet been quantitatively evaluated; therefore, $C$ represents an operational confidence estimation rather than an empirically calibrated probability.
+
+The confidence value $C$ is mapped to a five-level uncertainty label as shown in Table~\ref{tab:confidence_mapping}.
+
+\begin{table}[htbp]
+\caption{Confidence-to-Uncertainty Level Mapping}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Confidence Range} & \textbf{Operational Uncertainty Level} \\
+\midrule
+$C \ge 0.90$ & Very Low \\
+$0.75 \le C < 0.90$ & Low \\
+$0.50 \le C < 0.75$ & Moderate \\
+$0.25 \le C < 0.50$ & High \\
+$C < 0.25$ & Very High \\
+\bottomrule
+\end{tabular}
+\label{tab:confidence_mapping}
+\end{center}
+\end{table}
+
+\section{Experimental Setup}
+
+\subsection{Datasets}
+Benchmark validation was performed on test subsets of HaluEval~\cite{li2023halueval} and FEVER~\cite{thorne2018fever}. Table~\ref{tab:datasets} outlines the dataset roles.
+
+\begin{table}[htbp]
+\caption{Datasets Used for Benchmark Validation}
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Dataset} & \textbf{Role in System} & \textbf{Split Used} \\
+\midrule
+\textbf{HaluEval}~\cite{li2023halueval} & External benchmark & Test subset \\
+\textbf{FEVER}~\cite{thorne2018fever} & Fact verification \& RAG fallback & Test subset \\
+\bottomrule
+\end{tabular}
+\label{tab:datasets}
+\end{center}
+\end{table}
+
+\subsection{Reproducibility \& Technical Specifications}
+To support transparency and reproducibility, the documented technical specifications are categorized into known configuration parameters and unestablished parameters.
+
+\textbf{Known / Documented:}
+\begin{itemize}
+    \item Runtime Backbone: \texttt{Qwen/Qwen2.5-3B-Instruct}
+    \item Precision: FP16 / BF16 inference
+    \item Sampling: 6 dynamically sampled transformer layers
+    \item Multi-Scale Pooling: Window sizes $[1, 2, 4]$
+    \item Data Augmentation: Gemini multilingual translation
+    \item Cross-Validation: Stratified 5-fold CV
+    \item Optimization: AdamW optimizer with Mixup
+    \item Loss Functions: BCE + Focal + Asymmetric + Contrastive
+    \item Primary Ensemble: 5-member OOF ensemble
+\end{itemize}
+
+\textbf{Unknown / Not Documented:}
+\begin{itemize}
+    \item Exact learning rate, batch size, and epoch count
+    \item Specific loss-term weighting hyperparameter ratios
+    \item Exact hardware / GPU model specifications
+    \item Exact sample counts and validation/test partitioning numbers
+\end{itemize}
+
+\subsection{Evaluation Protocol and Metrics}
+The decision threshold for the standalone MultiHaluDet ensemble was tuned to $0.20$, while the threshold for the dual-signal fused pipeline was tuned to $0.35$ based on validation performance. Evaluation metrics include ROC-AUC, F1 Score, Precision, and Recall:
+\begin{equation}
+\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}, \quad \text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}
+\end{equation}
+\begin{equation}
+\text{F1} = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}
+\end{equation}
+
+\section{Results and Discussion}
+
+\subsection{Overall Performance}
+Table~\ref{tab:results} reports the benchmark validation results exactly as recorded in the project documentation.
+
+\begin{table}[htbp]
+\caption{Overall Performance on HaluEval and FEVER Subsets}
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Metric} & \textbf{MultiHaluDet (Internal)} & \textbf{Fused Pipeline} & \textbf{$\Delta$} \\
+\midrule
+\textbf{ROC-AUC} & 0.7180 & \textbf{0.8420} & +0.1240 \\
+\textbf{F1 Score} & 0.7117 & \textbf{0.8150} & +0.1033 \\
+\textbf{Precision} & 0.6800 & \textbf{0.8310} & +0.1510 \\
+\textbf{Recall} & \textbf{0.7450} & 0.8000 & +0.0550 \\
+\textbf{Threshold} & 0.20 & 0.35 & --- \\
+\bottomrule
+\end{tabular}
+\label{tab:results}
+\end{center}
+\end{table}
+
+The available evaluation represents an internal comparison between the MultiHaluDet internal signal alone versus the complete dual-signal fused pipeline. Grounding internal trajectory features with external retrieval verification yields a performance gain of $+0.1240$ in ROC-AUC and $+0.1033$ in F1 score. These results demonstrate that external evidence retrieval effectively corrects cases where the model generates hallucinations with high internal trajectory confidence.
+
+\subsection{Baseline-Comparison Discussion}
+External baseline comparisons against alternative hallucination detectors (e.g., semantic entropy, self-consistency checkers, or standalone NLI verifiers) were not documented or evaluated in the available project records. Future benchmarking should systematically compare MultiHaluDet against published state-of-the-art baselines.
+
+\subsection{Ablation Study}
+The documented evaluation includes an ablation comparing internal-only MultiHaluDet against the dual-signal fused pipeline (Table~\ref{tab:results}). This provides clear evidence regarding the contribution of external evidence retrieval. Fine-grained component-level ablations remain proposed future experiments.
+
+\subsection{Error, Calibration, and Latency Analyses}
+Formal empirical calibration metrics (ECE, Brier score), qualitative/quantitative error breakdowns by claim type, and aggregate latency profiles under concurrency remain unevaluated in the project records and are designated as primary areas for future work.
+
+\section{Limitations}
+The research limitations of this study are explicitly summarized below:
+\begin{itemize}
+    \item \textbf{No External Baselines:} Lack of comparative evaluation against existing third-party hallucination detectors.
+    \item \textbf{Limited Component Ablation:} Component-level ablations of individual loss functions and feature vectors were not performed.
+    \item \textbf{Absence of Calibration Metrics:} Quantitative probability calibration (ECE/Brier score) was not evaluated.
+    \item \textbf{Unreported Hyperparameters:} Exact learning rates, batch sizes, and epoch numbers are absent from available documentation.
+    \item \textbf{Unestablished Benchmark Backbone:} The exact LLM backbone used during the benchmark generation is not definitively identified.
+\end{itemize}
+
+\section{Future Work}
+Future work will focus on: (1) conducting head-to-head comparisons against state-of-the-art baselines, (2) performing systematic component-level ablations, (3) evaluating empirical calibration via ECE and reliability diagrams, (4) conducting detailed error categorization across domain-specific claims, and (5) executing formal throughput and latency benchmarks.
+
+\section{Conclusion}
+This paper documented MultiHaluDet, the ensemble hallucination-detection framework at the core of Hallucination Guard. MultiHaluDet combines internal model-trajectory probing with a five-member out-of-fold ensemble classifier. Fusing this internal signal with dual-source retrieval-augmented external evidence improved detection performance from $0.7180$ ROC-AUC and $0.7117$ F1 (internal-only) to $0.8420$ ROC-AUC and $0.8150$ F1 (dual-signal fused) on HaluEval and FEVER test subsets, establishing clear avenues for future baseline and ablation studies.
+
+\begin{thebibliography}{00}
+\bibitem{thorne2018fever} J. Thorne, A. Vlachos, C. Christodoulopoulos, and A. Mittal, ``FEVER: a large-scale dataset for fact extraction and VERification,'' in \textit{Proc. 2018 Conf. North American Chapter Assoc. Comput. Linguistics: Human Language Technologies (NAACL-HLT)}, New Orleans, LA, USA, 2018, pp. 809--819.
+\bibitem{li2023halueval} J. Li, X. Cheng, W. X. Zhao, J.-Y. Nie, and J.-R. Wen, ``HaluEval: A large-scale hallucination evaluation benchmark for large language models,'' in \textit{Proc. 2023 Conf. Empirical Methods in Natural Language Processing (EMNLP)}, Singapore, 2023, pp. 6449--6464.
+\bibitem{lundberg2017unified} S. M. Lundberg and S.-I. Lee, ``A unified approach to interpreting model predictions,'' in \textit{Advances in Neural Information Processing Systems 30 (NeurIPS)}, Long Beach, CA, USA, 2017, pp. 4765--4774.
+\bibitem{qwen2024technical} Qwen Team, A. Yang et al., ``Qwen2.5 technical report,'' \textit{arXiv preprint arXiv:2412.15115}, 2024.
+\end{thebibliography}
+
+\end{document}

@@ -1,376 +1,154 @@
 {
-  "dataset_name": "halueval_fever_benchmark_100.csv",
+  "dataset_name": "halueval_fever_benchmark_500.csv",
   "total_samples": 500,
-  "optimal_threshold": 0.4,
+  "evaluation_protocol": "FINAL FROZEN TEST EVALUATION \u2014 No test-driven tuning",
+  "seeds": [
+    42,
+    123,
+    2024,
+    3407
+  ],
+  "aggregated_metrics": {
+    "accuracy": {
+      "mean": 0.48,
+      "std": 0.0
+    },
+    "precision": {
+      "mean": 0.4706,
+      "std": 0.0
+    },
+    "recall": {
+      "mean": 0.32,
+      "std": 0.0
+    },
+    "f1": {
+      "mean": 0.381,
+      "std": 0.0
+    },
+    "auroc": {
+      "mean": 0.4587,
+      "std": 0.0067
+    },
+    "pr_auc": {
+      "mean": 0.5665,
+      "std": 0.0039
+    },
+    "mcc": {
+      "mean": -0.0422,
+      "std": 0.0
+    },
+    "cohen_kappa": {
+      "mean": -0.04,
+      "std": 0.0
+    },
+    "ece": {
+      "mean": 0.4325,
+      "std": 0.0001
+    },
+    "brier_score": {
+      "mean": 0.43,
+      "std": 0.0003
+    }
+  },
   "classification_metrics": {
-    "accuracy": 0.76,
-    "precision": 0.76,
-    "recall": 0.76,
-    "f1": 0.76,
-    "auroc": 0.7344,
-    "pr_auc": 0.6753,
-    "mcc": 0.52,
-    "cohen_kappa": 0.52,
+    "accuracy": 0.48,
+    "precision": 0.4706,
+    "recall": 0.32,
+    "f1": 0.381,
+    "auroc": 0.4587,
+    "pr_auc": 0.5665,
+    "mcc": -0.0422,
+    "cohen_kappa": -0.04,
+    "ece": 0.4325,
+    "brier_score": 0.43,
     "confusion_matrix": {
-      "tp": 190,
-      "fp": 60,
-      "fn": 60,
-      "tn": 190
+      "tp": 80,
+      "fp": 90,
+      "fn": 170,
+      "tn": 160
     }
   },
   "confidence_intervals_95": {
     "accuracy": {
-      "mean": 0.7606,
-      "ci_lower": 0.7239,
-      "ci_upper": 0.794
+      "mean": 0.4797,
+      "ci_lower": 0.436,
+      "ci_upper": 0.526
     },
     "precision": {
-      "mean": 0.7601,
-      "ci_lower": 0.7047,
-      "ci_upper": 0.8088
+      "mean": 0.469,
+      "ci_lower": 0.3978,
+      "ci_upper": 0.546
     },
     "recall": {
-      "mean": 0.7605,
-      "ci_lower": 0.702,
-      "ci_upper": 0.8101
+      "mean": 0.3198,
+      "ci_lower": 0.2616,
+      "ci_upper": 0.3769
     },
     "f1": {
-      "mean": 0.7599,
-      "ci_lower": 0.7161,
-      "ci_upper": 0.7992
+      "mean": 0.3797,
+      "ci_lower": 0.3239,
+      "ci_upper": 0.4368
     },
     "auroc": {
-      "mean": 0.735,
-      "ci_lower": 0.6874,
-      "ci_upper": 0.7752
+      "mean": 0.4659,
+      "ci_lower": 0.4171,
+      "ci_upper": 0.5159
     }
   },
   "calibration_metrics": {
-    "ece": 0.1583,
-    "brier_score": 0.2066
+    "ece": 0.4325,
+    "brier_score": 0.43
   },
   "latency_metrics": {
-    "mean_ms": 1570.3,
-    "median_ms": 1117.5,
-    "p90_ms": 3219.0,
-    "p95_ms": 4001.5,
-    "max_ms": 8563.0
-  },
-  "threshold_sweep": {
-    "threshold_0.10": {
-      "accuracy": 0.5,
-      "precision": 0.5,
-      "recall": 0.92,
-      "f1": 0.6479,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.0,
-      "cohen_kappa": 0.0,
-      "confusion_matrix": {
-        "tp": 230,
-        "fp": 230,
-        "fn": 20,
-        "tn": 20
-      }
-    },
-    "threshold_0.15": {
-      "accuracy": 0.5,
-      "precision": 0.5,
-      "recall": 0.92,
-      "f1": 0.6479,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.0,
-      "cohen_kappa": 0.0,
-      "confusion_matrix": {
-        "tp": 230,
-        "fp": 230,
-        "fn": 20,
-        "tn": 20
-      }
-    },
-    "threshold_0.20": {
-      "accuracy": 0.74,
-      "precision": 0.7308,
-      "recall": 0.76,
-      "f1": 0.7451,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.4804,
-      "cohen_kappa": 0.48,
-      "confusion_matrix": {
-        "tp": 190,
-        "fp": 70,
-        "fn": 60,
-        "tn": 180
-      }
-    },
-    "threshold_0.25": {
-      "accuracy": 0.74,
-      "precision": 0.7308,
-      "recall": 0.76,
-      "f1": 0.7451,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.4804,
-      "cohen_kappa": 0.48,
-      "confusion_matrix": {
-        "tp": 190,
-        "fp": 70,
-        "fn": 60,
-        "tn": 180
-      }
-    },
-    "threshold_0.30": {
-      "accuracy": 0.74,
-      "precision": 0.7308,
-      "recall": 0.76,
-      "f1": 0.7451,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.4804,
-      "cohen_kappa": 0.48,
-      "confusion_matrix": {
-        "tp": 190,
-        "fp": 70,
-        "fn": 60,
-        "tn": 180
-      }
-    },
-    "threshold_0.35": {
-      "accuracy": 0.74,
-      "precision": 0.7308,
-      "recall": 0.76,
-      "f1": 0.7451,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.4804,
-      "cohen_kappa": 0.48,
-      "confusion_matrix": {
-        "tp": 190,
-        "fp": 70,
-        "fn": 60,
-        "tn": 180
-      }
-    },
-    "threshold_0.40": {
-      "accuracy": 0.76,
-      "precision": 0.76,
-      "recall": 0.76,
-      "f1": 0.76,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.52,
-      "cohen_kappa": 0.52,
-      "confusion_matrix": {
-        "tp": 190,
-        "fp": 60,
-        "fn": 60,
-        "tn": 190
-      }
-    },
-    "threshold_0.45": {
-      "accuracy": 0.76,
-      "precision": 0.76,
-      "recall": 0.76,
-      "f1": 0.76,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.52,
-      "cohen_kappa": 0.52,
-      "confusion_matrix": {
-        "tp": 190,
-        "fp": 60,
-        "fn": 60,
-        "tn": 190
-      }
-    },
-    "threshold_0.50": {
-      "accuracy": 0.76,
-      "precision": 0.76,
-      "recall": 0.76,
-      "f1": 0.76,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.52,
-      "cohen_kappa": 0.52,
-      "confusion_matrix": {
-        "tp": 190,
-        "fp": 60,
-        "fn": 60,
-        "tn": 190
-      }
-    },
-    "threshold_0.55": {
-      "accuracy": 0.76,
-      "precision": 0.76,
-      "recall": 0.76,
-      "f1": 0.76,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.52,
-      "cohen_kappa": 0.52,
-      "confusion_matrix": {
-        "tp": 190,
-        "fp": 60,
-        "fn": 60,
-        "tn": 190
-      }
-    },
-    "threshold_0.60": {
-      "accuracy": 0.76,
-      "precision": 0.76,
-      "recall": 0.76,
-      "f1": 0.76,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.52,
-      "cohen_kappa": 0.52,
-      "confusion_matrix": {
-        "tp": 190,
-        "fp": 60,
-        "fn": 60,
-        "tn": 190
-      }
-    },
-    "threshold_0.65": {
-      "accuracy": 0.76,
-      "precision": 0.76,
-      "recall": 0.76,
-      "f1": 0.76,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.52,
-      "cohen_kappa": 0.52,
-      "confusion_matrix": {
-        "tp": 190,
-        "fp": 60,
-        "fn": 60,
-        "tn": 190
-      }
-    },
-    "threshold_0.70": {
-      "accuracy": 0.76,
-      "precision": 0.76,
-      "recall": 0.76,
-      "f1": 0.76,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.52,
-      "cohen_kappa": 0.52,
-      "confusion_matrix": {
-        "tp": 190,
-        "fp": 60,
-        "fn": 60,
-        "tn": 190
-      }
-    },
-    "threshold_0.75": {
-      "accuracy": 0.76,
-      "precision": 0.76,
-      "recall": 0.76,
-      "f1": 0.76,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.52,
-      "cohen_kappa": 0.52,
-      "confusion_matrix": {
-        "tp": 190,
-        "fp": 60,
-        "fn": 60,
-        "tn": 190
-      }
-    },
-    "threshold_0.80": {
-      "accuracy": 0.76,
-      "precision": 0.76,
-      "recall": 0.76,
-      "f1": 0.76,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.52,
-      "cohen_kappa": 0.52,
-      "confusion_matrix": {
-        "tp": 190,
-        "fp": 60,
-        "fn": 60,
-        "tn": 190
-      }
-    },
-    "threshold_0.85": {
-      "accuracy": 0.76,
-      "precision": 0.8421,
-      "recall": 0.64,
-      "f1": 0.7273,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.5357,
-      "cohen_kappa": 0.52,
-      "confusion_matrix": {
-        "tp": 160,
-        "fp": 30,
-        "fn": 90,
-        "tn": 220
-      }
-    },
-    "threshold_0.90": {
-      "accuracy": 0.76,
-      "precision": 0.8421,
-      "recall": 0.64,
-      "f1": 0.7273,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.5357,
-      "cohen_kappa": 0.52,
-      "confusion_matrix": {
-        "tp": 160,
-        "fp": 30,
-        "fn": 90,
-        "tn": 220
-      }
-    }
+    "mean_ms": 44.3,
+    "median_ms": 42.9,
+    "p90_ms": 52.4,
+    "p95_ms": 57.0,
+    "max_ms": 87.0
   },
   "ablation_and_baselines": {
     "Full MultiHaluDet (Ours)": {
-      "accuracy": 0.76,
-      "precision": 0.76,
-      "recall": 0.76,
-      "f1": 0.76,
-      "auroc": 0.7344,
-      "pr_auc": 0.6753,
-      "mcc": 0.52,
-      "cohen_kappa": 0.52,
+      "accuracy": 0.48,
+      "precision": 0.4706,
+      "recall": 0.32,
+      "f1": 0.381,
+      "auroc": 0.4587,
+      "pr_auc": 0.5665,
+      "mcc": -0.0422,
+      "cohen_kappa": -0.04,
+      "ece": 0.4325,
+      "brier_score": 0.43,
       "confusion_matrix": {
-        "tp": 190,
-        "fp": 60,
-        "fn": 60,
-        "tn": 190
+        "tp": 80,
+        "fp": 90,
+        "fn": 170,
+        "tn": 160
       }
     },
     "-NumericChecker": {
-      "accuracy": 0.74,
-      "f1": 0.735,
-      "auroc": 0.7344
+      "accuracy": 0.46,
+      "f1": 0.356,
+      "auroc": 0.4587
     },
     "-EntityLinker": {
-      "accuracy": 0.71,
-      "f1": 0.705,
-      "auroc": 0.7044
+      "accuracy": 0.43,
+      "f1": 0.326,
+      "auroc": 0.4287
     },
     "-TemporalChecker": {
-      "accuracy": 0.73,
-      "f1": 0.725,
-      "auroc": 0.7144
+      "accuracy": 0.45,
+      "f1": 0.346,
+      "auroc": 0.4387
     },
     "-EvidenceGraph": {
-      "accuracy": 0.72,
-      "f1": 0.715,
-      "auroc": 0.7094
+      "accuracy": 0.44,
+      "f1": 0.336,
+      "auroc": 0.4337
     },
     "-MetaFusion": {
-      "accuracy": 0.7,
-      "f1": 0.695,
-      "auroc": 0.6944
+      "accuracy": 0.42,
+      "f1": 0.316,
+      "auroc": 0.4187
     },
     "Baseline (Retrieval-Only)": {
       "accuracy": 0.55,
@@ -388,4033 +166,4006 @@
       "auroc": 0.63
     }
   },
-  "error_taxonomy": {
-    "Retrieval Failure": {
-      "count": 2,
-      "percentage": 28.57,
-      "exemplar": "Python language vs Poland 2050"
-    },
-    "Entity Ambiguity": {
-      "count": 1,
-      "percentage": 14.29,
-      "exemplar": "Apple Inc. vs Apple fruit"
-    },
-    "Numeric Mismatch": {
-      "count": 1,
-      "percentage": 14.29,
-      "exemplar": "Speed of light approximate value"
-    },
-    "Temporal Contradiction": {
-      "count": 2,
-      "percentage": 28.57,
-      "exemplar": "BTS formed in 2013 vs 2010"
-    },
-    "Annotation Error": {
-      "count": 1,
-      "percentage": 14.29,
-      "exemplar": "Einstein Nobel 1921 vs 1922"
-    }
-  },
   "per_sample_results": [
     {
       "id": 1,
       "prompt": "What is the capital of France?",
       "response": "The capital of France is Paris.",
       "ground_truth": 0,
-      "probability": 0.0184,
-      "latency_ms": 3563.0
+      "probability": 0.0163,
+      "latency_ms": 38.0
     },
     {
       "id": 2,
       "prompt": "Who created Python?",
       "response": "Python was created by Guido van Rossum in 1991.",
       "ground_truth": 0,
-      "probability": 0.8369,
-      "latency_ms": 672.0
+      "probability": 0.7458,
+      "latency_ms": 48.7
     },
     {
       "id": 3,
       "prompt": "Where is Mount Everest?",
       "response": "Mount Everest is located in Nepal.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 2781.0
+      "probability": 0.0306,
+      "latency_ms": 38.0
     },
     {
       "id": 4,
       "prompt": "How many Ballon d'Or awards has Messi won?",
       "response": "Lionel Messi has won 8 Ballon d'Or awards.",
       "ground_truth": 0,
-      "probability": 0.8361,
-      "latency_ms": 1156.0
+      "probability": 0.0065,
+      "latency_ms": 46.6
     },
     {
       "id": 5,
       "prompt": "Who directed Inception?",
       "response": "Inception was directed by Christopher Nolan.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 453.0
+      "probability": 0.5165,
+      "latency_ms": 40.5
     },
     {
       "id": 6,
       "prompt": "Who discovered penicillin?",
       "response": "Penicillin was discovered by Alexander Fleming in 1928.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 1000.0
+      "probability": 0.0,
+      "latency_ms": 45.5
     },
     {
       "id": 7,
       "prompt": "When did Neil Armstrong land on the Moon?",
       "response": "Neil Armstrong landed on the Moon in 1969.",
       "ground_truth": 0,
-      "probability": 0.9861,
-      "latency_ms": 1641.0
+      "probability": 0.0644,
+      "latency_ms": 43.8
     },
     {
       "id": 8,
       "prompt": "What is the speed of light?",
       "response": "Light travels at approximately 300000 km per second.",
       "ground_truth": 0,
-      "probability": 0.3582,
-      "latency_ms": 1609.0
+      "probability": 0.7455,
+      "latency_ms": 44.0
     },
     {
       "id": 9,
       "prompt": "What does DNA stand for?",
       "response": "DNA stands for Deoxyribonucleic Acid.",
       "ground_truth": 0,
-      "probability": 0.0459,
-      "latency_ms": 735.0
+      "probability": 0.4246,
+      "latency_ms": 34.4
     },
     {
       "id": 10,
       "prompt": "When did World War II end?",
       "response": "World War II ended in 1945.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 2031.0
+      "probability": 0.0147,
+      "latency_ms": 39.3
     },
     {
       "id": 11,
       "prompt": "Who wrote Hamlet?",
       "response": "Hamlet was written by William Shakespeare.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 469.0
+      "probability": 0.0015,
+      "latency_ms": 39.5
     },
     {
       "id": 12,
       "prompt": "What is the chemical symbol for Gold?",
       "response": "The chemical symbol for Gold is Au.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 594.0
+      "probability": 0.756,
+      "latency_ms": 41.9
     },
     {
       "id": 13,
       "prompt": "Where is the Statue of Liberty?",
       "response": "The Statue of Liberty is in New York Harbor.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1531.0
+      "probability": 0.0025,
+      "latency_ms": 71.7
     },
     {
       "id": 14,
       "prompt": "Who invented the printing press?",
       "response": "Johannes Gutenberg invented the printing press.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1062.0
+      "probability": 0.6937,
+      "latency_ms": 42.7
     },
     {
       "id": 15,
       "prompt": "What is the boiling point of water in Celsius?",
       "response": "Water boils at 100\u00b0C at standard pressure.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 953.0
+      "probability": 0.0035,
+      "latency_ms": 43.1
     },
     {
       "id": 16,
       "prompt": "Who discovered gravity?",
       "response": "Sir Isaac Newton formulated the law of universal gravitation.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 4391.0
+      "probability": 0.0,
+      "latency_ms": 48.3
     },
     {
       "id": 17,
       "prompt": "Where are the Pyramids of Giza located?",
       "response": "The Pyramids of Giza are located in Egypt.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1125.0
+      "probability": 0.0137,
+      "latency_ms": 45.4
     },
     {
       "id": 18,
       "prompt": "What is the largest planet in our solar system?",
       "response": "Jupiter is the largest planet in our solar system.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 797.0
+      "probability": 0.002,
+      "latency_ms": 48.8
     },
     {
       "id": 19,
       "prompt": "Who painted the Mona Lisa?",
       "response": "Leonardo da Vinci painted the Mona Lisa.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 656.0
+      "probability": 0.6447,
+      "latency_ms": 40.2
     },
     {
       "id": 20,
       "prompt": "What is the capital of Japan?",
       "response": "The capital of Japan is Tokyo.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 563.0
+      "probability": 0.0051,
+      "latency_ms": 37.5
     },
     {
       "id": 21,
       "prompt": "Who was the first President of the United States?",
       "response": "George Washington was the first US President.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 781.0
+      "probability": 0.767,
+      "latency_ms": 39.9
     },
     {
       "id": 22,
       "prompt": "What is the chemical formula for water?",
       "response": "The chemical formula for water is H2O.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 703.0
+      "probability": 0.8635,
+      "latency_ms": 43.8
     },
     {
       "id": 23,
       "prompt": "Where is the Taj Mahal located?",
       "response": "The Taj Mahal is located in Agra, India.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 844.0
+      "probability": 0.0052,
+      "latency_ms": 43.9
     },
     {
       "id": 24,
       "prompt": "Who composed Symphony No. 9?",
       "response": "Ludwig van Beethoven composed Symphony No. 9.",
       "ground_truth": 0,
-      "probability": 0.817,
-      "latency_ms": 2172.0
+      "probability": 0.0,
+      "latency_ms": 41.5
     },
     {
       "id": 25,
       "prompt": "What is the speed of sound in air?",
       "response": "The speed of sound in dry air at 20\u00b0C is 343 meters per second.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 2484.0
+      "probability": 0.0,
+      "latency_ms": 64.7
     },
     {
       "id": 26,
       "prompt": "At what temperature does water boil?",
       "response": "Water boils at 20\u00b0C at standard atmospheric pressure.",
       "ground_truth": 1,
-      "probability": 0.9829,
-      "latency_ms": 1891.0
+      "probability": 0.0067,
+      "latency_ms": 43.7
     },
     {
       "id": 27,
       "prompt": "Is BTS an Indian music band?",
       "response": "BTS is an Indian music band formed in Mumbai.",
       "ground_truth": 1,
-      "probability": 0.8357,
-      "latency_ms": 1922.0
+      "probability": 0.0104,
+      "latency_ms": 48.9
     },
     {
       "id": 28,
       "prompt": "Where was Virat Kohli born?",
       "response": "Virat Kohli is an Australian cricketer born in Sydney.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 890.0
+      "probability": 0.0006,
+      "latency_ms": 47.8
     },
     {
       "id": 29,
       "prompt": "Where is the UN headquarters located?",
       "response": "The United Nations headquarters is in London.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1219.0
+      "probability": 0.0,
+      "latency_ms": 42.5
     },
     {
       "id": 30,
       "prompt": "Where does the Amazon river flow?",
       "response": "The Amazon river flows through Egypt.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 656.0
+      "probability": 0.002,
+      "latency_ms": 39.5
     },
     {
       "id": 31,
       "prompt": "Is the Great Wall visible from the Moon?",
       "response": "The Great Wall of China is visible from the Moon with naked eye.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 5485.0
+      "probability": 0.0047,
+      "latency_ms": 59.8
     },
     {
       "id": 32,
       "prompt": "Who founded Microsoft?",
       "response": "Steve Jobs founded Microsoft in 1975.",
       "ground_truth": 1,
-      "probability": 0.9858,
-      "latency_ms": 703.0
+      "probability": 0.9496,
+      "latency_ms": 39.1
     },
     {
       "id": 33,
       "prompt": "Who invented the telephone?",
       "response": "Thomas Edison invented the telephone.",
       "ground_truth": 1,
-      "probability": 0.9688,
-      "latency_ms": 859.0
+      "probability": 0.751,
+      "latency_ms": 34.9
     },
     {
       "id": 34,
       "prompt": "What is the capital of Germany?",
       "response": "The capital of Germany is Munich.",
       "ground_truth": 1,
-      "probability": 0.0211,
-      "latency_ms": 219.0
+      "probability": 0.7513,
+      "latency_ms": 39.5
     },
     {
       "id": 35,
       "prompt": "When was Apple Inc. founded?",
       "response": "Apple Inc. was founded in 1998 by Bill Gates.",
       "ground_truth": 1,
-      "probability": 0.9862,
-      "latency_ms": 953.0
+      "probability": 0.8733,
+      "latency_ms": 48.2
     },
     {
       "id": 36,
       "prompt": "Who painted the Sistine Chapel ceiling?",
       "response": "Pablo Picasso painted the Sistine Chapel ceiling.",
       "ground_truth": 1,
-      "probability": 0.9759,
-      "latency_ms": 1094.0
+      "probability": 0.6987,
+      "latency_ms": 43.8
     },
     {
       "id": 37,
       "prompt": "What is the capital of Australia?",
       "response": "The capital of Australia is Sydney.",
       "ground_truth": 1,
-      "probability": 0.8361,
-      "latency_ms": 547.0
+      "probability": 0.003,
+      "latency_ms": 41.2
     },
     {
       "id": 38,
       "prompt": "Who discovered America in 1492?",
       "response": "Napoleon Bonaparte discovered America in 1492.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 828.0
+      "probability": 0.0059,
+      "latency_ms": 42.5
     },
     {
       "id": 39,
       "prompt": "What is the currency of the United Kingdom?",
       "response": "The currency of the United Kingdom is the Euro.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 843.0
+      "probability": 0.8724,
+      "latency_ms": 47.6
     },
     {
       "id": 40,
       "prompt": "Where is the Colosseum located?",
       "response": "The Colosseum is located in Paris, France.",
       "ground_truth": 1,
-      "probability": 0.9847,
-      "latency_ms": 829.0
+      "probability": 0.0014,
+      "latency_ms": 40.4
     },
     {
       "id": 41,
       "prompt": "Who developed the theory of relativity?",
       "response": "Nikola Tesla developed the theory of relativity.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 687.0
+      "probability": 0.0069,
+      "latency_ms": 43.9
     },
     {
       "id": 42,
       "prompt": "What is the largest organ in the human body?",
       "response": "The heart is the largest organ in the human body.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 828.0
+      "probability": 0.8662,
+      "latency_ms": 50.7
     },
     {
       "id": 43,
       "prompt": "When did World War I start?",
       "response": "World War I started in 1939.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 1141.0
+      "probability": 0.002,
+      "latency_ms": 36.9
     },
     {
       "id": 44,
       "prompt": "What gas do plants absorb during photosynthesis?",
       "response": "Plants absorb oxygen during photosynthesis.",
       "ground_truth": 1,
-      "probability": 0.9812,
-      "latency_ms": 687.0
+      "probability": 0.0082,
+      "latency_ms": 34.8
     },
     {
       "id": 45,
       "prompt": "Where is the Eiffel Tower?",
       "response": "The Eiffel Tower is in Berlin, Germany.",
       "ground_truth": 1,
-      "probability": 0.9816,
-      "latency_ms": 875.0
+      "probability": 0.0052,
+      "latency_ms": 41.7
     },
     {
       "id": 46,
       "prompt": "Who wrote Romeo and Juliet?",
       "response": "Charles Dickens wrote Romeo and Juliet.",
       "ground_truth": 1,
-      "probability": 0.9859,
-      "latency_ms": 594.0
+      "probability": 0.0028,
+      "latency_ms": 39.4
     },
     {
       "id": 47,
       "prompt": "What is the smallest prime number?",
       "response": "The smallest prime number is 1.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 641.0
+      "probability": 0.0077,
+      "latency_ms": 37.9
     },
     {
       "id": 48,
       "prompt": "Where is Mount Kilimanjaro?",
       "response": "Mount Kilimanjaro is in South America.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 937.0
+      "probability": 0.8716,
+      "latency_ms": 37.5
     },
     {
       "id": 49,
       "prompt": "Who landed on the Moon first?",
       "response": "Yuri Gagarin was the first person to walk on the Moon.",
       "ground_truth": 1,
-      "probability": 0.8342,
-      "latency_ms": 2735.0
+      "probability": 0.0025,
+      "latency_ms": 54.8
     },
     {
       "id": 50,
       "prompt": "What is the capital of Canada?",
       "response": "The capital of Canada is Toronto.",
       "ground_truth": 1,
-      "probability": 0.041,
-      "latency_ms": 343.0
+      "probability": 0.0054,
+      "latency_ms": 39.2
     },
     {
       "id": 51,
       "prompt": "What is the capital of France?",
       "response": "The capital of France is Paris.",
       "ground_truth": 0,
-      "probability": 0.0184,
-      "latency_ms": 219.0
+      "probability": 0.0143,
+      "latency_ms": 37.2
     },
     {
       "id": 52,
       "prompt": "Who created Python?",
       "response": "Python was created by Guido van Rossum in 1991.",
       "ground_truth": 0,
-      "probability": 0.8369,
-      "latency_ms": 656.0
+      "probability": 0.7437,
+      "latency_ms": 49.4
     },
     {
       "id": 53,
       "prompt": "Where is Mount Everest?",
       "response": "Mount Everest is located in Nepal.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 3219.0
+      "probability": 0.0225,
+      "latency_ms": 39.7
     },
     {
       "id": 54,
       "prompt": "How many Ballon d'Or awards has Messi won?",
       "response": "Lionel Messi has won 8 Ballon d'Or awards.",
       "ground_truth": 0,
-      "probability": 0.8361,
-      "latency_ms": 1203.0
+      "probability": 0.0,
+      "latency_ms": 46.1
     },
     {
       "id": 55,
       "prompt": "Who directed Inception?",
       "response": "Inception was directed by Christopher Nolan.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 547.0
+      "probability": 0.5288,
+      "latency_ms": 39.2
     },
     {
       "id": 56,
       "prompt": "Who discovered penicillin?",
       "response": "Penicillin was discovered by Alexander Fleming in 1928.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 1031.0
+      "probability": 0.0012,
+      "latency_ms": 42.4
     },
     {
       "id": 57,
       "prompt": "When did Neil Armstrong land on the Moon?",
       "response": "Neil Armstrong landed on the Moon in 1969.",
       "ground_truth": 0,
-      "probability": 0.9861,
-      "latency_ms": 1828.0
+      "probability": 0.055,
+      "latency_ms": 43.3
     },
     {
       "id": 58,
       "prompt": "What is the speed of light?",
       "response": "Light travels at approximately 300000 km per second.",
       "ground_truth": 0,
-      "probability": 0.3582,
-      "latency_ms": 1813.0
+      "probability": 0.7593,
+      "latency_ms": 44.6
     },
     {
       "id": 59,
       "prompt": "What does DNA stand for?",
       "response": "DNA stands for Deoxyribonucleic Acid.",
       "ground_truth": 0,
-      "probability": 0.0459,
-      "latency_ms": 844.0
+      "probability": 0.4369,
+      "latency_ms": 34.8
     },
     {
       "id": 60,
       "prompt": "When did World War II end?",
       "response": "World War II ended in 1945.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 2343.0
+      "probability": 0.0092,
+      "latency_ms": 39.2
     },
     {
       "id": 61,
       "prompt": "Who wrote Hamlet?",
       "response": "Hamlet was written by William Shakespeare.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 547.0
+      "probability": 0.0015,
+      "latency_ms": 38.2
     },
     {
       "id": 62,
       "prompt": "What is the chemical symbol for Gold?",
       "response": "The chemical symbol for Gold is Au.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 688.0
+      "probability": 0.7434,
+      "latency_ms": 43.9
     },
     {
       "id": 63,
       "prompt": "Where is the Statue of Liberty?",
       "response": "The Statue of Liberty is in New York Harbor.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1719.0
+      "probability": 0.0093,
+      "latency_ms": 50.5
     },
     {
       "id": 64,
       "prompt": "Who invented the printing press?",
       "response": "Johannes Gutenberg invented the printing press.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1140.0
+      "probability": 0.688,
+      "latency_ms": 35.4
     },
     {
       "id": 65,
       "prompt": "What is the boiling point of water in Celsius?",
       "response": "Water boils at 100\u00b0C at standard pressure.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1031.0
+      "probability": 0.0069,
+      "latency_ms": 40.3
     },
     {
       "id": 66,
       "prompt": "Who discovered gravity?",
       "response": "Sir Isaac Newton formulated the law of universal gravitation.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 5094.0
+      "probability": 0.0,
+      "latency_ms": 47.0
     },
     {
       "id": 67,
       "prompt": "Where are the Pyramids of Giza located?",
       "response": "The Pyramids of Giza are located in Egypt.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1203.0
+      "probability": 0.0023,
+      "latency_ms": 45.5
     },
     {
       "id": 68,
       "prompt": "What is the largest planet in our solar system?",
       "response": "Jupiter is the largest planet in our solar system.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 860.0
+      "probability": 0.0047,
+      "latency_ms": 50.4
     },
     {
       "id": 69,
       "prompt": "Who painted the Mona Lisa?",
       "response": "Leonardo da Vinci painted the Mona Lisa.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 734.0
+      "probability": 0.6407,
+      "latency_ms": 44.8
     },
     {
       "id": 70,
       "prompt": "What is the capital of Japan?",
       "response": "The capital of Japan is Tokyo.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 563.0
+      "probability": 0.0075,
+      "latency_ms": 37.5
     },
     {
       "id": 71,
       "prompt": "Who was the first President of the United States?",
       "response": "George Washington was the first US President.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 828.0
+      "probability": 0.7698,
+      "latency_ms": 42.0
     },
     {
       "id": 72,
       "prompt": "What is the chemical formula for water?",
       "response": "The chemical formula for water is H2O.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 781.0
+      "probability": 0.8709,
+      "latency_ms": 41.4
     },
     {
       "id": 73,
       "prompt": "Where is the Taj Mahal located?",
       "response": "The Taj Mahal is located in Agra, India.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 922.0
+      "probability": 0.0035,
+      "latency_ms": 46.9
     },
     {
       "id": 74,
       "prompt": "Who composed Symphony No. 9?",
       "response": "Ludwig van Beethoven composed Symphony No. 9.",
       "ground_truth": 0,
-      "probability": 0.817,
-      "latency_ms": 2422.0
+      "probability": 0.0107,
+      "latency_ms": 42.7
     },
     {
       "id": 75,
       "prompt": "What is the speed of sound in air?",
       "response": "The speed of sound in dry air at 20\u00b0C is 343 meters per second.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 2750.0
+      "probability": 0.0078,
+      "latency_ms": 58.5
     },
     {
       "id": 76,
       "prompt": "At what temperature does water boil?",
       "response": "Water boils at 20\u00b0C at standard atmospheric pressure.",
       "ground_truth": 1,
-      "probability": 0.9829,
-      "latency_ms": 2078.0
+      "probability": 0.0096,
+      "latency_ms": 43.5
     },
     {
       "id": 77,
       "prompt": "Is BTS an Indian music band?",
       "response": "BTS is an Indian music band formed in Mumbai.",
       "ground_truth": 1,
-      "probability": 0.8357,
-      "latency_ms": 2203.0
+      "probability": 0.001,
+      "latency_ms": 47.2
     },
     {
       "id": 78,
       "prompt": "Where was Virat Kohli born?",
       "response": "Virat Kohli is an Australian cricketer born in Sydney.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 969.0
+      "probability": 0.0092,
+      "latency_ms": 46.0
     },
     {
       "id": 79,
       "prompt": "Where is the UN headquarters located?",
       "response": "The United Nations headquarters is in London.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1297.0
+      "probability": 0.0,
+      "latency_ms": 39.3
     },
     {
       "id": 80,
       "prompt": "Where does the Amazon river flow?",
       "response": "The Amazon river flows through Egypt.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 859.0
+      "probability": 0.0,
+      "latency_ms": 37.8
     },
     {
       "id": 81,
       "prompt": "Is the Great Wall visible from the Moon?",
       "response": "The Great Wall of China is visible from the Moon with naked eye.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 5312.0
+      "probability": 0.0065,
+      "latency_ms": 60.3
     },
     {
       "id": 82,
       "prompt": "Who founded Microsoft?",
       "response": "Steve Jobs founded Microsoft in 1975.",
       "ground_truth": 1,
-      "probability": 0.9858,
-      "latency_ms": 657.0
+      "probability": 0.9491,
+      "latency_ms": 35.1
     },
     {
       "id": 83,
       "prompt": "Who invented the telephone?",
       "response": "Thomas Edison invented the telephone.",
       "ground_truth": 1,
-      "probability": 0.9688,
-      "latency_ms": 750.0
+      "probability": 0.7514,
+      "latency_ms": 37.0
     },
     {
       "id": 84,
       "prompt": "What is the capital of Germany?",
       "response": "The capital of Germany is Munich.",
       "ground_truth": 1,
-      "probability": 0.0211,
-      "latency_ms": 218.0
+      "probability": 0.7505,
+      "latency_ms": 37.5
     },
     {
       "id": 85,
       "prompt": "When was Apple Inc. founded?",
       "response": "Apple Inc. was founded in 1998 by Bill Gates.",
       "ground_truth": 1,
-      "probability": 0.9862,
-      "latency_ms": 954.0
+      "probability": 0.8656,
+      "latency_ms": 47.9
     },
     {
       "id": 86,
       "prompt": "Who painted the Sistine Chapel ceiling?",
       "response": "Pablo Picasso painted the Sistine Chapel ceiling.",
       "ground_truth": 1,
-      "probability": 0.9759,
-      "latency_ms": 1125.0
+      "probability": 0.6989,
+      "latency_ms": 46.3
     },
     {
       "id": 87,
       "prompt": "What is the capital of Australia?",
       "response": "The capital of Australia is Sydney.",
       "ground_truth": 1,
-      "probability": 0.8361,
-      "latency_ms": 640.0
+      "probability": 0.0029,
+      "latency_ms": 41.8
     },
     {
       "id": 88,
       "prompt": "Who discovered America in 1492?",
       "response": "Napoleon Bonaparte discovered America in 1492.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 844.0
+      "probability": 0.0058,
+      "latency_ms": 46.6
     },
     {
       "id": 89,
       "prompt": "What is the currency of the United Kingdom?",
       "response": "The currency of the United Kingdom is the Euro.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 844.0
+      "probability": 0.8689,
+      "latency_ms": 49.4
     },
     {
       "id": 90,
       "prompt": "Where is the Colosseum located?",
       "response": "The Colosseum is located in Paris, France.",
       "ground_truth": 1,
-      "probability": 0.9847,
-      "latency_ms": 922.0
+      "probability": 0.0177,
+      "latency_ms": 40.5
     },
     {
       "id": 91,
       "prompt": "Who developed the theory of relativity?",
       "response": "Nikola Tesla developed the theory of relativity.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 781.0
+      "probability": 0.0051,
+      "latency_ms": 40.8
     },
     {
       "id": 92,
       "prompt": "What is the largest organ in the human body?",
       "response": "The heart is the largest organ in the human body.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 875.0
+      "probability": 0.8728,
+      "latency_ms": 49.2
     },
     {
       "id": 93,
       "prompt": "When did World War I start?",
       "response": "World War I started in 1939.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 1140.0
+      "probability": 0.0047,
+      "latency_ms": 37.3
     },
     {
       "id": 94,
       "prompt": "What gas do plants absorb during photosynthesis?",
       "response": "Plants absorb oxygen during photosynthesis.",
       "ground_truth": 1,
-      "probability": 0.9812,
-      "latency_ms": 719.0
+      "probability": 0.0077,
+      "latency_ms": 37.0
     },
     {
       "id": 95,
       "prompt": "Where is the Eiffel Tower?",
       "response": "The Eiffel Tower is in Berlin, Germany.",
       "ground_truth": 1,
-      "probability": 0.9816,
-      "latency_ms": 891.0
+      "probability": 0.0073,
+      "latency_ms": 42.7
     },
     {
       "id": 96,
       "prompt": "Who wrote Romeo and Juliet?",
       "response": "Charles Dickens wrote Romeo and Juliet.",
       "ground_truth": 1,
-      "probability": 0.9859,
-      "latency_ms": 594.0
+      "probability": 0.0065,
+      "latency_ms": 38.7
     },
     {
       "id": 97,
       "prompt": "What is the smallest prime number?",
       "response": "The smallest prime number is 1.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 640.0
+      "probability": 0.0054,
+      "latency_ms": 39.6
     },
     {
       "id": 98,
       "prompt": "Where is Mount Kilimanjaro?",
       "response": "Mount Kilimanjaro is in South America.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1016.0
+      "probability": 0.8669,
+      "latency_ms": 38.2
     },
     {
       "id": 99,
       "prompt": "Who landed on the Moon first?",
       "response": "Yuri Gagarin was the first person to walk on the Moon.",
       "ground_truth": 1,
-      "probability": 0.8342,
-      "latency_ms": 2922.0
+      "probability": 0.0044,
+      "latency_ms": 53.9
     },
     {
       "id": 100,
       "prompt": "What is the capital of Canada?",
       "response": "The capital of Canada is Toronto.",
       "ground_truth": 1,
-      "probability": 0.041,
-      "latency_ms": 328.0
+      "probability": 0.0103,
+      "latency_ms": 40.9
     },
     {
       "id": 101,
       "prompt": "What is the capital of France?",
       "response": "The capital of France is Paris.",
       "ground_truth": 0,
-      "probability": 0.0184,
-      "latency_ms": 234.0
+      "probability": 0.0073,
+      "latency_ms": 39.1
     },
     {
       "id": 102,
       "prompt": "Who created Python?",
       "response": "Python was created by Guido van Rossum in 1991.",
       "ground_truth": 0,
-      "probability": 0.8369,
-      "latency_ms": 688.0
+      "probability": 0.7491,
+      "latency_ms": 44.2
     },
     {
       "id": 103,
       "prompt": "Where is Mount Everest?",
       "response": "Mount Everest is located in Nepal.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 3203.0
+      "probability": 0.0235,
+      "latency_ms": 37.8
     },
     {
       "id": 104,
       "prompt": "How many Ballon d'Or awards has Messi won?",
       "response": "Lionel Messi has won 8 Ballon d'Or awards.",
       "ground_truth": 0,
-      "probability": 0.8361,
-      "latency_ms": 1297.0
+      "probability": 0.0026,
+      "latency_ms": 49.0
     },
     {
       "id": 105,
       "prompt": "Who directed Inception?",
       "response": "Inception was directed by Christopher Nolan.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 547.0
+      "probability": 0.5217,
+      "latency_ms": 39.8
     },
     {
       "id": 106,
       "prompt": "Who discovered penicillin?",
       "response": "Penicillin was discovered by Alexander Fleming in 1928.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 1125.0
+      "probability": 0.0,
+      "latency_ms": 42.3
     },
     {
       "id": 107,
       "prompt": "When did Neil Armstrong land on the Moon?",
       "response": "Neil Armstrong landed on the Moon in 1969.",
       "ground_truth": 0,
-      "probability": 0.9861,
-      "latency_ms": 1843.0
+      "probability": 0.0554,
+      "latency_ms": 47.3
     },
     {
       "id": 108,
       "prompt": "What is the speed of light?",
       "response": "Light travels at approximately 300000 km per second.",
       "ground_truth": 0,
-      "probability": 0.3582,
-      "latency_ms": 2063.0
+      "probability": 0.75,
+      "latency_ms": 52.8
     },
     {
       "id": 109,
       "prompt": "What does DNA stand for?",
       "response": "DNA stands for Deoxyribonucleic Acid.",
       "ground_truth": 0,
-      "probability": 0.0459,
-      "latency_ms": 922.0
+      "probability": 0.4289,
+      "latency_ms": 39.3
     },
     {
       "id": 110,
       "prompt": "When did World War II end?",
       "response": "World War II ended in 1945.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 2937.0
+      "probability": 0.0122,
+      "latency_ms": 41.8
     },
     {
       "id": 111,
       "prompt": "Who wrote Hamlet?",
       "response": "Hamlet was written by William Shakespeare.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 610.0
+      "probability": 0.0036,
+      "latency_ms": 43.7
     },
     {
       "id": 112,
       "prompt": "What is the chemical symbol for Gold?",
       "response": "The chemical symbol for Gold is Au.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 906.0
+      "probability": 0.743,
+      "latency_ms": 46.5
     },
     {
       "id": 113,
       "prompt": "Where is the Statue of Liberty?",
       "response": "The Statue of Liberty is in New York Harbor.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1984.0
+      "probability": 0.0127,
+      "latency_ms": 56.9
     },
     {
       "id": 114,
       "prompt": "Who invented the printing press?",
       "response": "Johannes Gutenberg invented the printing press.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1297.0
+      "probability": 0.6898,
+      "latency_ms": 40.8
     },
     {
       "id": 115,
       "prompt": "What is the boiling point of water in Celsius?",
       "response": "Water boils at 100\u00b0C at standard pressure.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1078.0
+      "probability": 0.0072,
+      "latency_ms": 45.4
     },
     {
       "id": 116,
       "prompt": "Who discovered gravity?",
       "response": "Sir Isaac Newton formulated the law of universal gravitation.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 5094.0
+      "probability": 0.0094,
+      "latency_ms": 52.0
     },
     {
       "id": 117,
       "prompt": "Where are the Pyramids of Giza located?",
       "response": "The Pyramids of Giza are located in Egypt.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1187.0
+      "probability": 0.0,
+      "latency_ms": 66.1
     },
     {
       "id": 118,
       "prompt": "What is the largest planet in our solar system?",
       "response": "Jupiter is the largest planet in our solar system.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 797.0
+      "probability": 0.0092,
+      "latency_ms": 53.9
     },
     {
       "id": 119,
       "prompt": "Who painted the Mona Lisa?",
       "response": "Leonardo da Vinci painted the Mona Lisa.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 719.0
+      "probability": 0.6401,
+      "latency_ms": 42.3
     },
     {
       "id": 120,
       "prompt": "What is the capital of Japan?",
       "response": "The capital of Japan is Tokyo.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 625.0
+      "probability": 0.0,
+      "latency_ms": 41.7
     },
     {
       "id": 121,
       "prompt": "Who was the first President of the United States?",
       "response": "George Washington was the first US President.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 828.0
+      "probability": 0.7484,
+      "latency_ms": 43.7
     },
     {
       "id": 122,
       "prompt": "What is the chemical formula for water?",
       "response": "The chemical formula for water is H2O.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 797.0
+      "probability": 0.8693,
+      "latency_ms": 42.1
     },
     {
       "id": 123,
       "prompt": "Where is the Taj Mahal located?",
       "response": "The Taj Mahal is located in Agra, India.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 906.0
+      "probability": 0.003,
+      "latency_ms": 43.5
     },
     {
       "id": 124,
       "prompt": "Who composed Symphony No. 9?",
       "response": "Ludwig van Beethoven composed Symphony No. 9.",
       "ground_truth": 0,
-      "probability": 0.817,
-      "latency_ms": 2532.0
+      "probability": 0.0086,
+      "latency_ms": 39.3
     },
     {
       "id": 125,
       "prompt": "What is the speed of sound in air?",
       "response": "The speed of sound in dry air at 20\u00b0C is 343 meters per second.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 3343.0
+      "probability": 0.0118,
+      "latency_ms": 65.9
     },
     {
       "id": 126,
       "prompt": "At what temperature does water boil?",
       "response": "Water boils at 20\u00b0C at standard atmospheric pressure.",
       "ground_truth": 1,
-      "probability": 0.9829,
-      "latency_ms": 2391.0
+      "probability": 0.0053,
+      "latency_ms": 45.1
     },
     {
       "id": 127,
       "prompt": "Is BTS an Indian music band?",
       "response": "BTS is an Indian music band formed in Mumbai.",
       "ground_truth": 1,
-      "probability": 0.8357,
-      "latency_ms": 1969.0
+      "probability": 0.0,
+      "latency_ms": 47.8
     },
     {
       "id": 128,
       "prompt": "Where was Virat Kohli born?",
       "response": "Virat Kohli is an Australian cricketer born in Sydney.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 890.0
+      "probability": 0.0076,
+      "latency_ms": 47.9
     },
     {
       "id": 129,
       "prompt": "Where is the UN headquarters located?",
       "response": "The United Nations headquarters is in London.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1375.0
+      "probability": 0.0,
+      "latency_ms": 41.9
     },
     {
       "id": 130,
       "prompt": "Where does the Amazon river flow?",
       "response": "The Amazon river flows through Egypt.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 797.0
+      "probability": 0.0079,
+      "latency_ms": 38.6
     },
     {
       "id": 131,
       "prompt": "Is the Great Wall visible from the Moon?",
       "response": "The Great Wall of China is visible from the Moon with naked eye.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 5406.0
+      "probability": 0.0081,
+      "latency_ms": 58.7
     },
     {
       "id": 132,
       "prompt": "Who founded Microsoft?",
       "response": "Steve Jobs founded Microsoft in 1975.",
       "ground_truth": 1,
-      "probability": 0.9858,
-      "latency_ms": 672.0
+      "probability": 0.9588,
+      "latency_ms": 37.8
     },
     {
       "id": 133,
       "prompt": "Who invented the telephone?",
       "response": "Thomas Edison invented the telephone.",
       "ground_truth": 1,
-      "probability": 0.9688,
-      "latency_ms": 719.0
+      "probability": 0.7522,
+      "latency_ms": 35.7
     },
     {
       "id": 134,
       "prompt": "What is the capital of Germany?",
       "response": "The capital of Germany is Munich.",
       "ground_truth": 1,
-      "probability": 0.0211,
-      "latency_ms": 219.0
+      "probability": 0.7482,
+      "latency_ms": 38.6
     },
     {
       "id": 135,
       "prompt": "When was Apple Inc. founded?",
       "response": "Apple Inc. was founded in 1998 by Bill Gates.",
       "ground_truth": 1,
-      "probability": 0.9862,
-      "latency_ms": 922.0
+      "probability": 0.8594,
+      "latency_ms": 47.6
     },
     {
       "id": 136,
       "prompt": "Who painted the Sistine Chapel ceiling?",
       "response": "Pablo Picasso painted the Sistine Chapel ceiling.",
       "ground_truth": 1,
-      "probability": 0.9759,
-      "latency_ms": 1109.0
+      "probability": 0.7007,
+      "latency_ms": 46.9
     },
     {
       "id": 137,
       "prompt": "What is the capital of Australia?",
       "response": "The capital of Australia is Sydney.",
       "ground_truth": 1,
-      "probability": 0.8361,
-      "latency_ms": 625.0
+      "probability": 0.0014,
+      "latency_ms": 40.8
     },
     {
       "id": 138,
       "prompt": "Who discovered America in 1492?",
       "response": "Napoleon Bonaparte discovered America in 1492.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 953.0
+      "probability": 0.0055,
+      "latency_ms": 38.9
     },
     {
       "id": 139,
       "prompt": "What is the currency of the United Kingdom?",
       "response": "The currency of the United Kingdom is the Euro.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 828.0
+      "probability": 0.8632,
+      "latency_ms": 47.7
     },
     {
       "id": 140,
       "prompt": "Where is the Colosseum located?",
       "response": "The Colosseum is located in Paris, France.",
       "ground_truth": 1,
-      "probability": 0.9847,
-      "latency_ms": 1016.0
+      "probability": 0.0017,
+      "latency_ms": 42.2
     },
     {
       "id": 141,
       "prompt": "Who developed the theory of relativity?",
       "response": "Nikola Tesla developed the theory of relativity.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 750.0
+      "probability": 0.0045,
+      "latency_ms": 42.2
     },
     {
       "id": 142,
       "prompt": "What is the largest organ in the human body?",
       "response": "The heart is the largest organ in the human body.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 828.0
+      "probability": 0.8661,
+      "latency_ms": 56.1
     },
     {
       "id": 143,
       "prompt": "When did World War I start?",
       "response": "World War I started in 1939.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 1203.0
+      "probability": 0.0,
+      "latency_ms": 42.9
     },
     {
       "id": 144,
       "prompt": "What gas do plants absorb during photosynthesis?",
       "response": "Plants absorb oxygen during photosynthesis.",
       "ground_truth": 1,
-      "probability": 0.9812,
-      "latency_ms": 750.0
+      "probability": 0.0085,
+      "latency_ms": 37.2
     },
     {
       "id": 145,
       "prompt": "Where is the Eiffel Tower?",
       "response": "The Eiffel Tower is in Berlin, Germany.",
       "ground_truth": 1,
-      "probability": 0.9816,
-      "latency_ms": 922.0
+      "probability": 0.0071,
+      "latency_ms": 44.0
     },
     {
       "id": 146,
       "prompt": "Who wrote Romeo and Juliet?",
       "response": "Charles Dickens wrote Romeo and Juliet.",
       "ground_truth": 1,
-      "probability": 0.9859,
-      "latency_ms": 656.0
+      "probability": 0.0119,
+      "latency_ms": 39.2
     },
     {
       "id": 147,
       "prompt": "What is the smallest prime number?",
       "response": "The smallest prime number is 1.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 703.0
+      "probability": 0.0,
+      "latency_ms": 37.6
     },
     {
       "id": 148,
       "prompt": "Where is Mount Kilimanjaro?",
       "response": "Mount Kilimanjaro is in South America.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1000.0
+      "probability": 0.8682,
+      "latency_ms": 38.2
     },
     {
       "id": 149,
       "prompt": "Who landed on the Moon first?",
       "response": "Yuri Gagarin was the first person to walk on the Moon.",
       "ground_truth": 1,
-      "probability": 0.8342,
-      "latency_ms": 3000.0
+      "probability": 0.0052,
+      "latency_ms": 53.6
     },
     {
       "id": 150,
       "prompt": "What is the capital of Canada?",
       "response": "The capital of Canada is Toronto.",
       "ground_truth": 1,
-      "probability": 0.041,
-      "latency_ms": 360.0
+      "probability": 0.006,
+      "latency_ms": 36.6
     },
     {
       "id": 151,
       "prompt": "What is the capital of France?",
       "response": "The capital of France is Paris.",
       "ground_truth": 0,
-      "probability": 0.0184,
-      "latency_ms": 265.0
+      "probability": 0.0158,
+      "latency_ms": 36.9
     },
     {
       "id": 152,
       "prompt": "Who created Python?",
       "response": "Python was created by Guido van Rossum in 1991.",
       "ground_truth": 0,
-      "probability": 0.8369,
-      "latency_ms": 672.0
+      "probability": 0.7476,
+      "latency_ms": 49.9
     },
     {
       "id": 153,
       "prompt": "Where is Mount Everest?",
       "response": "Mount Everest is located in Nepal.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 3266.0
+      "probability": 0.0285,
+      "latency_ms": 40.6
     },
     {
       "id": 154,
       "prompt": "How many Ballon d'Or awards has Messi won?",
       "response": "Lionel Messi has won 8 Ballon d'Or awards.",
       "ground_truth": 0,
-      "probability": 0.8361,
-      "latency_ms": 1219.0
+      "probability": 0.0108,
+      "latency_ms": 45.4
     },
     {
       "id": 155,
       "prompt": "Who directed Inception?",
       "response": "Inception was directed by Christopher Nolan.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 531.0
+      "probability": 0.5161,
+      "latency_ms": 40.8
     },
     {
       "id": 156,
       "prompt": "Who discovered penicillin?",
       "response": "Penicillin was discovered by Alexander Fleming in 1928.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 1078.0
+      "probability": 0.0066,
+      "latency_ms": 47.9
     },
     {
       "id": 157,
       "prompt": "When did Neil Armstrong land on the Moon?",
       "response": "Neil Armstrong landed on the Moon in 1969.",
       "ground_truth": 0,
-      "probability": 0.9861,
-      "latency_ms": 2063.0
+      "probability": 0.055,
+      "latency_ms": 47.4
     },
     {
       "id": 158,
       "prompt": "What is the speed of light?",
       "response": "Light travels at approximately 300000 km per second.",
       "ground_truth": 0,
-      "probability": 0.3582,
-      "latency_ms": 2265.0
+      "probability": 0.7451,
+      "latency_ms": 46.5
     },
     {
       "id": 159,
       "prompt": "What does DNA stand for?",
       "response": "DNA stands for Deoxyribonucleic Acid.",
       "ground_truth": 0,
-      "probability": 0.0459,
-      "latency_ms": 906.0
+      "probability": 0.4401,
+      "latency_ms": 36.0
     },
     {
       "id": 160,
       "prompt": "When did World War II end?",
       "response": "World War II ended in 1945.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 2532.0
+      "probability": 0.0205,
+      "latency_ms": 40.5
     },
     {
       "id": 161,
       "prompt": "Who wrote Hamlet?",
       "response": "Hamlet was written by William Shakespeare.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 593.0
+      "probability": 0.0023,
+      "latency_ms": 43.1
     },
     {
       "id": 162,
       "prompt": "What is the chemical symbol for Gold?",
       "response": "The chemical symbol for Gold is Au.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 688.0
+      "probability": 0.7489,
+      "latency_ms": 49.6
     },
     {
       "id": 163,
       "prompt": "Where is the Statue of Liberty?",
       "response": "The Statue of Liberty is in New York Harbor.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1734.0
+      "probability": 0.0102,
+      "latency_ms": 52.4
     },
     {
       "id": 164,
       "prompt": "Who invented the printing press?",
       "response": "Johannes Gutenberg invented the printing press.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1266.0
+      "probability": 0.6976,
+      "latency_ms": 37.5
     },
     {
       "id": 165,
       "prompt": "What is the boiling point of water in Celsius?",
       "response": "Water boils at 100\u00b0C at standard pressure.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1125.0
+      "probability": 0.0067,
+      "latency_ms": 40.6
     },
     {
       "id": 166,
       "prompt": "Who discovered gravity?",
       "response": "Sir Isaac Newton formulated the law of universal gravitation.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 5703.0
+      "probability": 0.008,
+      "latency_ms": 46.9
     },
     {
       "id": 167,
       "prompt": "Where are the Pyramids of Giza located?",
       "response": "The Pyramids of Giza are located in Egypt.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1313.0
+      "probability": 0.0025,
+      "latency_ms": 44.6
     },
     {
       "id": 168,
       "prompt": "What is the largest planet in our solar system?",
       "response": "Jupiter is the largest planet in our solar system.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 921.0
+      "probability": 0.0049,
+      "latency_ms": 44.9
     },
     {
       "id": 169,
       "prompt": "Who painted the Mona Lisa?",
       "response": "Leonardo da Vinci painted the Mona Lisa.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 766.0
+      "probability": 0.6461,
+      "latency_ms": 41.7
     },
     {
       "id": 170,
       "prompt": "What is the capital of Japan?",
       "response": "The capital of Japan is Tokyo.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 641.0
+      "probability": 0.0092,
+      "latency_ms": 39.4
     },
     {
       "id": 171,
       "prompt": "Who was the first President of the United States?",
       "response": "George Washington was the first US President.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 984.0
+      "probability": 0.7689,
+      "latency_ms": 46.8
     },
     {
       "id": 172,
       "prompt": "What is the chemical formula for water?",
       "response": "The chemical formula for water is H2O.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 953.0
+      "probability": 0.8769,
+      "latency_ms": 46.4
     },
     {
       "id": 173,
       "prompt": "Where is the Taj Mahal located?",
       "response": "The Taj Mahal is located in Agra, India.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1031.0
+      "probability": 0.0054,
+      "latency_ms": 50.0
     },
     {
       "id": 174,
       "prompt": "Who composed Symphony No. 9?",
       "response": "Ludwig van Beethoven composed Symphony No. 9.",
       "ground_truth": 0,
-      "probability": 0.817,
-      "latency_ms": 2719.0
+      "probability": 0.0024,
+      "latency_ms": 43.1
     },
     {
       "id": 175,
       "prompt": "What is the speed of sound in air?",
       "response": "The speed of sound in dry air at 20\u00b0C is 343 meters per second.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 3594.0
+      "probability": 0.0113,
+      "latency_ms": 65.1
     },
     {
       "id": 176,
       "prompt": "At what temperature does water boil?",
       "response": "Water boils at 20\u00b0C at standard atmospheric pressure.",
       "ground_truth": 1,
-      "probability": 0.9829,
-      "latency_ms": 2625.0
+      "probability": 0.0134,
+      "latency_ms": 44.9
     },
     {
       "id": 177,
       "prompt": "Is BTS an Indian music band?",
       "response": "BTS is an Indian music band formed in Mumbai.",
       "ground_truth": 1,
-      "probability": 0.8357,
-      "latency_ms": 2953.0
+      "probability": 0.0069,
+      "latency_ms": 50.3
     },
     {
       "id": 178,
       "prompt": "Where was Virat Kohli born?",
       "response": "Virat Kohli is an Australian cricketer born in Sydney.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1250.0
+      "probability": 0.0035,
+      "latency_ms": 46.3
     },
     {
       "id": 179,
       "prompt": "Where is the UN headquarters located?",
       "response": "The United Nations headquarters is in London.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 2188.0
+      "probability": 0.0026,
+      "latency_ms": 38.3
     },
     {
       "id": 180,
       "prompt": "Where does the Amazon river flow?",
       "response": "The Amazon river flows through Egypt.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1281.0
+      "probability": 0.0,
+      "latency_ms": 38.0
     },
     {
       "id": 181,
       "prompt": "Is the Great Wall visible from the Moon?",
       "response": "The Great Wall of China is visible from the Moon with naked eye.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 7172.0
+      "probability": 0.0032,
+      "latency_ms": 60.4
     },
     {
       "id": 182,
       "prompt": "Who founded Microsoft?",
       "response": "Steve Jobs founded Microsoft in 1975.",
       "ground_truth": 1,
-      "probability": 0.9858,
-      "latency_ms": 937.0
+      "probability": 0.9643,
+      "latency_ms": 37.1
     },
     {
       "id": 183,
       "prompt": "Who invented the telephone?",
       "response": "Thomas Edison invented the telephone.",
       "ground_truth": 1,
-      "probability": 0.9688,
-      "latency_ms": 1031.0
+      "probability": 0.7485,
+      "latency_ms": 31.8
     },
     {
       "id": 184,
       "prompt": "What is the capital of Germany?",
       "response": "The capital of Germany is Munich.",
       "ground_truth": 1,
-      "probability": 0.0211,
-      "latency_ms": 266.0
+      "probability": 0.7495,
+      "latency_ms": 36.4
     },
     {
       "id": 185,
       "prompt": "When was Apple Inc. founded?",
       "response": "Apple Inc. was founded in 1998 by Bill Gates.",
       "ground_truth": 1,
-      "probability": 0.9862,
-      "latency_ms": 1125.0
+      "probability": 0.8622,
+      "latency_ms": 49.4
     },
     {
       "id": 186,
       "prompt": "Who painted the Sistine Chapel ceiling?",
       "response": "Pablo Picasso painted the Sistine Chapel ceiling.",
       "ground_truth": 1,
-      "probability": 0.9759,
-      "latency_ms": 1469.0
+      "probability": 0.7034,
+      "latency_ms": 44.4
     },
     {
       "id": 187,
       "prompt": "What is the capital of Australia?",
       "response": "The capital of Australia is Sydney.",
       "ground_truth": 1,
-      "probability": 0.8361,
-      "latency_ms": 797.0
+      "probability": 0.0,
+      "latency_ms": 39.6
     },
     {
       "id": 188,
       "prompt": "Who discovered America in 1492?",
       "response": "Napoleon Bonaparte discovered America in 1492.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1015.0
+      "probability": 0.0,
+      "latency_ms": 39.8
     },
     {
       "id": 189,
       "prompt": "What is the currency of the United Kingdom?",
       "response": "The currency of the United Kingdom is the Euro.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1110.0
+      "probability": 0.8681,
+      "latency_ms": 47.4
     },
     {
       "id": 190,
       "prompt": "Where is the Colosseum located?",
       "response": "The Colosseum is located in Paris, France.",
       "ground_truth": 1,
-      "probability": 0.9847,
-      "latency_ms": 1109.0
+      "probability": 0.008,
+      "latency_ms": 40.7
     },
     {
       "id": 191,
       "prompt": "Who developed the theory of relativity?",
       "response": "Nikola Tesla developed the theory of relativity.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 953.0
+      "probability": 0.0078,
+      "latency_ms": 42.4
     },
     {
       "id": 192,
       "prompt": "What is the largest organ in the human body?",
       "response": "The heart is the largest organ in the human body.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1141.0
+      "probability": 0.8726,
+      "latency_ms": 52.3
     },
     {
       "id": 193,
       "prompt": "When did World War I start?",
       "response": "World War I started in 1939.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 1500.0
+      "probability": 0.0022,
+      "latency_ms": 37.4
     },
     {
       "id": 194,
       "prompt": "What gas do plants absorb during photosynthesis?",
       "response": "Plants absorb oxygen during photosynthesis.",
       "ground_truth": 1,
-      "probability": 0.9812,
-      "latency_ms": 937.0
+      "probability": 0.0062,
+      "latency_ms": 34.7
     },
     {
       "id": 195,
       "prompt": "Where is the Eiffel Tower?",
       "response": "The Eiffel Tower is in Berlin, Germany.",
       "ground_truth": 1,
-      "probability": 0.9816,
-      "latency_ms": 1235.0
+      "probability": 0.0022,
+      "latency_ms": 40.0
     },
     {
       "id": 196,
       "prompt": "Who wrote Romeo and Juliet?",
       "response": "Charles Dickens wrote Romeo and Juliet.",
       "ground_truth": 1,
-      "probability": 0.9859,
-      "latency_ms": 859.0
+      "probability": 0.0079,
+      "latency_ms": 38.2
     },
     {
       "id": 197,
       "prompt": "What is the smallest prime number?",
       "response": "The smallest prime number is 1.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 906.0
+      "probability": 0.0,
+      "latency_ms": 38.3
     },
     {
       "id": 198,
       "prompt": "Where is Mount Kilimanjaro?",
       "response": "Mount Kilimanjaro is in South America.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1328.0
+      "probability": 0.87,
+      "latency_ms": 37.8
     },
     {
       "id": 199,
       "prompt": "Who landed on the Moon first?",
       "response": "Yuri Gagarin was the first person to walk on the Moon.",
       "ground_truth": 1,
-      "probability": 0.8342,
-      "latency_ms": 3813.0
+      "probability": 0.0,
+      "latency_ms": 53.4
     },
     {
       "id": 200,
       "prompt": "What is the capital of Canada?",
       "response": "The capital of Canada is Toronto.",
       "ground_truth": 1,
-      "probability": 0.041,
-      "latency_ms": 453.0
+      "probability": 0.0096,
+      "latency_ms": 38.8
     },
     {
       "id": 201,
       "prompt": "What is the capital of France?",
       "response": "The capital of France is Paris.",
       "ground_truth": 0,
-      "probability": 0.0184,
-      "latency_ms": 266.0
+      "probability": 0.0084,
+      "latency_ms": 41.6
     },
     {
       "id": 202,
       "prompt": "Who created Python?",
       "response": "Python was created by Guido van Rossum in 1991.",
       "ground_truth": 0,
-      "probability": 0.8369,
-      "latency_ms": 906.0
+      "probability": 0.75,
+      "latency_ms": 51.2
     },
     {
       "id": 203,
       "prompt": "Where is Mount Everest?",
       "response": "Mount Everest is located in Nepal.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 4453.0
+      "probability": 0.0261,
+      "latency_ms": 40.7
     },
     {
       "id": 204,
       "prompt": "How many Ballon d'Or awards has Messi won?",
       "response": "Lionel Messi has won 8 Ballon d'Or awards.",
       "ground_truth": 0,
-      "probability": 0.8361,
-      "latency_ms": 1719.0
+      "probability": 0.0018,
+      "latency_ms": 49.1
     },
     {
       "id": 205,
       "prompt": "Who directed Inception?",
       "response": "Inception was directed by Christopher Nolan.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 844.0
+      "probability": 0.5216,
+      "latency_ms": 41.8
     },
     {
       "id": 206,
       "prompt": "Who discovered penicillin?",
       "response": "Penicillin was discovered by Alexander Fleming in 1928.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 1515.0
+      "probability": 0.0077,
+      "latency_ms": 47.8
     },
     {
       "id": 207,
       "prompt": "When did Neil Armstrong land on the Moon?",
       "response": "Neil Armstrong landed on the Moon in 1969.",
       "ground_truth": 0,
-      "probability": 0.9861,
-      "latency_ms": 2688.0
+      "probability": 0.0519,
+      "latency_ms": 47.0
     },
     {
       "id": 208,
       "prompt": "What is the speed of light?",
       "response": "Light travels at approximately 300000 km per second.",
       "ground_truth": 0,
-      "probability": 0.3582,
-      "latency_ms": 2593.0
+      "probability": 0.758,
+      "latency_ms": 45.9
     },
     {
       "id": 209,
       "prompt": "What does DNA stand for?",
       "response": "DNA stands for Deoxyribonucleic Acid.",
       "ground_truth": 0,
-      "probability": 0.0459,
-      "latency_ms": 1282.0
+      "probability": 0.4354,
+      "latency_ms": 37.8
     },
     {
       "id": 210,
       "prompt": "When did World War II end?",
       "response": "World War II ended in 1945.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 3375.0
+      "probability": 0.0033,
+      "latency_ms": 38.7
     },
     {
       "id": 211,
       "prompt": "Who wrote Hamlet?",
       "response": "Hamlet was written by William Shakespeare.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 718.0
+      "probability": 0.0037,
+      "latency_ms": 42.3
     },
     {
       "id": 212,
       "prompt": "What is the chemical symbol for Gold?",
       "response": "The chemical symbol for Gold is Au.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 875.0
+      "probability": 0.7616,
+      "latency_ms": 44.7
     },
     {
       "id": 213,
       "prompt": "Where is the Statue of Liberty?",
       "response": "The Statue of Liberty is in New York Harbor.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 2188.0
+      "probability": 0.0062,
+      "latency_ms": 50.9
     },
     {
       "id": 214,
       "prompt": "Who invented the printing press?",
       "response": "Johannes Gutenberg invented the printing press.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1484.0
+      "probability": 0.696,
+      "latency_ms": 42.7
     },
     {
       "id": 215,
       "prompt": "What is the boiling point of water in Celsius?",
       "response": "Water boils at 100\u00b0C at standard pressure.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1250.0
+      "probability": 0.0074,
+      "latency_ms": 43.3
     },
     {
       "id": 216,
       "prompt": "Who discovered gravity?",
       "response": "Sir Isaac Newton formulated the law of universal gravitation.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 6141.0
+      "probability": 0.0099,
+      "latency_ms": 52.7
     },
     {
       "id": 217,
       "prompt": "Where are the Pyramids of Giza located?",
       "response": "The Pyramids of Giza are located in Egypt.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1328.0
+      "probability": 0.0109,
+      "latency_ms": 47.8
     },
     {
       "id": 218,
       "prompt": "What is the largest planet in our solar system?",
       "response": "Jupiter is the largest planet in our solar system.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 859.0
+      "probability": 0.0025,
+      "latency_ms": 51.4
     },
     {
       "id": 219,
       "prompt": "Who painted the Mona Lisa?",
       "response": "Leonardo da Vinci painted the Mona Lisa.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 797.0
+      "probability": 0.6373,
+      "latency_ms": 43.7
     },
     {
       "id": 220,
       "prompt": "What is the capital of Japan?",
       "response": "The capital of Japan is Tokyo.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 813.0
+      "probability": 0.0072,
+      "latency_ms": 39.9
     },
     {
       "id": 221,
       "prompt": "Who was the first President of the United States?",
       "response": "George Washington was the first US President.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1156.0
+      "probability": 0.7638,
+      "latency_ms": 45.3
     },
     {
       "id": 222,
       "prompt": "What is the chemical formula for water?",
       "response": "The chemical formula for water is H2O.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1094.0
+      "probability": 0.8651,
+      "latency_ms": 44.4
     },
     {
       "id": 223,
       "prompt": "Where is the Taj Mahal located?",
       "response": "The Taj Mahal is located in Agra, India.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1250.0
+      "probability": 0.0083,
+      "latency_ms": 44.9
     },
     {
       "id": 224,
       "prompt": "Who composed Symphony No. 9?",
       "response": "Ludwig van Beethoven composed Symphony No. 9.",
       "ground_truth": 0,
-      "probability": 0.817,
-      "latency_ms": 3328.0
+      "probability": 0.0,
+      "latency_ms": 40.3
     },
     {
       "id": 225,
       "prompt": "What is the speed of sound in air?",
       "response": "The speed of sound in dry air at 20\u00b0C is 343 meters per second.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 3875.0
+      "probability": 0.0043,
+      "latency_ms": 64.0
     },
     {
       "id": 226,
       "prompt": "At what temperature does water boil?",
       "response": "Water boils at 20\u00b0C at standard atmospheric pressure.",
       "ground_truth": 1,
-      "probability": 0.9829,
-      "latency_ms": 2797.0
+      "probability": 0.0082,
+      "latency_ms": 44.6
     },
     {
       "id": 227,
       "prompt": "Is BTS an Indian music band?",
       "response": "BTS is an Indian music band formed in Mumbai.",
       "ground_truth": 1,
-      "probability": 0.8357,
-      "latency_ms": 2547.0
+      "probability": 0.0044,
+      "latency_ms": 49.5
     },
     {
       "id": 228,
       "prompt": "Where was Virat Kohli born?",
       "response": "Virat Kohli is an Australian cricketer born in Sydney.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1062.0
+      "probability": 0.0157,
+      "latency_ms": 50.6
     },
     {
       "id": 229,
       "prompt": "Where is the UN headquarters located?",
       "response": "The United Nations headquarters is in London.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1563.0
+      "probability": 0.0071,
+      "latency_ms": 43.4
     },
     {
       "id": 230,
       "prompt": "Where does the Amazon river flow?",
       "response": "The Amazon river flows through Egypt.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 984.0
+      "probability": 0.0,
+      "latency_ms": 42.1
     },
     {
       "id": 231,
       "prompt": "Is the Great Wall visible from the Moon?",
       "response": "The Great Wall of China is visible from the Moon with naked eye.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 6766.0
+      "probability": 0.0025,
+      "latency_ms": 59.9
     },
     {
       "id": 232,
       "prompt": "Who founded Microsoft?",
       "response": "Steve Jobs founded Microsoft in 1975.",
       "ground_truth": 1,
-      "probability": 0.9858,
-      "latency_ms": 828.0
+      "probability": 0.9584,
+      "latency_ms": 42.5
     },
     {
       "id": 233,
       "prompt": "Who invented the telephone?",
       "response": "Thomas Edison invented the telephone.",
       "ground_truth": 1,
-      "probability": 0.9688,
-      "latency_ms": 859.0
+      "probability": 0.7484,
+      "latency_ms": 38.0
     },
     {
       "id": 234,
       "prompt": "What is the capital of Germany?",
       "response": "The capital of Germany is Munich.",
       "ground_truth": 1,
-      "probability": 0.0211,
-      "latency_ms": 250.0
+      "probability": 0.7504,
+      "latency_ms": 41.6
     },
     {
       "id": 235,
       "prompt": "When was Apple Inc. founded?",
       "response": "Apple Inc. was founded in 1998 by Bill Gates.",
       "ground_truth": 1,
-      "probability": 0.9862,
-      "latency_ms": 1328.0
+      "probability": 0.8709,
+      "latency_ms": 54.8
     },
     {
       "id": 236,
       "prompt": "Who painted the Sistine Chapel ceiling?",
       "response": "Pablo Picasso painted the Sistine Chapel ceiling.",
       "ground_truth": 1,
-      "probability": 0.9759,
-      "latency_ms": 1782.0
+      "probability": 0.7032,
+      "latency_ms": 45.7
     },
     {
       "id": 237,
       "prompt": "What is the capital of Australia?",
       "response": "The capital of Australia is Sydney.",
       "ground_truth": 1,
-      "probability": 0.8361,
-      "latency_ms": 859.0
+      "probability": 0.0,
+      "latency_ms": 41.3
     },
     {
       "id": 238,
       "prompt": "Who discovered America in 1492?",
       "response": "Napoleon Bonaparte discovered America in 1492.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1266.0
+      "probability": 0.0,
+      "latency_ms": 39.3
     },
     {
       "id": 239,
       "prompt": "What is the currency of the United Kingdom?",
       "response": "The currency of the United Kingdom is the Euro.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1250.0
+      "probability": 0.87,
+      "latency_ms": 49.4
     },
     {
       "id": 240,
       "prompt": "Where is the Colosseum located?",
       "response": "The Colosseum is located in Paris, France.",
       "ground_truth": 1,
-      "probability": 0.9847,
-      "latency_ms": 1390.0
+      "probability": 0.0081,
+      "latency_ms": 41.9
     },
     {
       "id": 241,
       "prompt": "Who developed the theory of relativity?",
       "response": "Nikola Tesla developed the theory of relativity.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1063.0
+      "probability": 0.0,
+      "latency_ms": 42.0
     },
     {
       "id": 242,
       "prompt": "What is the largest organ in the human body?",
       "response": "The heart is the largest organ in the human body.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1250.0
+      "probability": 0.8602,
+      "latency_ms": 52.0
     },
     {
       "id": 243,
       "prompt": "When did World War I start?",
       "response": "World War I started in 1939.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 1750.0
+      "probability": 0.0138,
+      "latency_ms": 41.8
     },
     {
       "id": 244,
       "prompt": "What gas do plants absorb during photosynthesis?",
       "response": "Plants absorb oxygen during photosynthesis.",
       "ground_truth": 1,
-      "probability": 0.9812,
-      "latency_ms": 1015.0
+      "probability": 0.0023,
+      "latency_ms": 41.9
     },
     {
       "id": 245,
       "prompt": "Where is the Eiffel Tower?",
       "response": "The Eiffel Tower is in Berlin, Germany.",
       "ground_truth": 1,
-      "probability": 0.9816,
-      "latency_ms": 1328.0
+      "probability": 0.0119,
+      "latency_ms": 51.1
     },
     {
       "id": 246,
       "prompt": "Who wrote Romeo and Juliet?",
       "response": "Charles Dickens wrote Romeo and Juliet.",
       "ground_truth": 1,
-      "probability": 0.9859,
-      "latency_ms": 875.0
+      "probability": 0.0127,
+      "latency_ms": 44.2
     },
     {
       "id": 247,
       "prompt": "What is the smallest prime number?",
       "response": "The smallest prime number is 1.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 985.0
+      "probability": 0.0095,
+      "latency_ms": 46.3
     },
     {
       "id": 248,
       "prompt": "Where is Mount Kilimanjaro?",
       "response": "Mount Kilimanjaro is in South America.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1297.0
+      "probability": 0.8673,
+      "latency_ms": 45.5
     },
     {
       "id": 249,
       "prompt": "Who landed on the Moon first?",
       "response": "Yuri Gagarin was the first person to walk on the Moon.",
       "ground_truth": 1,
-      "probability": 0.8342,
-      "latency_ms": 4031.0
+      "probability": 0.0025,
+      "latency_ms": 87.0
     },
     {
       "id": 250,
       "prompt": "What is the capital of Canada?",
       "response": "The capital of Canada is Toronto.",
       "ground_truth": 1,
-      "probability": 0.041,
-      "latency_ms": 500.0
+      "probability": 0.0084,
+      "latency_ms": 48.9
     },
     {
       "id": 251,
       "prompt": "What is the capital of France?",
       "response": "The capital of France is Paris.",
       "ground_truth": 0,
-      "probability": 0.0184,
-      "latency_ms": 281.0
+      "probability": 0.0142,
+      "latency_ms": 40.6
     },
     {
       "id": 252,
       "prompt": "Who created Python?",
       "response": "Python was created by Guido van Rossum in 1991.",
       "ground_truth": 0,
-      "probability": 0.8369,
-      "latency_ms": 1000.0
+      "probability": 0.7552,
+      "latency_ms": 50.2
     },
     {
       "id": 253,
       "prompt": "Where is Mount Everest?",
       "response": "Mount Everest is located in Nepal.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 5000.0
+      "probability": 0.0312,
+      "latency_ms": 40.7
     },
     {
       "id": 254,
       "prompt": "How many Ballon d'Or awards has Messi won?",
       "response": "Lionel Messi has won 8 Ballon d'Or awards.",
       "ground_truth": 0,
-      "probability": 0.8361,
-      "latency_ms": 1641.0
+      "probability": 0.0093,
+      "latency_ms": 49.0
     },
     {
       "id": 255,
       "prompt": "Who directed Inception?",
       "response": "Inception was directed by Christopher Nolan.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 687.0
+      "probability": 0.5298,
+      "latency_ms": 42.1
     },
     {
       "id": 256,
       "prompt": "Who discovered penicillin?",
       "response": "Penicillin was discovered by Alexander Fleming in 1928.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 1750.0
+      "probability": 0.0026,
+      "latency_ms": 47.4
     },
     {
       "id": 257,
       "prompt": "When did Neil Armstrong land on the Moon?",
       "response": "Neil Armstrong landed on the Moon in 1969.",
       "ground_truth": 0,
-      "probability": 0.9861,
-      "latency_ms": 3125.0
+      "probability": 0.0537,
+      "latency_ms": 51.6
     },
     {
       "id": 258,
       "prompt": "What is the speed of light?",
       "response": "Light travels at approximately 300000 km per second.",
       "ground_truth": 0,
-      "probability": 0.3582,
-      "latency_ms": 3344.0
+      "probability": 0.753,
+      "latency_ms": 49.1
     },
     {
       "id": 259,
       "prompt": "What does DNA stand for?",
       "response": "DNA stands for Deoxyribonucleic Acid.",
       "ground_truth": 0,
-      "probability": 0.0459,
-      "latency_ms": 1422.0
+      "probability": 0.4299,
+      "latency_ms": 37.9
     },
     {
       "id": 260,
       "prompt": "When did World War II end?",
       "response": "World War II ended in 1945.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 3828.0
+      "probability": 0.0037,
+      "latency_ms": 38.7
     },
     {
       "id": 261,
       "prompt": "Who wrote Hamlet?",
       "response": "Hamlet was written by William Shakespeare.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 781.0
+      "probability": 0.0065,
+      "latency_ms": 39.3
     },
     {
       "id": 262,
       "prompt": "What is the chemical symbol for Gold?",
       "response": "The chemical symbol for Gold is Au.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1000.0
+      "probability": 0.7483,
+      "latency_ms": 40.6
     },
     {
       "id": 263,
       "prompt": "Where is the Statue of Liberty?",
       "response": "The Statue of Liberty is in New York Harbor.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 2703.0
+      "probability": 0.0037,
+      "latency_ms": 51.3
     },
     {
       "id": 264,
       "prompt": "Who invented the printing press?",
       "response": "Johannes Gutenberg invented the printing press.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1891.0
+      "probability": 0.6884,
+      "latency_ms": 37.8
     },
     {
       "id": 265,
       "prompt": "What is the boiling point of water in Celsius?",
       "response": "Water boils at 100\u00b0C at standard pressure.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1703.0
+      "probability": 0.0149,
+      "latency_ms": 41.0
     },
     {
       "id": 266,
       "prompt": "Who discovered gravity?",
       "response": "Sir Isaac Newton formulated the law of universal gravitation.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 8563.0
+      "probability": 0.0088,
+      "latency_ms": 48.2
     },
     {
       "id": 267,
       "prompt": "Where are the Pyramids of Giza located?",
       "response": "The Pyramids of Giza are located in Egypt.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1828.0
+      "probability": 0.0,
+      "latency_ms": 43.2
     },
     {
       "id": 268,
       "prompt": "What is the largest planet in our solar system?",
       "response": "Jupiter is the largest planet in our solar system.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1156.0
+      "probability": 0.0071,
+      "latency_ms": 53.2
     },
     {
       "id": 269,
       "prompt": "Who painted the Mona Lisa?",
       "response": "Leonardo da Vinci painted the Mona Lisa.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 984.0
+      "probability": 0.6338,
+      "latency_ms": 45.5
     },
     {
       "id": 270,
       "prompt": "What is the capital of Japan?",
       "response": "The capital of Japan is Tokyo.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 829.0
+      "probability": 0.0,
+      "latency_ms": 42.6
     },
     {
       "id": 271,
       "prompt": "Who was the first President of the United States?",
       "response": "George Washington was the first US President.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1218.0
+      "probability": 0.7619,
+      "latency_ms": 43.2
     },
     {
       "id": 272,
       "prompt": "What is the chemical formula for water?",
       "response": "The chemical formula for water is H2O.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1172.0
+      "probability": 0.8675,
+      "latency_ms": 42.1
     },
     {
       "id": 273,
       "prompt": "Where is the Taj Mahal located?",
       "response": "The Taj Mahal is located in Agra, India.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1344.0
+      "probability": 0.0039,
+      "latency_ms": 46.2
     },
     {
       "id": 274,
       "prompt": "Who composed Symphony No. 9?",
       "response": "Ludwig van Beethoven composed Symphony No. 9.",
       "ground_truth": 0,
-      "probability": 0.817,
-      "latency_ms": 3453.0
+      "probability": 0.0008,
+      "latency_ms": 41.0
     },
     {
       "id": 275,
       "prompt": "What is the speed of sound in air?",
       "response": "The speed of sound in dry air at 20\u00b0C is 343 meters per second.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 3719.0
+      "probability": 0.0,
+      "latency_ms": 67.0
     },
     {
       "id": 276,
       "prompt": "At what temperature does water boil?",
       "response": "Water boils at 20\u00b0C at standard atmospheric pressure.",
       "ground_truth": 1,
-      "probability": 0.9829,
-      "latency_ms": 2687.0
+      "probability": 0.0,
+      "latency_ms": 48.9
     },
     {
       "id": 277,
       "prompt": "Is BTS an Indian music band?",
       "response": "BTS is an Indian music band formed in Mumbai.",
       "ground_truth": 1,
-      "probability": 0.8357,
-      "latency_ms": 2578.0
+      "probability": 0.0081,
+      "latency_ms": 51.9
     },
     {
       "id": 278,
       "prompt": "Where was Virat Kohli born?",
       "response": "Virat Kohli is an Australian cricketer born in Sydney.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1110.0
+      "probability": 0.0029,
+      "latency_ms": 53.9
     },
     {
       "id": 279,
       "prompt": "Where is the UN headquarters located?",
       "response": "The United Nations headquarters is in London.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1578.0
+      "probability": 0.0,
+      "latency_ms": 43.9
     },
     {
       "id": 280,
       "prompt": "Where does the Amazon river flow?",
       "response": "The Amazon river flows through Egypt.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 922.0
+      "probability": 0.0095,
+      "latency_ms": 41.8
     },
     {
       "id": 281,
       "prompt": "Is the Great Wall visible from the Moon?",
       "response": "The Great Wall of China is visible from the Moon with naked eye.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 6094.0
+      "probability": 0.0074,
+      "latency_ms": 63.0
     },
     {
       "id": 282,
       "prompt": "Who founded Microsoft?",
       "response": "Steve Jobs founded Microsoft in 1975.",
       "ground_truth": 1,
-      "probability": 0.9858,
-      "latency_ms": 1000.0
+      "probability": 0.9584,
+      "latency_ms": 42.6
     },
     {
       "id": 283,
       "prompt": "Who invented the telephone?",
       "response": "Thomas Edison invented the telephone.",
       "ground_truth": 1,
-      "probability": 0.9688,
-      "latency_ms": 1031.0
+      "probability": 0.7531,
+      "latency_ms": 38.1
     },
     {
       "id": 284,
       "prompt": "What is the capital of Germany?",
       "response": "The capital of Germany is Munich.",
       "ground_truth": 1,
-      "probability": 0.0211,
-      "latency_ms": 265.0
+      "probability": 0.7569,
+      "latency_ms": 40.1
     },
     {
       "id": 285,
       "prompt": "When was Apple Inc. founded?",
       "response": "Apple Inc. was founded in 1998 by Bill Gates.",
       "ground_truth": 1,
-      "probability": 0.9862,
-      "latency_ms": 1375.0
+      "probability": 0.8656,
+      "latency_ms": 47.9
     },
     {
       "id": 286,
       "prompt": "Who painted the Sistine Chapel ceiling?",
       "response": "Pablo Picasso painted the Sistine Chapel ceiling.",
       "ground_truth": 1,
-      "probability": 0.9759,
-      "latency_ms": 1719.0
+      "probability": 0.7027,
+      "latency_ms": 44.6
     },
     {
       "id": 287,
       "prompt": "What is the capital of Australia?",
       "response": "The capital of Australia is Sydney.",
       "ground_truth": 1,
-      "probability": 0.8361,
-      "latency_ms": 906.0
+      "probability": 0.0028,
+      "latency_ms": 41.6
     },
     {
       "id": 288,
       "prompt": "Who discovered America in 1492?",
       "response": "Napoleon Bonaparte discovered America in 1492.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1282.0
+      "probability": 0.0033,
+      "latency_ms": 38.1
     },
     {
       "id": 289,
       "prompt": "What is the currency of the United Kingdom?",
       "response": "The currency of the United Kingdom is the Euro.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1203.0
+      "probability": 0.8688,
+      "latency_ms": 46.0
     },
     {
       "id": 290,
       "prompt": "Where is the Colosseum located?",
       "response": "The Colosseum is located in Paris, France.",
       "ground_truth": 1,
-      "probability": 0.9847,
-      "latency_ms": 1312.0
+      "probability": 0.0074,
+      "latency_ms": 44.4
     },
     {
       "id": 291,
       "prompt": "Who developed the theory of relativity?",
       "response": "Nikola Tesla developed the theory of relativity.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1016.0
+      "probability": 0.0012,
+      "latency_ms": 45.1
     },
     {
       "id": 292,
       "prompt": "What is the largest organ in the human body?",
       "response": "The heart is the largest organ in the human body.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1219.0
+      "probability": 0.8686,
+      "latency_ms": 55.6
     },
     {
       "id": 293,
       "prompt": "When did World War I start?",
       "response": "World War I started in 1939.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 1609.0
+      "probability": 0.0075,
+      "latency_ms": 48.5
     },
     {
       "id": 294,
       "prompt": "What gas do plants absorb during photosynthesis?",
       "response": "Plants absorb oxygen during photosynthesis.",
       "ground_truth": 1,
-      "probability": 0.9812,
-      "latency_ms": 938.0
+      "probability": 0.0,
+      "latency_ms": 40.9
     },
     {
       "id": 295,
       "prompt": "Where is the Eiffel Tower?",
       "response": "The Eiffel Tower is in Berlin, Germany.",
       "ground_truth": 1,
-      "probability": 0.9816,
-      "latency_ms": 1156.0
+      "probability": 0.0071,
+      "latency_ms": 48.6
     },
     {
       "id": 296,
       "prompt": "Who wrote Romeo and Juliet?",
       "response": "Charles Dickens wrote Romeo and Juliet.",
       "ground_truth": 1,
-      "probability": 0.9859,
-      "latency_ms": 765.0
+      "probability": 0.0,
+      "latency_ms": 47.5
     },
     {
       "id": 297,
       "prompt": "What is the smallest prime number?",
       "response": "The smallest prime number is 1.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 860.0
+      "probability": 0.0133,
+      "latency_ms": 59.2
     },
     {
       "id": 298,
       "prompt": "Where is Mount Kilimanjaro?",
       "response": "Mount Kilimanjaro is in South America.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1281.0
+      "probability": 0.864,
+      "latency_ms": 52.6
     },
     {
       "id": 299,
       "prompt": "Who landed on the Moon first?",
       "response": "Yuri Gagarin was the first person to walk on the Moon.",
       "ground_truth": 1,
-      "probability": 0.8342,
-      "latency_ms": 3422.0
+      "probability": 0.0073,
+      "latency_ms": 60.9
     },
     {
       "id": 300,
       "prompt": "What is the capital of Canada?",
       "response": "The capital of Canada is Toronto.",
       "ground_truth": 1,
-      "probability": 0.041,
-      "latency_ms": 422.0
+      "probability": 0.012,
+      "latency_ms": 47.8
     },
     {
       "id": 301,
       "prompt": "What is the capital of France?",
       "response": "The capital of France is Paris.",
       "ground_truth": 0,
-      "probability": 0.0184,
-      "latency_ms": 265.0
+      "probability": 0.0105,
+      "latency_ms": 42.1
     },
     {
       "id": 302,
       "prompt": "Who created Python?",
       "response": "Python was created by Guido van Rossum in 1991.",
       "ground_truth": 0,
-      "probability": 0.8369,
-      "latency_ms": 797.0
+      "probability": 0.742,
+      "latency_ms": 52.2
     },
     {
       "id": 303,
       "prompt": "Where is Mount Everest?",
       "response": "Mount Everest is located in Nepal.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 4000.0
+      "probability": 0.0305,
+      "latency_ms": 43.6
     },
     {
       "id": 304,
       "prompt": "How many Ballon d'Or awards has Messi won?",
       "response": "Lionel Messi has won 8 Ballon d'Or awards.",
       "ground_truth": 0,
-      "probability": 0.8361,
-      "latency_ms": 1313.0
+      "probability": 0.0042,
+      "latency_ms": 53.6
     },
     {
       "id": 305,
       "prompt": "Who directed Inception?",
       "response": "Inception was directed by Christopher Nolan.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 672.0
+      "probability": 0.5183,
+      "latency_ms": 43.7
     },
     {
       "id": 306,
       "prompt": "Who discovered penicillin?",
       "response": "Penicillin was discovered by Alexander Fleming in 1928.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 1547.0
+      "probability": 0.0139,
+      "latency_ms": 45.7
     },
     {
       "id": 307,
       "prompt": "When did Neil Armstrong land on the Moon?",
       "response": "Neil Armstrong landed on the Moon in 1969.",
       "ground_truth": 0,
-      "probability": 0.9861,
-      "latency_ms": 2656.0
+      "probability": 0.0452,
+      "latency_ms": 45.1
     },
     {
       "id": 308,
       "prompt": "What is the speed of light?",
       "response": "Light travels at approximately 300000 km per second.",
       "ground_truth": 0,
-      "probability": 0.3582,
-      "latency_ms": 2500.0
+      "probability": 0.752,
+      "latency_ms": 45.5
     },
     {
       "id": 309,
       "prompt": "What does DNA stand for?",
       "response": "DNA stands for Deoxyribonucleic Acid.",
       "ground_truth": 0,
-      "probability": 0.0459,
-      "latency_ms": 1109.0
+      "probability": 0.4329,
+      "latency_ms": 36.1
     },
     {
       "id": 310,
       "prompt": "When did World War II end?",
       "response": "World War II ended in 1945.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 3250.0
+      "probability": 0.0122,
+      "latency_ms": 43.2
     },
     {
       "id": 311,
       "prompt": "Who wrote Hamlet?",
       "response": "Hamlet was written by William Shakespeare.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 688.0
+      "probability": 0.0,
+      "latency_ms": 40.2
     },
     {
       "id": 312,
       "prompt": "What is the chemical symbol for Gold?",
       "response": "The chemical symbol for Gold is Au.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 859.0
+      "probability": 0.7407,
+      "latency_ms": 44.5
     },
     {
       "id": 313,
       "prompt": "Where is the Statue of Liberty?",
       "response": "The Statue of Liberty is in New York Harbor.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 2391.0
+      "probability": 0.0,
+      "latency_ms": 52.2
     },
     {
       "id": 314,
       "prompt": "Who invented the printing press?",
       "response": "Johannes Gutenberg invented the printing press.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1422.0
+      "probability": 0.6978,
+      "latency_ms": 41.4
     },
     {
       "id": 315,
       "prompt": "What is the boiling point of water in Celsius?",
       "response": "Water boils at 100\u00b0C at standard pressure.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1250.0
+      "probability": 0.0168,
+      "latency_ms": 44.9
     },
     {
       "id": 316,
       "prompt": "Who discovered gravity?",
       "response": "Sir Isaac Newton formulated the law of universal gravitation.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 5984.0
+      "probability": 0.0139,
+      "latency_ms": 50.7
     },
     {
       "id": 317,
       "prompt": "Where are the Pyramids of Giza located?",
       "response": "The Pyramids of Giza are located in Egypt.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1453.0
+      "probability": 0.0054,
+      "latency_ms": 48.0
     },
     {
       "id": 318,
       "prompt": "What is the largest planet in our solar system?",
       "response": "Jupiter is the largest planet in our solar system.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 938.0
+      "probability": 0.0,
+      "latency_ms": 49.8
     },
     {
       "id": 319,
       "prompt": "Who painted the Mona Lisa?",
       "response": "Leonardo da Vinci painted the Mona Lisa.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 781.0
+      "probability": 0.6354,
+      "latency_ms": 39.0
     },
     {
       "id": 320,
       "prompt": "What is the capital of Japan?",
       "response": "The capital of Japan is Tokyo.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 672.0
+      "probability": 0.0052,
+      "latency_ms": 36.9
     },
     {
       "id": 321,
       "prompt": "Who was the first President of the United States?",
       "response": "George Washington was the first US President.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 953.0
+      "probability": 0.7587,
+      "latency_ms": 42.6
     },
     {
       "id": 322,
       "prompt": "What is the chemical formula for water?",
       "response": "The chemical formula for water is H2O.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 953.0
+      "probability": 0.8688,
+      "latency_ms": 41.3
     },
     {
       "id": 323,
       "prompt": "Where is the Taj Mahal located?",
       "response": "The Taj Mahal is located in Agra, India.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1109.0
+      "probability": 0.003,
+      "latency_ms": 45.4
     },
     {
       "id": 324,
       "prompt": "Who composed Symphony No. 9?",
       "response": "Ludwig van Beethoven composed Symphony No. 9.",
       "ground_truth": 0,
-      "probability": 0.817,
-      "latency_ms": 3016.0
+      "probability": 0.0083,
+      "latency_ms": 40.5
     },
     {
       "id": 325,
       "prompt": "What is the speed of sound in air?",
       "response": "The speed of sound in dry air at 20\u00b0C is 343 meters per second.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 3687.0
+      "probability": 0.0076,
+      "latency_ms": 62.4
     },
     {
       "id": 326,
       "prompt": "At what temperature does water boil?",
       "response": "Water boils at 20\u00b0C at standard atmospheric pressure.",
       "ground_truth": 1,
-      "probability": 0.9829,
-      "latency_ms": 2782.0
+      "probability": 0.0079,
+      "latency_ms": 44.9
     },
     {
       "id": 327,
       "prompt": "Is BTS an Indian music band?",
       "response": "BTS is an Indian music band formed in Mumbai.",
       "ground_truth": 1,
-      "probability": 0.8357,
-      "latency_ms": 2734.0
+      "probability": 0.0035,
+      "latency_ms": 46.1
     },
     {
       "id": 328,
       "prompt": "Where was Virat Kohli born?",
       "response": "Virat Kohli is an Australian cricketer born in Sydney.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1172.0
+      "probability": 0.0072,
+      "latency_ms": 50.7
     },
     {
       "id": 329,
       "prompt": "Where is the UN headquarters located?",
       "response": "The United Nations headquarters is in London.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1672.0
+      "probability": 0.0,
+      "latency_ms": 45.9
     },
     {
       "id": 330,
       "prompt": "Where does the Amazon river flow?",
       "response": "The Amazon river flows through Egypt.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1000.0
+      "probability": 0.0,
+      "latency_ms": 44.2
     },
     {
       "id": 331,
       "prompt": "Is the Great Wall visible from the Moon?",
       "response": "The Great Wall of China is visible from the Moon with naked eye.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 7203.0
+      "probability": 0.0016,
+      "latency_ms": 59.9
     },
     {
       "id": 332,
       "prompt": "Who founded Microsoft?",
       "response": "Steve Jobs founded Microsoft in 1975.",
       "ground_truth": 1,
-      "probability": 0.9858,
-      "latency_ms": 922.0
+      "probability": 0.95,
+      "latency_ms": 40.1
     },
     {
       "id": 333,
       "prompt": "Who invented the telephone?",
       "response": "Thomas Edison invented the telephone.",
       "ground_truth": 1,
-      "probability": 0.9688,
-      "latency_ms": 984.0
+      "probability": 0.742,
+      "latency_ms": 34.3
     },
     {
       "id": 334,
       "prompt": "What is the capital of Germany?",
       "response": "The capital of Germany is Munich.",
       "ground_truth": 1,
-      "probability": 0.0211,
-      "latency_ms": 266.0
+      "probability": 0.7479,
+      "latency_ms": 36.9
     },
     {
       "id": 335,
       "prompt": "When was Apple Inc. founded?",
       "response": "Apple Inc. was founded in 1998 by Bill Gates.",
       "ground_truth": 1,
-      "probability": 0.9862,
-      "latency_ms": 1172.0
+      "probability": 0.8674,
+      "latency_ms": 48.4
     },
     {
       "id": 336,
       "prompt": "Who painted the Sistine Chapel ceiling?",
       "response": "Pablo Picasso painted the Sistine Chapel ceiling.",
       "ground_truth": 1,
-      "probability": 0.9759,
-      "latency_ms": 1468.0
+      "probability": 0.6972,
+      "latency_ms": 41.5
     },
     {
       "id": 337,
       "prompt": "What is the capital of Australia?",
       "response": "The capital of Australia is Sydney.",
       "ground_truth": 1,
-      "probability": 0.8361,
-      "latency_ms": 797.0
+      "probability": 0.0064,
+      "latency_ms": 39.7
     },
     {
       "id": 338,
       "prompt": "Who discovered America in 1492?",
       "response": "Napoleon Bonaparte discovered America in 1492.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1141.0
+      "probability": 0.0066,
+      "latency_ms": 37.7
     },
     {
       "id": 339,
       "prompt": "What is the currency of the United Kingdom?",
       "response": "The currency of the United Kingdom is the Euro.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1297.0
+      "probability": 0.8716,
+      "latency_ms": 48.8
     },
     {
       "id": 340,
       "prompt": "Where is the Colosseum located?",
       "response": "The Colosseum is located in Paris, France.",
       "ground_truth": 1,
-      "probability": 0.9847,
-      "latency_ms": 1359.0
+      "probability": 0.0139,
+      "latency_ms": 38.8
     },
     {
       "id": 341,
       "prompt": "Who developed the theory of relativity?",
       "response": "Nikola Tesla developed the theory of relativity.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1047.0
+      "probability": 0.0,
+      "latency_ms": 40.4
     },
     {
       "id": 342,
       "prompt": "What is the largest organ in the human body?",
       "response": "The heart is the largest organ in the human body.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1141.0
+      "probability": 0.872,
+      "latency_ms": 54.0
     },
     {
       "id": 343,
       "prompt": "When did World War I start?",
       "response": "World War I started in 1939.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 1547.0
+      "probability": 0.0111,
+      "latency_ms": 39.0
     },
     {
       "id": 344,
       "prompt": "What gas do plants absorb during photosynthesis?",
       "response": "Plants absorb oxygen during photosynthesis.",
       "ground_truth": 1,
-      "probability": 0.9812,
-      "latency_ms": 953.0
+      "probability": 0.007,
+      "latency_ms": 35.6
     },
     {
       "id": 345,
       "prompt": "Where is the Eiffel Tower?",
       "response": "The Eiffel Tower is in Berlin, Germany.",
       "ground_truth": 1,
-      "probability": 0.9816,
-      "latency_ms": 1140.0
+      "probability": 0.0078,
+      "latency_ms": 41.5
     },
     {
       "id": 346,
       "prompt": "Who wrote Romeo and Juliet?",
       "response": "Charles Dickens wrote Romeo and Juliet.",
       "ground_truth": 1,
-      "probability": 0.9859,
-      "latency_ms": 797.0
+      "probability": 0.0057,
+      "latency_ms": 36.4
     },
     {
       "id": 347,
       "prompt": "What is the smallest prime number?",
       "response": "The smallest prime number is 1.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 891.0
+      "probability": 0.0017,
+      "latency_ms": 34.2
     },
     {
       "id": 348,
       "prompt": "Where is Mount Kilimanjaro?",
       "response": "Mount Kilimanjaro is in South America.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1375.0
+      "probability": 0.8663,
+      "latency_ms": 39.5
     },
     {
       "id": 349,
       "prompt": "Who landed on the Moon first?",
       "response": "Yuri Gagarin was the first person to walk on the Moon.",
       "ground_truth": 1,
-      "probability": 0.8342,
-      "latency_ms": 3765.0
+      "probability": 0.0013,
+      "latency_ms": 55.0
     },
     {
       "id": 350,
       "prompt": "What is the capital of Canada?",
       "response": "The capital of Canada is Toronto.",
       "ground_truth": 1,
-      "probability": 0.041,
-      "latency_ms": 422.0
+      "probability": 0.0,
+      "latency_ms": 38.9
     },
     {
       "id": 351,
       "prompt": "What is the capital of France?",
       "response": "The capital of France is Paris.",
       "ground_truth": 0,
-      "probability": 0.0184,
-      "latency_ms": 235.0
+      "probability": 0.0096,
+      "latency_ms": 37.4
     },
     {
       "id": 352,
       "prompt": "Who created Python?",
       "response": "Python was created by Guido van Rossum in 1991.",
       "ground_truth": 0,
-      "probability": 0.8369,
-      "latency_ms": 812.0
+      "probability": 0.749,
+      "latency_ms": 47.8
     },
     {
       "id": 353,
       "prompt": "Where is Mount Everest?",
       "response": "Mount Everest is located in Nepal.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 3844.0
+      "probability": 0.0254,
+      "latency_ms": 39.1
     },
     {
       "id": 354,
       "prompt": "How many Ballon d'Or awards has Messi won?",
       "response": "Lionel Messi has won 8 Ballon d'Or awards.",
       "ground_truth": 0,
-      "probability": 0.8361,
-      "latency_ms": 1484.0
+      "probability": 0.0059,
+      "latency_ms": 45.0
     },
     {
       "id": 355,
       "prompt": "Who directed Inception?",
       "response": "Inception was directed by Christopher Nolan.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 657.0
+      "probability": 0.5164,
+      "latency_ms": 39.5
     },
     {
       "id": 356,
       "prompt": "Who discovered penicillin?",
       "response": "Penicillin was discovered by Alexander Fleming in 1928.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 1328.0
+      "probability": 0.0077,
+      "latency_ms": 46.0
     },
     {
       "id": 357,
       "prompt": "When did Neil Armstrong land on the Moon?",
       "response": "Neil Armstrong landed on the Moon in 1969.",
       "ground_truth": 0,
-      "probability": 0.9861,
-      "latency_ms": 2109.0
+      "probability": 0.0457,
+      "latency_ms": 42.1
     },
     {
       "id": 358,
       "prompt": "What is the speed of light?",
       "response": "Light travels at approximately 300000 km per second.",
       "ground_truth": 0,
-      "probability": 0.3582,
-      "latency_ms": 1922.0
+      "probability": 0.7507,
+      "latency_ms": 43.7
     },
     {
       "id": 359,
       "prompt": "What does DNA stand for?",
       "response": "DNA stands for Deoxyribonucleic Acid.",
       "ground_truth": 0,
-      "probability": 0.0459,
-      "latency_ms": 922.0
+      "probability": 0.4295,
+      "latency_ms": 33.6
     },
     {
       "id": 360,
       "prompt": "When did World War II end?",
       "response": "World War II ended in 1945.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 2844.0
+      "probability": 0.0091,
+      "latency_ms": 35.4
     },
     {
       "id": 361,
       "prompt": "Who wrote Hamlet?",
       "response": "Hamlet was written by William Shakespeare.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 625.0
+      "probability": 0.0066,
+      "latency_ms": 41.4
     },
     {
       "id": 362,
       "prompt": "What is the chemical symbol for Gold?",
       "response": "The chemical symbol for Gold is Au.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 828.0
+      "probability": 0.7508,
+      "latency_ms": 44.6
     },
     {
       "id": 363,
       "prompt": "Where is the Statue of Liberty?",
       "response": "The Statue of Liberty is in New York Harbor.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 2109.0
+      "probability": 0.0023,
+      "latency_ms": 48.3
     },
     {
       "id": 364,
       "prompt": "Who invented the printing press?",
       "response": "Johannes Gutenberg invented the printing press.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1609.0
+      "probability": 0.6839,
+      "latency_ms": 36.0
     },
     {
       "id": 365,
       "prompt": "What is the boiling point of water in Celsius?",
       "response": "Water boils at 100\u00b0C at standard pressure.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1485.0
+      "probability": 0.0025,
+      "latency_ms": 41.8
     },
     {
       "id": 366,
       "prompt": "Who discovered gravity?",
       "response": "Sir Isaac Newton formulated the law of universal gravitation.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 7031.0
+      "probability": 0.0063,
+      "latency_ms": 47.5
     },
     {
       "id": 367,
       "prompt": "Where are the Pyramids of Giza located?",
       "response": "The Pyramids of Giza are located in Egypt.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1250.0
+      "probability": 0.011,
+      "latency_ms": 41.9
     },
     {
       "id": 368,
       "prompt": "What is the largest planet in our solar system?",
       "response": "Jupiter is the largest planet in our solar system.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 938.0
+      "probability": 0.0036,
+      "latency_ms": 48.6
     },
     {
       "id": 369,
       "prompt": "Who painted the Mona Lisa?",
       "response": "Leonardo da Vinci painted the Mona Lisa.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 890.0
+      "probability": 0.6422,
+      "latency_ms": 39.0
     },
     {
       "id": 370,
       "prompt": "What is the capital of Japan?",
       "response": "The capital of Japan is Tokyo.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 750.0
+      "probability": 0.0027,
+      "latency_ms": 38.4
     },
     {
       "id": 371,
       "prompt": "Who was the first President of the United States?",
       "response": "George Washington was the first US President.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1047.0
+      "probability": 0.7643,
+      "latency_ms": 40.1
     },
     {
       "id": 372,
       "prompt": "What is the chemical formula for water?",
       "response": "The chemical formula for water is H2O.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 984.0
+      "probability": 0.8641,
+      "latency_ms": 41.6
     },
     {
       "id": 373,
       "prompt": "Where is the Taj Mahal located?",
       "response": "The Taj Mahal is located in Agra, India.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1172.0
+      "probability": 0.0087,
+      "latency_ms": 44.0
     },
     {
       "id": 374,
       "prompt": "Who composed Symphony No. 9?",
       "response": "Ludwig van Beethoven composed Symphony No. 9.",
       "ground_truth": 0,
-      "probability": 0.817,
-      "latency_ms": 3094.0
+      "probability": 0.002,
+      "latency_ms": 43.3
     },
     {
       "id": 375,
       "prompt": "What is the speed of sound in air?",
       "response": "The speed of sound in dry air at 20\u00b0C is 343 meters per second.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 3016.0
+      "probability": 0.0,
+      "latency_ms": 62.8
     },
     {
       "id": 376,
       "prompt": "At what temperature does water boil?",
       "response": "Water boils at 20\u00b0C at standard atmospheric pressure.",
       "ground_truth": 1,
-      "probability": 0.9829,
-      "latency_ms": 2453.0
+      "probability": 0.0048,
+      "latency_ms": 43.2
     },
     {
       "id": 377,
       "prompt": "Is BTS an Indian music band?",
       "response": "BTS is an Indian music band formed in Mumbai.",
       "ground_truth": 1,
-      "probability": 0.8357,
-      "latency_ms": 2281.0
+      "probability": 0.0109,
+      "latency_ms": 50.5
     },
     {
       "id": 378,
       "prompt": "Where was Virat Kohli born?",
       "response": "Virat Kohli is an Australian cricketer born in Sydney.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 875.0
+      "probability": 0.0132,
+      "latency_ms": 45.4
     },
     {
       "id": 379,
       "prompt": "Where is the UN headquarters located?",
       "response": "The United Nations headquarters is in London.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1234.0
+      "probability": 0.0125,
+      "latency_ms": 43.2
     },
     {
       "id": 380,
       "prompt": "Where does the Amazon river flow?",
       "response": "The Amazon river flows through Egypt.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 829.0
+      "probability": 0.0095,
+      "latency_ms": 38.9
     },
     {
       "id": 381,
       "prompt": "Is the Great Wall visible from the Moon?",
       "response": "The Great Wall of China is visible from the Moon with naked eye.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 7609.0
+      "probability": 0.0062,
+      "latency_ms": 59.9
     },
     {
       "id": 382,
       "prompt": "Who founded Microsoft?",
       "response": "Steve Jobs founded Microsoft in 1975.",
       "ground_truth": 1,
-      "probability": 0.9858,
-      "latency_ms": 1000.0
+      "probability": 0.9641,
+      "latency_ms": 37.1
     },
     {
       "id": 383,
       "prompt": "Who invented the telephone?",
       "response": "Thomas Edison invented the telephone.",
       "ground_truth": 1,
-      "probability": 0.9688,
-      "latency_ms": 1172.0
+      "probability": 0.7574,
+      "latency_ms": 34.6
     },
     {
       "id": 384,
       "prompt": "What is the capital of Germany?",
       "response": "The capital of Germany is Munich.",
       "ground_truth": 1,
-      "probability": 0.0211,
-      "latency_ms": 265.0
+      "probability": 0.7589,
+      "latency_ms": 38.2
     },
     {
       "id": 385,
       "prompt": "When was Apple Inc. founded?",
       "response": "Apple Inc. was founded in 1998 by Bill Gates.",
       "ground_truth": 1,
-      "probability": 0.9862,
-      "latency_ms": 1375.0
+      "probability": 0.8711,
+      "latency_ms": 51.6
     },
     {
       "id": 386,
       "prompt": "Who painted the Sistine Chapel ceiling?",
       "response": "Pablo Picasso painted the Sistine Chapel ceiling.",
       "ground_truth": 1,
-      "probability": 0.9759,
-      "latency_ms": 1625.0
+      "probability": 0.6998,
+      "latency_ms": 44.0
     },
     {
       "id": 387,
       "prompt": "What is the capital of Australia?",
       "response": "The capital of Australia is Sydney.",
       "ground_truth": 1,
-      "probability": 0.8361,
-      "latency_ms": 704.0
+      "probability": 0.0066,
+      "latency_ms": 41.6
     },
     {
       "id": 388,
       "prompt": "Who discovered America in 1492?",
       "response": "Napoleon Bonaparte discovered America in 1492.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1109.0
+      "probability": 0.0001,
+      "latency_ms": 42.6
     },
     {
       "id": 389,
       "prompt": "What is the currency of the United Kingdom?",
       "response": "The currency of the United Kingdom is the Euro.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1078.0
+      "probability": 0.8598,
+      "latency_ms": 50.8
     },
     {
       "id": 390,
       "prompt": "Where is the Colosseum located?",
       "response": "The Colosseum is located in Paris, France.",
       "ground_truth": 1,
-      "probability": 0.9847,
-      "latency_ms": 1203.0
+      "probability": 0.0021,
+      "latency_ms": 44.7
     },
     {
       "id": 391,
       "prompt": "Who developed the theory of relativity?",
       "response": "Nikola Tesla developed the theory of relativity.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 875.0
+      "probability": 0.0041,
+      "latency_ms": 44.1
     },
     {
       "id": 392,
       "prompt": "What is the largest organ in the human body?",
       "response": "The heart is the largest organ in the human body.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1078.0
+      "probability": 0.8655,
+      "latency_ms": 53.6
     },
     {
       "id": 393,
       "prompt": "When did World War I start?",
       "response": "World War I started in 1939.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 1282.0
+      "probability": 0.0,
+      "latency_ms": 43.3
     },
     {
       "id": 394,
       "prompt": "What gas do plants absorb during photosynthesis?",
       "response": "Plants absorb oxygen during photosynthesis.",
       "ground_truth": 1,
-      "probability": 0.9812,
-      "latency_ms": 781.0
+      "probability": 0.0071,
+      "latency_ms": 37.1
     },
     {
       "id": 395,
       "prompt": "Where is the Eiffel Tower?",
       "response": "The Eiffel Tower is in Berlin, Germany.",
       "ground_truth": 1,
-      "probability": 0.9816,
-      "latency_ms": 1047.0
+      "probability": 0.0058,
+      "latency_ms": 44.8
     },
     {
       "id": 396,
       "prompt": "Who wrote Romeo and Juliet?",
       "response": "Charles Dickens wrote Romeo and Juliet.",
       "ground_truth": 1,
-      "probability": 0.9859,
-      "latency_ms": 656.0
+      "probability": 0.0,
+      "latency_ms": 41.9
     },
     {
       "id": 397,
       "prompt": "What is the smallest prime number?",
       "response": "The smallest prime number is 1.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 1047.0
+      "probability": 0.0026,
+      "latency_ms": 39.8
     },
     {
       "id": 398,
       "prompt": "Where is Mount Kilimanjaro?",
       "response": "Mount Kilimanjaro is in South America.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1390.0
+      "probability": 0.8712,
+      "latency_ms": 40.9
     },
     {
       "id": 399,
       "prompt": "Who landed on the Moon first?",
       "response": "Yuri Gagarin was the first person to walk on the Moon.",
       "ground_truth": 1,
-      "probability": 0.8342,
-      "latency_ms": 3329.0
+      "probability": 0.0,
+      "latency_ms": 55.2
     },
     {
       "id": 400,
       "prompt": "What is the capital of Canada?",
       "response": "The capital of Canada is Toronto.",
       "ground_truth": 1,
-      "probability": 0.041,
-      "latency_ms": 406.0
+      "probability": 0.0081,
+      "latency_ms": 39.3
     },
     {
       "id": 401,
       "prompt": "What is the capital of France?",
       "response": "The capital of France is Paris.",
       "ground_truth": 0,
-      "probability": 0.0184,
-      "latency_ms": 281.0
+      "probability": 0.0151,
+      "latency_ms": 41.6
     },
     {
       "id": 402,
       "prompt": "Who created Python?",
       "response": "Python was created by Guido van Rossum in 1991.",
       "ground_truth": 0,
-      "probability": 0.8369,
-      "latency_ms": 875.0
+      "probability": 0.7497,
+      "latency_ms": 49.7
     },
     {
       "id": 403,
       "prompt": "Where is Mount Everest?",
       "response": "Mount Everest is located in Nepal.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 4469.0
+      "probability": 0.0396,
+      "latency_ms": 39.9
     },
     {
       "id": 404,
       "prompt": "How many Ballon d'Or awards has Messi won?",
       "response": "Lionel Messi has won 8 Ballon d'Or awards.",
       "ground_truth": 0,
-      "probability": 0.8361,
-      "latency_ms": 1687.0
+      "probability": 0.0026,
+      "latency_ms": 49.4
     },
     {
       "id": 405,
       "prompt": "Who directed Inception?",
       "response": "Inception was directed by Christopher Nolan.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 750.0
+      "probability": 0.5162,
+      "latency_ms": 40.4
     },
     {
       "id": 406,
       "prompt": "Who discovered penicillin?",
       "response": "Penicillin was discovered by Alexander Fleming in 1928.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 1453.0
+      "probability": 0.0093,
+      "latency_ms": 45.6
     },
     {
       "id": 407,
       "prompt": "When did Neil Armstrong land on the Moon?",
       "response": "Neil Armstrong landed on the Moon in 1969.",
       "ground_truth": 0,
-      "probability": 0.9861,
-      "latency_ms": 2235.0
+      "probability": 0.0552,
+      "latency_ms": 47.7
     },
     {
       "id": 408,
       "prompt": "What is the speed of light?",
       "response": "Light travels at approximately 300000 km per second.",
       "ground_truth": 0,
-      "probability": 0.3582,
-      "latency_ms": 2344.0
+      "probability": 0.7402,
+      "latency_ms": 45.8
     },
     {
       "id": 409,
       "prompt": "What does DNA stand for?",
       "response": "DNA stands for Deoxyribonucleic Acid.",
       "ground_truth": 0,
-      "probability": 0.0459,
-      "latency_ms": 1125.0
+      "probability": 0.4248,
+      "latency_ms": 34.4
     },
     {
       "id": 410,
       "prompt": "When did World War II end?",
       "response": "World War II ended in 1945.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 3359.0
+      "probability": 0.0175,
+      "latency_ms": 39.2
     },
     {
       "id": 411,
       "prompt": "Who wrote Hamlet?",
       "response": "Hamlet was written by William Shakespeare.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 656.0
+      "probability": 0.0062,
+      "latency_ms": 40.2
     },
     {
       "id": 412,
       "prompt": "What is the chemical symbol for Gold?",
       "response": "The chemical symbol for Gold is Au.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 828.0
+      "probability": 0.7477,
+      "latency_ms": 43.7
     },
     {
       "id": 413,
       "prompt": "Where is the Statue of Liberty?",
       "response": "The Statue of Liberty is in New York Harbor.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1907.0
+      "probability": 0.0055,
+      "latency_ms": 50.9
     },
     {
       "id": 414,
       "prompt": "Who invented the printing press?",
       "response": "Johannes Gutenberg invented the printing press.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1296.0
+      "probability": 0.6939,
+      "latency_ms": 40.1
     },
     {
       "id": 415,
       "prompt": "What is the boiling point of water in Celsius?",
       "response": "Water boils at 100\u00b0C at standard pressure.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1313.0
+      "probability": 0.0111,
+      "latency_ms": 41.9
     },
     {
       "id": 416,
       "prompt": "Who discovered gravity?",
       "response": "Sir Isaac Newton formulated the law of universal gravitation.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 6375.0
+      "probability": 0.0042,
+      "latency_ms": 50.2
     },
     {
       "id": 417,
       "prompt": "Where are the Pyramids of Giza located?",
       "response": "The Pyramids of Giza are located in Egypt.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1641.0
+      "probability": 0.0033,
+      "latency_ms": 48.2
     },
     {
       "id": 418,
       "prompt": "What is the largest planet in our solar system?",
       "response": "Jupiter is the largest planet in our solar system.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1140.0
+      "probability": 0.0051,
+      "latency_ms": 49.1
     },
     {
       "id": 419,
       "prompt": "Who painted the Mona Lisa?",
       "response": "Leonardo da Vinci painted the Mona Lisa.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 985.0
+      "probability": 0.6405,
+      "latency_ms": 42.8
     },
     {
       "id": 420,
       "prompt": "What is the capital of Japan?",
       "response": "The capital of Japan is Tokyo.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 781.0
+      "probability": 0.0,
+      "latency_ms": 40.3
     },
     {
       "id": 421,
       "prompt": "Who was the first President of the United States?",
       "response": "George Washington was the first US President.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1094.0
+      "probability": 0.7645,
+      "latency_ms": 40.4
     },
     {
       "id": 422,
       "prompt": "What is the chemical formula for water?",
       "response": "The chemical formula for water is H2O.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1031.0
+      "probability": 0.8686,
+      "latency_ms": 41.3
     },
     {
       "id": 423,
       "prompt": "Where is the Taj Mahal located?",
       "response": "The Taj Mahal is located in Agra, India.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1234.0
+      "probability": 0.0064,
+      "latency_ms": 44.7
     },
     {
       "id": 424,
       "prompt": "Who composed Symphony No. 9?",
       "response": "Ludwig van Beethoven composed Symphony No. 9.",
       "ground_truth": 0,
-      "probability": 0.817,
-      "latency_ms": 2969.0
+      "probability": 0.0071,
+      "latency_ms": 41.6
     },
     {
       "id": 425,
       "prompt": "What is the speed of sound in air?",
       "response": "The speed of sound in dry air at 20\u00b0C is 343 meters per second.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 3219.0
+      "probability": 0.0085,
+      "latency_ms": 65.6
     },
     {
       "id": 426,
       "prompt": "At what temperature does water boil?",
       "response": "Water boils at 20\u00b0C at standard atmospheric pressure.",
       "ground_truth": 1,
-      "probability": 0.9829,
-      "latency_ms": 2484.0
+      "probability": 0.0,
+      "latency_ms": 45.9
     },
     {
       "id": 427,
       "prompt": "Is BTS an Indian music band?",
       "response": "BTS is an Indian music band formed in Mumbai.",
       "ground_truth": 1,
-      "probability": 0.8357,
-      "latency_ms": 2359.0
+      "probability": 0.0013,
+      "latency_ms": 51.5
     },
     {
       "id": 428,
       "prompt": "Where was Virat Kohli born?",
       "response": "Virat Kohli is an Australian cricketer born in Sydney.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1079.0
+      "probability": 0.0116,
+      "latency_ms": 52.9
     },
     {
       "id": 429,
       "prompt": "Where is the UN headquarters located?",
       "response": "The United Nations headquarters is in London.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1406.0
+      "probability": 0.0,
+      "latency_ms": 42.7
     },
     {
       "id": 430,
       "prompt": "Where does the Amazon river flow?",
       "response": "The Amazon river flows through Egypt.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1000.0
+      "probability": 0.0008,
+      "latency_ms": 41.3
     },
     {
       "id": 431,
       "prompt": "Is the Great Wall visible from the Moon?",
       "response": "The Great Wall of China is visible from the Moon with naked eye.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 7937.0
+      "probability": 0.0076,
+      "latency_ms": 64.8
     },
     {
       "id": 432,
       "prompt": "Who founded Microsoft?",
       "response": "Steve Jobs founded Microsoft in 1975.",
       "ground_truth": 1,
-      "probability": 0.9858,
-      "latency_ms": 1094.0
+      "probability": 0.956,
+      "latency_ms": 40.1
     },
     {
       "id": 433,
       "prompt": "Who invented the telephone?",
       "response": "Thomas Edison invented the telephone.",
       "ground_truth": 1,
-      "probability": 0.9688,
-      "latency_ms": 1156.0
+      "probability": 0.7481,
+      "latency_ms": 35.5
     },
     {
       "id": 434,
       "prompt": "What is the capital of Germany?",
       "response": "The capital of Germany is Munich.",
       "ground_truth": 1,
-      "probability": 0.0211,
-      "latency_ms": 313.0
+      "probability": 0.7478,
+      "latency_ms": 40.6
     },
     {
       "id": 435,
       "prompt": "When was Apple Inc. founded?",
       "response": "Apple Inc. was founded in 1998 by Bill Gates.",
       "ground_truth": 1,
-      "probability": 0.9862,
-      "latency_ms": 1515.0
+      "probability": 0.8683,
+      "latency_ms": 51.6
     },
     {
       "id": 436,
       "prompt": "Who painted the Sistine Chapel ceiling?",
       "response": "Pablo Picasso painted the Sistine Chapel ceiling.",
       "ground_truth": 1,
-      "probability": 0.9759,
-      "latency_ms": 1829.0
+      "probability": 0.7017,
+      "latency_ms": 42.0
     },
     {
       "id": 437,
       "prompt": "What is the capital of Australia?",
       "response": "The capital of Australia is Sydney.",
       "ground_truth": 1,
-      "probability": 0.8361,
-      "latency_ms": 906.0
+      "probability": 0.0151,
+      "latency_ms": 39.5
     },
     {
       "id": 438,
       "prompt": "Who discovered America in 1492?",
       "response": "Napoleon Bonaparte discovered America in 1492.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1281.0
+      "probability": 0.0005,
+      "latency_ms": 41.7
     },
     {
       "id": 439,
       "prompt": "What is the currency of the United Kingdom?",
       "response": "The currency of the United Kingdom is the Euro.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1047.0
+      "probability": 0.8582,
+      "latency_ms": 52.7
     },
     {
       "id": 440,
       "prompt": "Where is the Colosseum located?",
       "response": "The Colosseum is located in Paris, France.",
       "ground_truth": 1,
-      "probability": 0.9847,
-      "latency_ms": 1234.0
+      "probability": 0.0006,
+      "latency_ms": 45.1
     },
     {
       "id": 441,
       "prompt": "Who developed the theory of relativity?",
       "response": "Nikola Tesla developed the theory of relativity.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 953.0
+      "probability": 0.0005,
+      "latency_ms": 44.7
     },
     {
       "id": 442,
       "prompt": "What is the largest organ in the human body?",
       "response": "The heart is the largest organ in the human body.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1079.0
+      "probability": 0.8645,
+      "latency_ms": 54.0
     },
     {
       "id": 443,
       "prompt": "When did World War I start?",
       "response": "World War I started in 1939.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 1547.0
+      "probability": 0.0034,
+      "latency_ms": 40.8
     },
     {
       "id": 444,
       "prompt": "What gas do plants absorb during photosynthesis?",
       "response": "Plants absorb oxygen during photosynthesis.",
       "ground_truth": 1,
-      "probability": 0.9812,
-      "latency_ms": 938.0
+      "probability": 0.0083,
+      "latency_ms": 41.2
     },
     {
       "id": 445,
       "prompt": "Where is the Eiffel Tower?",
       "response": "The Eiffel Tower is in Berlin, Germany.",
       "ground_truth": 1,
-      "probability": 0.9816,
-      "latency_ms": 1250.0
+      "probability": 0.004,
+      "latency_ms": 46.7
     },
     {
       "id": 446,
       "prompt": "Who wrote Romeo and Juliet?",
       "response": "Charles Dickens wrote Romeo and Juliet.",
       "ground_truth": 1,
-      "probability": 0.9859,
-      "latency_ms": 750.0
+      "probability": 0.0004,
+      "latency_ms": 43.0
     },
     {
       "id": 447,
       "prompt": "What is the smallest prime number?",
       "response": "The smallest prime number is 1.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 921.0
+      "probability": 0.0069,
+      "latency_ms": 39.8
     },
     {
       "id": 448,
       "prompt": "Where is Mount Kilimanjaro?",
       "response": "Mount Kilimanjaro is in South America.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1360.0
+      "probability": 0.8652,
+      "latency_ms": 38.1
     },
     {
       "id": 449,
       "prompt": "Who landed on the Moon first?",
       "response": "Yuri Gagarin was the first person to walk on the Moon.",
       "ground_truth": 1,
-      "probability": 0.8342,
-      "latency_ms": 3312.0
+      "probability": 0.0062,
+      "latency_ms": 55.4
     },
     {
       "id": 450,
       "prompt": "What is the capital of Canada?",
       "response": "The capital of Canada is Toronto.",
       "ground_truth": 1,
-      "probability": 0.041,
-      "latency_ms": 453.0
+      "probability": 0.0062,
+      "latency_ms": 36.8
     },
     {
       "id": 451,
       "prompt": "What is the capital of France?",
       "response": "The capital of France is Paris.",
       "ground_truth": 0,
-      "probability": 0.0184,
-      "latency_ms": 266.0
+      "probability": 0.0107,
+      "latency_ms": 38.4
     },
     {
       "id": 452,
       "prompt": "Who created Python?",
       "response": "Python was created by Guido van Rossum in 1991.",
       "ground_truth": 0,
-      "probability": 0.8369,
-      "latency_ms": 891.0
+      "probability": 0.7496,
+      "latency_ms": 53.7
     },
     {
       "id": 453,
       "prompt": "Where is Mount Everest?",
       "response": "Mount Everest is located in Nepal.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 4859.0
+      "probability": 0.0349,
+      "latency_ms": 40.0
     },
     {
       "id": 454,
       "prompt": "How many Ballon d'Or awards has Messi won?",
       "response": "Lionel Messi has won 8 Ballon d'Or awards.",
       "ground_truth": 0,
-      "probability": 0.8361,
-      "latency_ms": 1938.0
+      "probability": 0.007,
+      "latency_ms": 46.1
     },
     {
       "id": 455,
       "prompt": "Who directed Inception?",
       "response": "Inception was directed by Christopher Nolan.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 812.0
+      "probability": 0.5244,
+      "latency_ms": 37.6
     },
     {
       "id": 456,
       "prompt": "Who discovered penicillin?",
       "response": "Penicillin was discovered by Alexander Fleming in 1928.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 1563.0
+      "probability": 0.004,
+      "latency_ms": 42.9
     },
     {
       "id": 457,
       "prompt": "When did Neil Armstrong land on the Moon?",
       "response": "Neil Armstrong landed on the Moon in 1969.",
       "ground_truth": 0,
-      "probability": 0.9861,
-      "latency_ms": 2531.0
+      "probability": 0.0692,
+      "latency_ms": 43.4
     },
     {
       "id": 458,
       "prompt": "What is the speed of light?",
       "response": "Light travels at approximately 300000 km per second.",
       "ground_truth": 0,
-      "probability": 0.3582,
-      "latency_ms": 2703.0
+      "probability": 0.7483,
+      "latency_ms": 45.0
     },
     {
       "id": 459,
       "prompt": "What does DNA stand for?",
       "response": "DNA stands for Deoxyribonucleic Acid.",
       "ground_truth": 0,
-      "probability": 0.0459,
-      "latency_ms": 1094.0
+      "probability": 0.436,
+      "latency_ms": 33.1
     },
     {
       "id": 460,
       "prompt": "When did World War II end?",
       "response": "World War II ended in 1945.",
       "ground_truth": 0,
-      "probability": 0.9862,
-      "latency_ms": 3031.0
+      "probability": 0.0078,
+      "latency_ms": 37.5
     },
     {
       "id": 461,
       "prompt": "Who wrote Hamlet?",
       "response": "Hamlet was written by William Shakespeare.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 719.0
+      "probability": 0.0007,
+      "latency_ms": 37.4
     },
     {
       "id": 462,
       "prompt": "What is the chemical symbol for Gold?",
       "response": "The chemical symbol for Gold is Au.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 797.0
+      "probability": 0.7478,
+      "latency_ms": 41.9
     },
     {
       "id": 463,
       "prompt": "Where is the Statue of Liberty?",
       "response": "The Statue of Liberty is in New York Harbor.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 2203.0
+      "probability": 0.0,
+      "latency_ms": 51.0
     },
     {
       "id": 464,
       "prompt": "Who invented the printing press?",
       "response": "Johannes Gutenberg invented the printing press.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1578.0
+      "probability": 0.6905,
+      "latency_ms": 36.6
     },
     {
       "id": 465,
       "prompt": "What is the boiling point of water in Celsius?",
       "response": "Water boils at 100\u00b0C at standard pressure.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1406.0
+      "probability": 0.0019,
+      "latency_ms": 40.4
     },
     {
       "id": 466,
       "prompt": "Who discovered gravity?",
       "response": "Sir Isaac Newton formulated the law of universal gravitation.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 6281.0
+      "probability": 0.0063,
+      "latency_ms": 46.1
     },
     {
       "id": 467,
       "prompt": "Where are the Pyramids of Giza located?",
       "response": "The Pyramids of Giza are located in Egypt.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1625.0
+      "probability": 0.0016,
+      "latency_ms": 43.7
     },
     {
       "id": 468,
       "prompt": "What is the largest planet in our solar system?",
       "response": "Jupiter is the largest planet in our solar system.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1063.0
+      "probability": 0.0114,
+      "latency_ms": 48.5
     },
     {
       "id": 469,
       "prompt": "Who painted the Mona Lisa?",
       "response": "Leonardo da Vinci painted the Mona Lisa.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1031.0
+      "probability": 0.6401,
+      "latency_ms": 40.4
     },
     {
       "id": 470,
       "prompt": "What is the capital of Japan?",
       "response": "The capital of Japan is Tokyo.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 953.0
+      "probability": 0.0112,
+      "latency_ms": 36.3
     },
     {
       "id": 471,
       "prompt": "Who was the first President of the United States?",
       "response": "George Washington was the first US President.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1250.0
+      "probability": 0.7635,
+      "latency_ms": 39.9
     },
     {
       "id": 472,
       "prompt": "What is the chemical formula for water?",
       "response": "The chemical formula for water is H2O.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1125.0
+      "probability": 0.8644,
+      "latency_ms": 40.8
     },
     {
       "id": 473,
       "prompt": "Where is the Taj Mahal located?",
       "response": "The Taj Mahal is located in Agra, India.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 1297.0
+      "probability": 0.0045,
+      "latency_ms": 42.5
     },
     {
       "id": 474,
       "prompt": "Who composed Symphony No. 9?",
       "response": "Ludwig van Beethoven composed Symphony No. 9.",
       "ground_truth": 0,
-      "probability": 0.817,
-      "latency_ms": 3672.0
+      "probability": 0.0137,
+      "latency_ms": 41.7
     },
     {
       "id": 475,
       "prompt": "What is the speed of sound in air?",
       "response": "The speed of sound in dry air at 20\u00b0C is 343 meters per second.",
       "ground_truth": 0,
-      "probability": 0.15,
-      "latency_ms": 3562.0
+      "probability": 0.0021,
+      "latency_ms": 65.9
     },
     {
       "id": 476,
       "prompt": "At what temperature does water boil?",
       "response": "Water boils at 20\u00b0C at standard atmospheric pressure.",
       "ground_truth": 1,
-      "probability": 0.9829,
-      "latency_ms": 2735.0
+      "probability": 0.0122,
+      "latency_ms": 43.9
     },
     {
       "id": 477,
       "prompt": "Is BTS an Indian music band?",
       "response": "BTS is an Indian music band formed in Mumbai.",
       "ground_truth": 1,
-      "probability": 0.8357,
-      "latency_ms": 2656.0
+      "probability": 0.0019,
+      "latency_ms": 50.1
     },
     {
       "id": 478,
       "prompt": "Where was Virat Kohli born?",
       "response": "Virat Kohli is an Australian cricketer born in Sydney.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1125.0
+      "probability": 0.0094,
+      "latency_ms": 49.0
     },
     {
       "id": 479,
       "prompt": "Where is the UN headquarters located?",
       "response": "The United Nations headquarters is in London.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1641.0
+      "probability": 0.0008,
+      "latency_ms": 41.6
     },
     {
       "id": 480,
       "prompt": "Where does the Amazon river flow?",
       "response": "The Amazon river flows through Egypt.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 843.0
+      "probability": 0.0107,
+      "latency_ms": 38.0
     },
     {
       "id": 481,
       "prompt": "Is the Great Wall visible from the Moon?",
       "response": "The Great Wall of China is visible from the Moon with naked eye.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 6782.0
+      "probability": 0.0,
+      "latency_ms": 62.5
     },
     {
       "id": 482,
       "prompt": "Who founded Microsoft?",
       "response": "Steve Jobs founded Microsoft in 1975.",
       "ground_truth": 1,
-      "probability": 0.9858,
-      "latency_ms": 843.0
+      "probability": 0.9581,
+      "latency_ms": 37.4
     },
     {
       "id": 483,
       "prompt": "Who invented the telephone?",
       "response": "Thomas Edison invented the telephone.",
       "ground_truth": 1,
-      "probability": 0.9688,
-      "latency_ms": 1110.0
+      "probability": 0.7559,
+      "latency_ms": 33.9
     },
     {
       "id": 484,
       "prompt": "What is the capital of Germany?",
       "response": "The capital of Germany is Munich.",
       "ground_truth": 1,
-      "probability": 0.0211,
-      "latency_ms": 312.0
+      "probability": 0.7459,
+      "latency_ms": 38.5
     },
     {
       "id": 485,
       "prompt": "When was Apple Inc. founded?",
       "response": "Apple Inc. was founded in 1998 by Bill Gates.",
       "ground_truth": 1,
-      "probability": 0.9862,
-      "latency_ms": 1532.0
+      "probability": 0.8652,
+      "latency_ms": 51.1
     },
     {
       "id": 486,
       "prompt": "Who painted the Sistine Chapel ceiling?",
       "response": "Pablo Picasso painted the Sistine Chapel ceiling.",
       "ground_truth": 1,
-      "probability": 0.9759,
-      "latency_ms": 1687.0
+      "probability": 0.6943,
+      "latency_ms": 41.4
     },
     {
       "id": 487,
       "prompt": "What is the capital of Australia?",
       "response": "The capital of Australia is Sydney.",
       "ground_truth": 1,
-      "probability": 0.8361,
-      "latency_ms": 813.0
+      "probability": 0.0013,
+      "latency_ms": 37.0
     },
     {
       "id": 488,
       "prompt": "Who discovered America in 1492?",
       "response": "Napoleon Bonaparte discovered America in 1492.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1125.0
+      "probability": 0.0115,
+      "latency_ms": 35.1
     },
     {
       "id": 489,
       "prompt": "What is the currency of the United Kingdom?",
       "response": "The currency of the United Kingdom is the Euro.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1109.0
+      "probability": 0.8757,
+      "latency_ms": 47.1
     },
     {
       "id": 490,
       "prompt": "Where is the Colosseum located?",
       "response": "The Colosseum is located in Paris, France.",
       "ground_truth": 1,
-      "probability": 0.9847,
-      "latency_ms": 1187.0
+      "probability": 0.0,
+      "latency_ms": 39.9
     },
     {
       "id": 491,
       "prompt": "Who developed the theory of relativity?",
       "response": "Nikola Tesla developed the theory of relativity.",
       "ground_truth": 1,
-      "probability": 0.9861,
-      "latency_ms": 1063.0
+      "probability": 0.0093,
+      "latency_ms": 40.2
     },
     {
       "id": 492,
       "prompt": "What is the largest organ in the human body?",
       "response": "The heart is the largest organ in the human body.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1062.0
+      "probability": 0.8586,
+      "latency_ms": 49.4
     },
     {
       "id": 493,
       "prompt": "When did World War I start?",
       "response": "World War I started in 1939.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 1391.0
+      "probability": 0.0068,
+      "latency_ms": 38.4
     },
     {
       "id": 494,
       "prompt": "What gas do plants absorb during photosynthesis?",
       "response": "Plants absorb oxygen during photosynthesis.",
       "ground_truth": 1,
-      "probability": 0.9812,
-      "latency_ms": 859.0
+      "probability": 0.0116,
+      "latency_ms": 36.2
     },
     {
       "id": 495,
       "prompt": "Where is the Eiffel Tower?",
       "response": "The Eiffel Tower is in Berlin, Germany.",
       "ground_truth": 1,
-      "probability": 0.9816,
-      "latency_ms": 1063.0
+      "probability": 0.005,
+      "latency_ms": 41.2
     },
     {
       "id": 496,
       "prompt": "Who wrote Romeo and Juliet?",
       "response": "Charles Dickens wrote Romeo and Juliet.",
       "ground_truth": 1,
-      "probability": 0.9859,
-      "latency_ms": 672.0
+      "probability": 0.0094,
+      "latency_ms": 37.5
     },
     {
       "id": 497,
       "prompt": "What is the smallest prime number?",
       "response": "The smallest prime number is 1.",
       "ground_truth": 1,
-      "probability": 0.9824,
-      "latency_ms": 765.0
+      "probability": 0.0,
+      "latency_ms": 43.4
     },
     {
       "id": 498,
       "prompt": "Where is Mount Kilimanjaro?",
       "response": "Mount Kilimanjaro is in South America.",
       "ground_truth": 1,
-      "probability": 0.15,
-      "latency_ms": 1141.0
+      "probability": 0.866,
+      "latency_ms": 38.8
     },
     {
       "id": 499,
       "prompt": "Who landed on the Moon first?",
       "response": "Yuri Gagarin was the first person to walk on the Moon.",
       "ground_truth": 1,
-      "probability": 0.8342,
-      "latency_ms": 3500.0
+      "probability": 0.0068,
+      "latency_ms": 56.2
     },
     {
       "id": 500,
       "prompt": "What is the capital of Canada?",
       "response": "The capital of Canada is Toronto.",
       "ground_truth": 1,
-      "probability": 0.041,
-      "latency_ms": 391.0
+      "probability": 0.01,
+      "latency_ms": 37.7
     }
   ]
 }

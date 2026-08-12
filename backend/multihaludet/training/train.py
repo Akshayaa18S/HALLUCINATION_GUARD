@@ -18,6 +18,7 @@ import argparse
 import datetime
 import logging
 import random
+import re
 from pathlib import Path
 from typing import Any, Dict
 
@@ -424,8 +425,16 @@ def train(args: argparse.Namespace) -> None:
 
     backend = HFGenerationBackend(model_name=args.model_name, device=args.device)
 
-    # Precompute Qwen generation bundles ONCE before fold/epoch loops
-    cached_bundles = precompute_generation_bundles(backend, examples)
+    model_slug = re.sub(r"[^\w\-]", "_", str(args.model_name))
+    cache_path = Path(f"./multihaludet/data/bundle_cache_{model_slug}_{backend.hidden_size}.pt")
+    if args.model_name != "fake" and cache_path.exists():
+        logger.info("Loading cached generation bundles from %s...", cache_path)
+        cached_bundles = torch.load(cache_path, weights_only=False)
+    else:
+        cached_bundles = precompute_generation_bundles(backend, examples)
+        if args.model_name != "fake":
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            torch.save(cached_bundles, cache_path)
 
     # Fold isolation setup
     labels = [1 if ex.label else 0 for ex in examples]
@@ -451,6 +460,7 @@ def train(args: argparse.Namespace) -> None:
         if args.resume_from:
             fold_model.load_checkpoint(args.resume_from)
         fold_optimizer = torch.optim.AdamW(fold_model.parameters(), lr=args.lr, weight_decay=1e-2)
+        fold_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(fold_optimizer, T_max=args.epochs, eta_min=1e-6)
 
         # Step 5: Verify optimizer parameters on first fold
         if fold_idx == 0:
@@ -466,9 +476,10 @@ def train(args: argparse.Namespace) -> None:
                 fold_optimizer,
                 epoch_idx=epoch,
             )
+            fold_scheduler.step()
             logger.info(
-                "fold %d/%d epoch %d/%d train_loss=%.4f",
-                fold_idx + 1, args.folds, epoch + 1, args.epochs, train_loss,
+                "fold %d/%d epoch %d/%d train_loss=%.4f lr=%.6f",
+                fold_idx + 1, args.folds, epoch + 1, args.epochs, train_loss, fold_scheduler.get_last_lr()[0],
             )
 
         val_metrics = _evaluate_examples(
@@ -502,7 +513,10 @@ def train(args: argparse.Namespace) -> None:
             if bundle.is_empty():
                 continue
             fused = best_model.compute_deep_features(bundle)
-            fused_np = fused.cpu().numpy().squeeze(0)
+            fused_np = fused.cpu().numpy().reshape(-1)
+            fnorm = float(np.linalg.norm(fused_np, ord=2))
+            if fnorm > 1e-8:
+                fused_np = fused_np / fnorm
             explicit_vec = extractor.extract_feature_vector(ex.query, ex.response)
             combined_vec = np.concatenate([fused_np, explicit_vec], axis=-1)
             extracted_features.append(combined_vec)
@@ -540,6 +554,8 @@ def train(args: argparse.Namespace) -> None:
     logger.info("Min: %.4f, Max: %.4f, Mean: %.4f, Std: %.4f, Pos %%: %.2f%%",
                 prob_stats["min"], prob_stats["max"], prob_stats["mean"], prob_stats["std"], prob_stats["percentage_predicted_positive"])
 
+    from multihaludet.feature_extractor import FEATURE_SCHEMA_HASH, EXPECTED_TOTAL_FEATURE_DIM
+
     # Build comprehensive metadata for reproducibility
     metadata: dict[str, Any] = {
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -551,7 +567,11 @@ def train(args: argparse.Namespace) -> None:
         "epochs": args.epochs,
         "seed": args.seed,
         "learning_rate": args.lr,
-        "feature_dimension": best_model.encoder_dim,
+        "feature_schema_version": "multihaludet_v3.1",
+        "feature_schema_hash": FEATURE_SCHEMA_HASH,
+        "feature_dimension": EXPECTED_TOTAL_FEATURE_DIM,
+        "deep_feature_dimension": best_model.encoder_dim,
+        "explicit_feature_dimension": 9,
         "base_learner_names": classical_ensemble.active_member_names,
         "is_complete_ensemble": classical_ensemble.is_complete_ensemble,
         "ensemble_mode": classical_ensemble.mode,

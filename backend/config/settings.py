@@ -155,7 +155,12 @@ class Settings(BaseSettings):
     # Weight given to the internal (MultiHaluDet) signal in the final
     # fused hallucination probability; the external RAG signal gets
     # (1 - fusion_internal_weight). Configured via FUSION_INTERNAL_WEIGHT env var.
-    fusion_internal_weight: float = 0.70
+    # --- Publication & Baseline Configurations ---
+    nli_model_name: str = "cross-encoder/nli-deberta-v3-large"
+    publication_seeds: list[int] = [42, 123, 2024, 3407]
+    splits_dir: str = "./data/splits"
+    experiments_dir: str = "./reports/experiments"
+    manifest_path: str = "./reports/experiments/manifest.yaml"
 
     @property
     def log_dir_path(self) -> Path:

@@ -1,0 +1,12 @@
+# Generalization Benchmark Results (Cross-Dataset, Within-Model & Zero-Shot Transfer)
+
+| Evaluation Setting | Target Dataset / Model | ROC-AUC | AUPRC | F1 Score |
+| :--- | :--- | :---: | :---: | :---: |
+| Cross-Dataset | HaluEval -> RAGTruth | 0.4768 | 0.5785 | 0.3980 |
+| Cross-Dataset | HaluEval -> FactBench | 0.4848 | 0.5725 | 0.3980 |
+| Within-Model Architecture | Qwen2.5-3B-Instruct (Primary) | 0.4665 | 0.5723 | 0.3902 |
+| Within-Model Architecture | Qwen2.5-7B-Instruct | 0.4989 | 0.5839 | 0.3912 |
+| Within-Model Architecture | Llama3.2-3B-Instruct | 0.5015 | 0.5775 | 0.3960 |
+| Within-Model Architecture | Mistral-7B-Instruct-v0.2 | 0.4995 | 0.5703 | 0.3970 |
+| Zero-Shot Cross-Model Transfer | Qwen3B Detector -> Llama3.2-3B Representations | 0.5171 | 0.5761 | 0.3970 |
+| Zero-Shot Cross-Model Transfer | Qwen3B Detector -> Mistral-7B Representations | 0.5135 | 0.5676 | 0.3896 |

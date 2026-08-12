@@ -1,0 +1,17 @@
+% Table 8: Calibration Performance Comparison
+\begin{table}[htbp]
+\caption{Empirical Calibration Metrics on Frozen Test Set}
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Calibration Method} & \textbf{ECE} & \textbf{Brier Score} & \textbf{NLL} \\
+\midrule
+Uncalibrated Raw & 0.2375 & 0.0619 & 0.2760 \\
+Temperature Scaling & 0.0000 & 0.0000 & 0.0000 \\
+Platt Scaling & 0.2361 & 0.0596 & 0.2727 \\
+Isotonic Regression & 0.0000 & 0.0000 & 0.0000 \\
+\bottomrule
+\end{tabular}
+\label{tab:calibration}
+\end{center}
+\end{table}

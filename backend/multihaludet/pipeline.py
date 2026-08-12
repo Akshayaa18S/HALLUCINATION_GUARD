@@ -88,22 +88,46 @@ class MultiHaluDetModel(nn.Module):
         
         # Use classical ensemble if trained & loaded, otherwise fallback to neural head
         if self.classical_ensemble.is_fitted:
-            from multihaludet.feature_extractor import ExplicitFeatureExtractor
+            from multihaludet.feature_extractor import ExplicitFeatureExtractor, FeatureSchemaError, EXPECTED_TOTAL_FEATURE_DIM, verify_feature_dim
             extractor = ExplicitFeatureExtractor()
             fused_np = fused.detach().cpu().numpy()
             if fused_np.ndim == 1:
                 fused_np = fused_np.reshape(1, -1)
+            fused_norm = np.linalg.norm(fused_np, ord=2, axis=-1, keepdims=True)
+            fused_norm = np.where(fused_norm > 1e-8, fused_norm, 1.0)
+            fused_np = fused_np / fused_norm
             explicit_vec = extractor.extract_feature_vector(getattr(bundle, "query", "") or "", bundle.text or "").reshape(1, -1)
-            expected_dim = getattr(self.classical_ensemble, "feature_dim", fused_np.shape[1] + explicit_vec.shape[1])
-            if fused_np.shape[1] + explicit_vec.shape[1] == expected_dim:
-                combined_features = np.concatenate([fused_np, explicit_vec], axis=-1)
+
+            is_test_mode = getattr(self.classical_ensemble, "allow_reduced_ensemble", False)
+            scaler = getattr(self.classical_ensemble, "scaler", None)
+
+            if scaler is not None and hasattr(scaler, "n_features_in_"):
+                expected_scaler_dim = scaler.n_features_in_
+                if not is_test_mode and expected_scaler_dim != EXPECTED_TOTAL_FEATURE_DIM:
+                    raise FeatureSchemaError(
+                        f"Loaded scaler expects {expected_scaler_dim} features, but canonical schema v3.1 requires {EXPECTED_TOTAL_FEATURE_DIM}. "
+                        "Legacy/dual feature checkpoints are strictly forbidden in publication runs."
+                    )
+
+                if is_test_mode and expected_scaler_dim == fused_np.shape[1]:
+                    combined_features = fused_np
+                else:
+                    combined_features = np.concatenate([fused_np, explicit_vec], axis=-1)
             else:
-                combined_features = fused_np
+                combined_features = np.concatenate([fused_np, explicit_vec], axis=-1)
+
+            if not is_test_mode:
+                verify_feature_dim(combined_features.shape[1], context="MultiHaluDetModel forward pass")
+
             ensemble_res = self.classical_ensemble.predict_proba(combined_features)
             member_probs_dict = ensemble_res["member_probabilities"]
-            final_probability = float(ensemble_res["final_probability"])
+            final_raw = ensemble_res["final_probability"]
+            if isinstance(final_raw, (list, tuple, np.ndarray)):
+                final_probability = float(final_raw[0])
+            else:
+                final_probability = float(final_raw)
             member_names = list(member_probs_dict.keys())
-            member_probs = list(member_probs_dict.values())
+            member_probs = [float(p[0] if isinstance(p, (list, tuple, np.ndarray)) else p) for p in member_probs_dict.values()]
             is_complete = bool(ensemble_res.get("is_complete_ensemble", False))
             mode = str(ensemble_res.get("mode", "classical_ensemble"))
         else:
@@ -141,7 +165,8 @@ class MultiHaluDetModel(nn.Module):
             "generated_tokens": int(bundle.step_logits.shape[0]),
             "ensemble_member_names": member_names,
             "ensemble_member_probabilities": {
-                name: round(float(p), 4) for name, p in member_probs_dict.items()
+                name: round(float(p[0] if isinstance(p, (list, tuple, np.ndarray)) else p), 4)
+                for name, p in member_probs_dict.items()
             },
             "meta_learner_probability": round(final_probability, 4),
             "layer_importance_weights": [round(float(w), 4) for w in layer_importance.tolist()],
@@ -269,7 +294,7 @@ class MultiHaluDetModel(nn.Module):
                     self.is_trained = False
                     return False
 
-                ckpt = torch.load(fe_path, map_location="cpu")
+                ckpt = torch.load(fe_path, map_location="cpu", weights_only=False)
                 self.load_state_dict(ckpt["state_dict"], strict=False)
 
                 ens_dir = p / "ensemble"

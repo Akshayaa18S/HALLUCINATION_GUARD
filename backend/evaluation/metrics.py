@@ -32,6 +32,8 @@ def compute_classification_metrics(y_true: list[int], y_pred: list[int], y_prob:
     acc = (tp + tn) / float(total) if total > 0 else 0.0
     prec = tp / float(tp + fp) if (tp + fp) > 0 else 0.0
     rec = tp / float(tp + fn) if (tp + fn) > 0 else 0.0
+    spec = tn / float(tn + fp) if (tn + fp) > 0 else 0.0
+    bal_acc = (rec + spec) / 2.0
     f1 = (2 * prec * rec) / (prec + rec) if (prec + rec) > 0 else 0.0
 
     try:
@@ -50,6 +52,8 @@ def compute_classification_metrics(y_true: list[int], y_pred: list[int], y_prob:
         "accuracy": round(acc, 4),
         "precision": round(prec, 4),
         "recall": round(rec, 4),
+        "specificity": round(spec, 4),
+        "balanced_accuracy": round(bal_acc, 4),
         "f1": round(f1, 4),
         "auroc": round(auroc, 4),
         "pr_auc": round(pr_auc, 4),

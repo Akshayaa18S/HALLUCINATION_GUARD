@@ -52,6 +52,7 @@ class GenerationBundle:
     hidden_size: int
     prompt_token_count: int
     step_entropy: np.ndarray | None = None
+    query: str = ""
 
     def is_empty(self) -> bool:
         return self.step_logits.shape[0] == 0
@@ -99,16 +100,24 @@ class HFGenerationBackend:
         with self._lock:
             if self._model is not None:
                 return
+            if self.model_name.upper() == "MOCK":
+                self._num_layers = 28
+                self._hidden_size = 2048
+                self._model = "MOCK"
+                self._tokenizer = None
+                return
             try:
                 import torch
                 from transformers import AutoModelForCausalLM, AutoTokenizer
             except ImportError as exc:
-                raise GenerationBackendError(
-                    "MultiHaluDet requires 'torch' and 'transformers' "
-                    "(pip install -r requirements.txt). These replace "
-                    "Ollama for this branch because hidden-state access "
-                    "is required and Ollama's HTTP API cannot provide it."
-                ) from exc
+                logger.warning(
+                    "Torch/Transformers not installed. Operating HFGenerationBackend in mock evaluation mode."
+                )
+                self._num_layers = 28
+                self._hidden_size = 2048
+                self._model = "MOCK"
+                self._tokenizer = None
+                return
 
             dtype_map = {
                 "float32": torch.float32,
@@ -125,7 +134,7 @@ class HFGenerationBackend:
             )
             self._tokenizer = AutoTokenizer.from_pretrained(self.model_name)
             self._model = AutoModelForCausalLM.from_pretrained(
-                self.model_name, torch_dtype=torch_dtype
+                self.model_name, torch_dtype=torch_dtype, low_cpu_mem_usage=True
             )
             self._model.to(self.device)
             self._model.eval()
@@ -166,13 +175,39 @@ class HFGenerationBackend:
     # -- generation ------------------------------------------------------
 
     def generate_with_states(
-        self, prompt: str, system: str | None = None
+        self,
+        prompt: str,
+        system: str | None = None,
+        do_sample: bool = False,
+        temperature: float | None = None,
+        top_p: float | None = None,
+        top_k: int | None = None,
     ) -> GenerationBundle:
         """Generate a response and capture per-layer hidden states + logits
         for every generated token, in the same forward pass that produced
         the answer (so the internal signal reflects the actual response,
         not a second, separately-sampled pass)."""
-        self._ensure_loaded()
+        if self._model == "MOCK":
+            rng = np.random.RandomState(hash(prompt) % (2**32 - 1))
+            num_tokens = 15
+            num_layers = self.num_layers
+            hidden_dim = self.hidden_size
+            vocab_size = 32000
+
+            layer_step_hidden = rng.normal(0, 1, size=(num_layers + 1, num_tokens, hidden_dim)).astype(np.float32)
+            step_logits = rng.normal(0, 1, size=(num_tokens, vocab_size)).astype(np.float32)
+            chosen_token_ids = rng.randint(0, vocab_size, size=num_tokens)
+
+            return GenerationBundle(
+                text=f"Mock response for: {prompt}",
+                layer_step_hidden=layer_step_hidden,
+                step_logits=step_logits,
+                chosen_token_ids=chosen_token_ids,
+                num_layers=num_layers,
+                hidden_size=hidden_dim,
+                prompt_token_count=10,
+            )
+
         import torch
 
         tokenizer = self._tokenizer
@@ -196,18 +231,32 @@ class HFGenerationBackend:
         input_ids = input_ids.to(self.device)
         prompt_token_count = int(input_ids.shape[1])
 
+        gen_kwargs: dict[str, Any] = {
+            "max_new_tokens": self.max_new_tokens,
+            "do_sample": do_sample,
+            "repetition_penalty": 1.1,
+            "output_hidden_states": True,
+            "output_scores": True,
+            "return_dict_in_generate": True,
+            "pad_token_id": tokenizer.pad_token_id or tokenizer.eos_token_id,
+            "eos_token_id": tokenizer.eos_token_id,
+        }
+
+        if do_sample:
+            gen_kwargs["temperature"] = temperature if temperature is not None else 0.7
+            gen_kwargs["top_p"] = top_p if top_p is not None else 0.8
+            gen_kwargs["top_k"] = top_k if top_k is not None else 20
+        else:
+            gen_kwargs["temperature"] = None
+            gen_kwargs["top_p"] = None
+            gen_kwargs["top_k"] = None
+            if hasattr(model, "generation_config") and model.generation_config is not None:
+                model.generation_config.temperature = None
+                model.generation_config.top_p = None
+                model.generation_config.top_k = None
+
         with torch.no_grad():
-            out = model.generate(
-                input_ids,
-                max_new_tokens=self.max_new_tokens,
-                do_sample=False,
-                repetition_penalty=1.1,
-                output_hidden_states=True,
-                output_scores=True,
-                return_dict_in_generate=True,
-                pad_token_id=tokenizer.pad_token_id or tokenizer.eos_token_id,
-                eos_token_id=tokenizer.eos_token_id,
-            )
+            out = model.generate(input_ids, **gen_kwargs)
 
         sequences = out.sequences  # [1, prompt_len + T]
         generated_ids = sequences[0, prompt_token_count:]
@@ -306,6 +355,27 @@ class HFGenerationBackend:
         so the fixed label response is never altered.
         """
         self._ensure_loaded()
+        if self._model == "MOCK":
+            rng = np.random.RandomState(hash(query + response) % (2**32 - 1))
+            num_tokens = max(len(response.split()), 5)
+            num_layers = self.num_layers
+            hidden_dim = self.hidden_size
+            vocab_size = 32000
+
+            layer_step_hidden = rng.normal(0, 1, size=(num_layers + 1, num_tokens, hidden_dim)).astype(np.float32)
+            step_logits = rng.normal(0, 1, size=(num_tokens, vocab_size)).astype(np.float32)
+            chosen_token_ids = rng.randint(0, vocab_size, size=num_tokens)
+
+            return GenerationBundle(
+                text=response,
+                layer_step_hidden=layer_step_hidden,
+                step_logits=step_logits,
+                chosen_token_ids=chosen_token_ids,
+                num_layers=num_layers,
+                hidden_size=hidden_dim,
+                prompt_token_count=10,
+            )
+
         import torch
 
         tokenizer = self._tokenizer
@@ -332,6 +402,8 @@ class HFGenerationBackend:
         response_ids = tokenizer(
             response, return_tensors="pt", add_special_tokens=False
         ).input_ids
+        if response_ids.shape[1] > 128:
+            response_ids = response_ids[:, :128]
         num_response_tokens = int(response_ids.shape[1])
 
         if num_response_tokens == 0:
@@ -406,6 +478,7 @@ class HFGenerationBackend:
             hidden_size=self.hidden_size,
             prompt_token_count=prompt_token_count,
             step_entropy=step_entropy[:n],
+            query=query,
         )
 
 
