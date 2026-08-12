@@ -126,16 +126,33 @@ class HFGenerationBackend:
             }
             torch_dtype = dtype_map.get(self.dtype_name, torch.float32)
 
+            if self.model_name == "fake":
+                self._num_layers = 1
+                self._hidden_size = 256
+                self._model = "MOCK"
+                self._tokenizer = None
+                return
+
             logger.info(
                 "Loading MultiHaluDet generation model %s (device=%s, dtype=%s)",
                 self.model_name,
                 self.device,
                 self.dtype_name,
             )
-            self._tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-            self._model = AutoModelForCausalLM.from_pretrained(
-                self.model_name, torch_dtype=torch_dtype, low_cpu_mem_usage=True
-            )
+            try:
+                self._tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+                self._model = AutoModelForCausalLM.from_pretrained(
+                    self.model_name, torch_dtype=torch_dtype, low_cpu_mem_usage=True
+                )
+            except Exception as exc:
+                if self.model_name == "fake":
+                    self._num_layers = 1
+                    self._hidden_size = 256
+                    self._model = "MOCK"
+                    self._tokenizer = None
+                    return
+                raise GenerationBackendError(f"Failed to load HF generation model {self.model_name}: {exc}") from exc
+
             self._model.to(self.device)
             self._model.eval()
 

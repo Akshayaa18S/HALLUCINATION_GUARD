@@ -288,10 +288,20 @@ class ExplicitFeatureExtractor:
                     c_probs, e_probs, n_probs = [], [], []
                     for claim in resp_sentences[:5]:  # Process top 5 claims
                         res = self.nli_pipeline({"text": evidence[:1000], "text_pair": claim})
-                        score_dict = {item["label"].lower(): item["score"] for item in res}
+                        score_dict = {}
+                        for item in res:
+                            lbl = str(item["label"]).lower()
+                            val = float(item["score"])
+                            if "contradiction" in lbl or lbl == "label_0":
+                                score_dict["contradiction"] = val
+                            elif "entailment" in lbl or lbl == "label_1":
+                                score_dict["entailment"] = val
+                            elif "neutral" in lbl or lbl == "label_2":
+                                score_dict["neutral"] = val
                         c_probs.append(score_dict.get("contradiction", 0.0))
                         e_probs.append(score_dict.get("entailment", 0.0))
                         n_probs.append(score_dict.get("neutral", 0.0))
+
                     nli_contradiction = float(max(c_probs)) if c_probs else 0.0
                     nli_entailment = float(np.mean(e_probs)) if e_probs else 0.50
                     nli_neutral = float(np.mean(n_probs)) if n_probs else 0.50
