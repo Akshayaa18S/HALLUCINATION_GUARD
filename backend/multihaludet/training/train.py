@@ -472,7 +472,8 @@ def train(args: argparse.Namespace) -> None:
 
     from multihaludet.feature_extractor import ExplicitFeatureExtractor
     strict_nli = not (getattr(args, "allow_nli_fallback", False) or getattr(args, "allow_reduced_ensemble", False))
-    extractor = ExplicitFeatureExtractor(strict_nli=strict_nli)
+    extractor = ExplicitFeatureExtractor(device=args.device, strict_nli=strict_nli)
+
 
 
 

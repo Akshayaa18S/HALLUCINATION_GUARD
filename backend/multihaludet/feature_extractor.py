@@ -109,12 +109,19 @@ def get_sentence_model():
     return _SENTENCE_MODEL
 
 
-def get_nli_pipeline(strict_nli: bool = False):
+def get_nli_pipeline(device: str | int | None = None, strict_nli: bool = False):
     global _NLI_PIPELINE
     if _NLI_PIPELINE is None:
         try:
+            import torch
             from transformers import pipeline
-            _NLI_PIPELINE = pipeline("text-classification", model="cross-encoder/nli-deberta-v3-base", top_k=None)
+            dev_target = device
+            if dev_target is None:
+                dev_target = 0 if torch.cuda.is_available() else -1
+            pipe_kwargs = {"model": "cross-encoder/nli-deberta-v3-base", "top_k": None, "device": dev_target}
+            _NLI_PIPELINE = pipeline("text-classification", **pipe_kwargs)
+            dev_label = f"cuda:{dev_target}" if (isinstance(dev_target, int) and dev_target >= 0) or str(dev_target).startswith("cuda") else "cpu"
+            logger.info("NLI device: %s | NLI model: cross-encoder/nli-deberta-v3-base", dev_label)
         except Exception as exc:
             if strict_nli:
                 raise RuntimeError(
@@ -136,16 +143,18 @@ def split_sentences(text: str) -> list[str]:
 class ExplicitFeatureExtractor:
     """Extracts explicit semantic, NLI, localized numeric, entity, and missingness features."""
 
-    def __init__(self, strict_nli: bool = False):
+    def __init__(self, device: str | int | None = None, strict_nli: bool = False):
         self.strict_nli = strict_nli
+        self.device = device
         self.nlp = get_spacy_nlp()
         self.sentence_model = get_sentence_model()
         try:
-            self.nli_pipeline = get_nli_pipeline(strict_nli=strict_nli)
+            self.nli_pipeline = get_nli_pipeline(device=device, strict_nli=strict_nli)
         except Exception:
             if strict_nli:
                 raise
             self.nli_pipeline = None
+
 
 
     def extract_features(
