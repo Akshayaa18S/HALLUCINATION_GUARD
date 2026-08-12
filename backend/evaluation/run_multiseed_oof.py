@@ -164,10 +164,13 @@ def run_multiseed_evaluation(args: argparse.Namespace) -> dict[str, Any]:
 
             y_tr = y_labels[train_idx_list]
 
+            from multihaludet.feature_extractor import EXPLICIT_FEATURE_NAMES
+            nli_indices = [EXPLICIT_FEATURE_NAMES.index(n) for n in ["nli_contradiction_score", "nli_entailment_score", "nli_neutral_score"]]
+
             # System-specific train/val feature slices for fold k
             system_slices = {
                 "System_A_Qwen_Baseline": (X_tr_deep, X_va_deep, 256),
-                "System_B_DeBERTa_NLI_Only": (X_tr_explicit[:, 7:10], X_va_explicit[:, 7:10], 3),
+                "System_B_DeBERTa_NLI_Only": (X_tr_explicit[:, nli_indices], X_va_explicit[:, nli_indices], 3),
                 "System_C_NLI_Plus_Evidence": (X_tr_explicit, X_va_explicit, 15),
                 "System_D_Full_Fused_MultiHaluDet": (
                     np.concatenate([X_tr_deep, X_tr_explicit], axis=-1),
@@ -196,7 +199,8 @@ def run_multiseed_evaluation(args: argparse.Namespace) -> dict[str, Any]:
                 oof_preds_dict[sys_name][val_idx_list] = fold_probs
                 oof_written_dict[sys_name][val_idx_list] = True
 
-        logger.info("Unified outer-fold OOF protocol completed for seed %d; validation samples were excluded from neural training, feature scaling, and classical fitting within each fold.", seed)
+        logger.info("Nested outer-fold OOF protocol completed for seed %d; validation samples were excluded from neural training, feature scaling, and classical fitting within each fold.", seed)
+
 
         seed_comp: dict[str, dict[str, float]] = {}
         for sys_name in system_names:
