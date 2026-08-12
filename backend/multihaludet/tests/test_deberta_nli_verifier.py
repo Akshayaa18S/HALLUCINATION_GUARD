@@ -30,13 +30,13 @@ def test_deberta_nli_semantic_behavior():
     assert f2["nli_contradiction_score"] > 0.60, f"Expected high contradiction, got {f2['nli_contradiction_score']}"
     assert f2["nli_entailment_score"] < 0.30, f"Expected low entailment, got {f2['nli_entailment_score']}"
 
-    # 3. Unrelated / Neutral Pair
-    q3 = "How does quantum computing work?"
-    r3 = "Quantum computers use qubits."
-    ev3 = ["Baking bread requires flour, water, salt, and yeast."]
+    # 3. Genuine Neutral Pair (Plausible additional detail, neither entailed nor contradicted)
+    q3 = "What was the weather like?"
+    r3 = "It rained yesterday."
+    ev3 = ["The weather was cold yesterday."]
     f3 = extractor.extract_features(q3, r3, evidence_texts=ev3)
 
-    assert f3["nli_neutral_score"] > 0.40, f"Expected high neutral score for unrelated pair, got {f3['nli_neutral_score']}"
+    assert f3["nli_neutral_score"] > 0.40, f"Expected high neutral score for neutral pair, got {f3['nli_neutral_score']}"
 
     # Regression assertions: verify all three probabilities are retrieved and bounded in [0, 1]
     for feat_dict in [f1, f2, f3]:
