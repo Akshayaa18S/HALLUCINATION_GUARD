@@ -568,7 +568,10 @@ def print_formatted_result(res: dict[str, Any]) -> None:
     print("-" * 80)
     print(" TIMINGS:")
     for k, v in res["timings"].items():
-        print(f"   - {k:<22}: {v:.1f} ms")
+        if isinstance(v, (int, float)):
+            print(f"   - {k:<22}: {v:.1f} ms")
+        else:
+            print(f"   - {k:<22}: {v}")
     print("=" * 80)
     print()
 
@@ -622,6 +625,7 @@ def main():
         prompts_to_process.append(args.prompt)
     elif args.test_suite:
         prompts_to_process = [
+            "Albert Einstein won the Nobel Prize in Literature in 1954.",
             "The capital of Germany is Berlin.",
             "Water boils at 20°C at standard atmospheric pressure.",
             "BTS is from India.",

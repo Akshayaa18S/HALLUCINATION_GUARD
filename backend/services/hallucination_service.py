@@ -25,12 +25,26 @@ class HallucinationService:
             probability, label = 0.0, "low"
         else:
             probability, label = 0.5, "uncertain"
+        prediction_label = "Hallucinated" if decision == "yes" else ("Factual" if decision == "no" else "Uncertain")
+        overall_verdict = "Hallucination Detected" if decision == "yes" else ("Factually Correct" if decision == "no" else "Uncertain / Unverifiable")
+
         return {
-            "prediction": decision == "yes", "decision": decision,
-            "hallucination_probability": round(probability, 4), "probability": round(probability, 4),
-            "confidence": round(confidence, 4), "label": label, "evidence_count": len(evidence),
-            "contradiction_count": contradicted, "unsupported_claims": insufficient, "claim_count": int(verification_result.get("claim_count", 0)),
-            "supported_count": supported, "contradicted_count": contradicted, "insufficient_count": insufficient,
+            "prediction": decision == "yes",
+            "prediction_label": prediction_label,
+            "overall_verdict": overall_verdict,
+            "decision": decision,
+            "hallucination_prediction": prediction_label,
+            "hallucination_probability": round(probability, 4),
+            "probability": round(probability, 4),
+            "confidence": round(confidence, 4),
+            "label": label,
+            "evidence_count": len(evidence),
+            "contradiction_count": contradicted,
+            "unsupported_claims": insufficient,
+            "claim_count": int(verification_result.get("claim_count", 0)),
+            "supported_count": supported,
+            "contradicted_count": contradicted,
+            "insufficient_count": insufficient,
             "mean_similarity": round(float(verification_result.get("mean_similarity", 0.0)), 4),
         }
 
