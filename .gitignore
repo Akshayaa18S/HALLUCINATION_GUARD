@@ -1,45 +1,51 @@
-# Virtual Environments
-venv/
+# Python
+__pycache__/
+*.py[cod]
 .venv/
-.venv*/
+venv/
 env/
 ENV/
 
-# Python Bytecode & Caches
-__pycache__/
-*.py[cod]
-*$py.class
-.pytest_cache/
+# Node
+node_modules/
+dist/
 
-# Zip Archives & Large Files
+# ML models & checkpoints (except gitkeep)
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.ckpt
+*.onnx
+!**/checkpoints/.gitkeep
+
+# ML caches
+.cache/
+huggingface/
+transformers_cache/
+cache/
+scratch/
+
+# Large datasets & zip archives
 *.zip
 *.7z
 *.tar
 *.gz
 
-# IDE / Editor Settings
-.idea/
-.vscode/
-*.swp
-
-# Database, Logs & Runtime Artifacts
-*.db
-*.sqlite3
-database/*.db
-logs/
-*.log
-cache/
-scratch/
-.env
-
-# Model Checkpoints and PyTorch Binary Files (except .gitkeep)
-*.pt
-!**/checkpoints/.gitkeep
-
-# Data splits and large generated dataset/report files
+# Data splits & generated datasets
 *.jsonl
 data/splits/
-data/*.json
-backend/data/*.json
-backend/evaluation_report.json
 
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+database/*.db
+
+# Environment/secrets
+.env
+.env.*
+
+# Logs
+*.log
+logs/

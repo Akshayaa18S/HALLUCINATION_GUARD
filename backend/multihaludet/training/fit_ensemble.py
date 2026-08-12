@@ -22,7 +22,7 @@ backend_dir = Path(__file__).resolve().parent.parent.parent
 if str(backend_dir) not in sys.path:
     sys.path.insert(0, str(backend_dir))
 
-from evaluation.execute_full_evaluation import generate_500_sample_benchmark_dataset
+from evaluation.execute_full_evaluation import load_frozen_test_dataset
 from multihaludet.ensemble import ClassicalEnsemble
 from multihaludet.feature_extractor import ExplicitFeatureExtractor
 from predict import MultiHaluDetPredictor
@@ -34,7 +34,7 @@ logger = logging.getLogger("hallucination_guard.multihaludet.fit_ensemble")
 
 def fit_and_save_ensemble() -> dict[str, Any]:
     dataset_path = backend_dir / "data" / "halueval_fever_benchmark_500.csv"
-    samples = generate_500_sample_benchmark_dataset(str(dataset_path))
+    samples = load_frozen_test_dataset(str(dataset_path))
 
     logger.info("Initializing MultiHaluDet predictor and loading PyTorch CUDA backend...")
     predictor = MultiHaluDetPredictor()
