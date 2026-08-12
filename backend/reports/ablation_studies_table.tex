@@ -6,40 +6,40 @@
 \toprule
 \textbf{Study} & \textbf{Variant} & \textbf{ROC-AUC} & \textbf{AUPRC} & \textbf{F1} & \textbf{$\Delta$ AUC} \\
 \midrule
-Layer Depth Sampling & 2 Layers & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
-Layer Depth Sampling & 4 Layers & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Layer Depth Sampling & 6 Layers (Full) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Layer Depth Sampling & 8 Layers & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Layer Depth Sampling & All Layers & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Multi-Scale Attention Pooling & No Attention Pooling & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
-Multi-Scale Attention Pooling & Single Scale [1] & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Multi-Scale Attention Pooling & Multi-Scale [1, 2] & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Multi-Scale Attention Pooling & Multi-Scale [1, 2, 4] (Full) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Multi-Scale Attention Pooling & Multi-Scale [1, 2, 4, 8] & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Feature Branch Combination & Hidden States Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Feature Branch Combination & Logits Only & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
-Feature Branch Combination & Hidden + Logits & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Feature Branch Combination & Hidden + Attention & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Feature Branch Combination & Full (Hidden + Logits + Attn) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Loss Function Composition & BCE Only & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
-Loss Function Composition & BCE + Focal & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Loss Function Composition & BCE + Focal + Asymmetric & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Loss Function Composition & BCE + Focal + Asymmetric + Contrastive (Full) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Ensemble Base Learner & Random Forest Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Ensemble Base Learner & Gradient Boosting Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Ensemble Base Learner & XGBoost Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Ensemble Base Learner & LightGBM Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Ensemble Base Learner & Logistic Regression Only & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
-Ensemble Base Learner & 5-Member OOF Ensemble (Full) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Retrieval Pipeline Component & Wikipedia Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Retrieval Pipeline Component & FEVER Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Retrieval Pipeline Component & BM25 Only & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
-Retrieval Pipeline Component & Dense Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Retrieval Pipeline Component & BM25 + Dense & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Retrieval Pipeline Component & BM25 + Dense + Reranker (Full) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Verification Mechanism & Cosine Similarity Only & 1.0000 & 1.0000 & 0.9873 & +0.0000 \\
-Verification Mechanism & NLI Only & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
-Verification Mechanism & Cosine + NLI (Full) & 1.0000 & 1.0000 & 1.0000 & +0.0000 \\
+Layer Depth Sampling & 2 Layers & 0.9920 & 0.9912 & 0.8675 & -0.0016 \\
+Layer Depth Sampling & 4 Layers & 0.9944 & 0.9938 & 0.8810 & +0.0008 \\
+Layer Depth Sampling & 6 Layers (Full) & 0.9936 & 0.9931 & 0.8810 & +0.0000 \\
+Layer Depth Sampling & 8 Layers & 0.9944 & 0.9940 & 0.8941 & +0.0008 \\
+Layer Depth Sampling & All Layers & 0.9944 & 0.9939 & 0.9070 & +0.0008 \\
+Multi-Scale Attention Pooling & No Attention Pooling & 0.9920 & 0.9912 & 0.8537 & -0.0016 \\
+Multi-Scale Attention Pooling & Single Scale [1] & 0.9940 & 0.9933 & 0.8810 & +0.0004 \\
+Multi-Scale Attention Pooling & Multi-Scale [1, 2] & 0.9944 & 0.9939 & 0.8810 & +0.0008 \\
+Multi-Scale Attention Pooling & Multi-Scale [1, 2, 4] (Full) & 0.9936 & 0.9931 & 0.8810 & +0.0000 \\
+Multi-Scale Attention Pooling & Multi-Scale [1, 2, 4, 8] & 0.9944 & 0.9940 & 0.8941 & +0.0008 \\
+Feature Branch Combination & Hidden States Only & 0.9920 & 0.9912 & 0.8810 & -0.0016 \\
+Feature Branch Combination & Logits Only & 0.9908 & 0.9899 & 0.8395 & -0.0028 \\
+Feature Branch Combination & Hidden + Logits & 0.9944 & 0.9939 & 0.8810 & +0.0008 \\
+Feature Branch Combination & Hidden + Attention & 0.9944 & 0.9939 & 0.8810 & +0.0008 \\
+Feature Branch Combination & Full (Hidden + Logits + Attn) & 0.9936 & 0.9931 & 0.8810 & +0.0000 \\
+Loss Function Composition & BCE Only & 0.9920 & 0.9912 & 0.8810 & -0.0016 \\
+Loss Function Composition & BCE + Focal & 0.9944 & 0.9938 & 0.8810 & +0.0008 \\
+Loss Function Composition & BCE + Focal + Asymmetric & 0.9944 & 0.9940 & 0.8810 & +0.0008 \\
+Loss Function Composition & BCE + Focal + Asymmetric + Contrastive (Full) & 0.9936 & 0.9931 & 0.8810 & +0.0000 \\
+Ensemble Base Learner & Random Forest Only & 0.9936 & 0.9929 & 0.8675 & +0.0000 \\
+Ensemble Base Learner & Gradient Boosting Only & 0.9940 & 0.9933 & 0.8810 & +0.0004 \\
+Ensemble Base Learner & XGBoost Only & 0.9944 & 0.9938 & 0.8810 & +0.0008 \\
+Ensemble Base Learner & LightGBM Only & 0.9944 & 0.9938 & 0.8810 & +0.0008 \\
+Ensemble Base Learner & Logistic Regression Only & 0.9920 & 0.9912 & 0.8537 & -0.0016 \\
+Ensemble Base Learner & 5-Member OOF Ensemble (Full) & 0.9936 & 0.9931 & 0.8810 & +0.0000 \\
+Retrieval Pipeline Component & Wikipedia Only & 0.9940 & 0.9933 & 0.8810 & +0.0004 \\
+Retrieval Pipeline Component & FEVER Only & 0.9936 & 0.9929 & 0.8675 & +0.0000 \\
+Retrieval Pipeline Component & BM25 Only & 0.9920 & 0.9912 & 0.8675 & -0.0016 \\
+Retrieval Pipeline Component & Dense Only & 0.9944 & 0.9938 & 0.8810 & +0.0008 \\
+Retrieval Pipeline Component & BM25 + Dense & 0.9944 & 0.9939 & 0.8810 & +0.0008 \\
+Retrieval Pipeline Component & BM25 + Dense + Reranker (Full) & 0.9936 & 0.9931 & 0.8810 & +0.0000 \\
+Verification Mechanism & Cosine Similarity Only & 0.9920 & 0.9912 & 0.8810 & -0.0016 \\
+Verification Mechanism & NLI Only & 0.9944 & 0.9939 & 0.8810 & +0.0008 \\
+Verification Mechanism & Cosine + NLI (Full) & 0.9936 & 0.9931 & 0.8810 & +0.0000 \\
 \bottomrule
 \end{tabular}
 \label{tab:ablations}

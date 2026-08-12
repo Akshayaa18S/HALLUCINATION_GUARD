@@ -1,5 +1,5 @@
 experiment_version: publication_v1
-created_at_utc: '2026-08-12T05:56:48.115627+00:00'
+created_at_utc: '2026-08-12T04:24:42.412671+00:00'
 backbone:
   model_name: Qwen/Qwen2.5-3B-Instruct
   precision: float16
@@ -11,7 +11,8 @@ seeds:
   - 123
   - 2024
   - 3407
-dataset_splits: {}
+dataset_splits:
+  halueval_train.jsonl: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 hyperparameters:
   batch_size: 32
   learning_rate: 0.0001

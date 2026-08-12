@@ -19,7 +19,7 @@ class MajorityClassBaseline(BaseBaselineDetector):
         self.majority_prob: float = 0.5
 
     def fit(self, queries: List[str], responses: List[str], labels: List[int], features: np.ndarray | None = None) -> None:
-        if labels:
+        if labels is not None and len(labels) > 0:
             self.majority_prob = float(np.mean(labels))
 
     def predict_proba(self, queries: List[str], responses: List[str], features: np.ndarray | None = None) -> np.ndarray:

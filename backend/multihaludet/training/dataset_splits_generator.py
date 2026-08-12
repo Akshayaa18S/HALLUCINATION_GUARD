@@ -78,8 +78,8 @@ def save_examples_jsonl(examples: List[HallucinationExample], filepath: Path) ->
                 "query": ex.query,
                 "response": ex.response,
                 "label": int(ex.label),
-                "source": ex.source,
-                "lang": ex.lang,
+                "source": getattr(ex, "source", "halueval"),
+                "lang": getattr(ex, "lang", "en"),
             }
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
 

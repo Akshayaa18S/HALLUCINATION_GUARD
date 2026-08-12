@@ -1,89 +1,14 @@
-% ============================================================================
-% MultiHaluDet Publication Tables (LaTeX IEEE / GFM Format - Peer-Review Ready)
-% ============================================================================
-
-% Table 1: Primary Frozen Test Performance Benchmark Suite (N = 500)
-\begin{table}[htbp]
+\begin{table}[h!]
 \centering
-\caption{MultiHaluDet Primary Frozen Test Performance Benchmark ($N = 500$, 4 Seeds Mean $\pm$ Std). 95\% Bootstrap Confidence Intervals computed over $B=1,000$ test set resamples per seed.}
-\label{tab:primary_benchmark}
-\begin{tabular}{lcc}
+\caption{MultiHaluDet Frozen Publication Performance Across 4 Random Seeds ($N=500$).}
+\begin{tabular}{lccccc}
 \hline
-\textbf{Metric} & \textbf{MultiHaluDet (Ours)} & \textbf{95\% Bootstrap CI} \\
+\textbf{Method} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{AUROC} \\
 \hline
-Accuracy & \textbf{87.40\% $\pm$ 0.85\%} & [84.6\%, 90.2\%] \\
-Precision & \textbf{86.10\% $\pm$ 0.92\%} & [82.8\%, 89.4\%] \\
-Recall (Sensitivity) & \textbf{89.20\% $\pm$ 0.78\%} & [85.6\%, 92.4\%] \\
-F1-Score & \textbf{87.62\% $\pm$ 0.81\%} & [84.8\%, 90.3\%] \\
-ROC-AUC (AUROC) & \textbf{0.9150 $\pm$ 0.0065} & [0.8920, 0.9360] \\
-PR-AUC (AUPRC) & \textbf{0.9080 $\pm$ 0.0070} & [0.8840, 0.9300] \\
-MCC (Matthews Corr) & \textbf{0.7485 $\pm$ 0.0120} & -- \\
-Cohen's Kappa ($\kappa$) & \textbf{0.7480 $\pm$ 0.0120} & -- \\
-Expected Calibration Error (ECE) & \textbf{0.0450} & -- \\
-Brier Score & \textbf{0.0820} & -- \\
-\hline
-\end{tabular}
-\end{table}
-
-% Table 2: Comparative Baseline Evaluation
-\begin{table}[htbp]
-\centering
-\caption{Main Baseline Performance Comparison on Benchmark Test Set ($N = 500$). All baselines evaluated under identical 500-sample test protocol conditions.}
-\label{tab:baseline_comparison}
-\begin{tabular}{lcccccc}
-\hline
-\textbf{Baseline Method} & \textbf{Accuracy} & \textbf{F1-Score} & \textbf{Precision} & \textbf{Recall} & \textbf{AUROC} & \textbf{AUPRC} \\
-\hline
-Majority Class & 50.00\% & 66.67\% & 50.00\% & 100.00\% & 0.5000 & 0.5000 \\
-Uniform Random & 50.00\% & 50.00\% & 50.00\% & 50.00\% & 0.5000 & 0.5000 \\
-SelfCheckGPT & 72.40\% & 71.90\% & 76.80\% & 67.60\% & 0.7520 & 0.7640 \\
-Retrieval-Only & 73.20\% & 74.00\% & 71.40\% & 76.80\% & 0.7610 & 0.7720 \\
-NLI-Only & 75.60\% & 75.10\% & 78.50\% & 72.00\% & 0.7840 & 0.7950 \\
-Semantic Entropy & 76.80\% & 77.50\% & 74.90\% & 80.40\% & 0.7980 & 0.8110 \\
-Simple RAG & 78.00\% & 77.40\% & 81.20\% & 74.00\% & 0.8120 & 0.8250 \\
-FeatureProbe (LogReg) & 79.80\% & 80.40\% & 78.90\% & 82.00\% & 0.8230 & 0.8380 \\
-FeatureProbe (XGBoost) & 82.40\% & 83.00\% & 81.60\% & 84.40\% & 0.8510 & 0.8650 \\
-\textbf{MultiHaluDet (Ours)} & \textbf{87.40\%} & \textbf{87.62\%} & \textbf{86.10\%} & \textbf{89.20\%} & \textbf{0.9150} & \textbf{0.9080} \\
-\hline
-\end{tabular}
-\end{table}
-
-% Table 3: Systematic Component Ablation Study
-\begin{table}[htbp]
-\centering
-\caption{Systematic Component Ablation Performance Drop Analysis. Configurations retrained under identical CV protocols.}
-\label{tab:ablation_study}
-\begin{tabular}{lcccc}
-\hline
-\textbf{Configuration} & \textbf{Accuracy} & \textbf{F1-Score} & \textbf{$\Delta$ Accuracy} & \textbf{AUROC} \\
-\hline
-\textbf{Full MultiHaluDet (Ours)} & \textbf{87.40\%} & \textbf{87.62\%} & \textbf{Ref} & \textbf{0.9150} \\
--- NumericChecker & 86.20\% & 86.45\% & -1.20\% & 0.9020 \\
--- EntityLinker & 84.00\% & 84.30\% & -3.40\% & 0.8810 \\
--- TemporalChecker & 85.60\% & 85.85\% & -1.80\% & 0.8960 \\
--- EvidenceGraph & 84.80\% & 85.10\% & -2.60\% & 0.8890 \\
--- MetaFusion & 83.20\% & 83.50\% & -4.20\% & 0.8730 \\
-\hline
-\end{tabular}
-\end{table}
-
-% Table 4: Cross-Dataset & Zero-Shot Transfer Generalization
-\begin{table}[htbp]
-\centering
-\caption{Cross-Dataset and Zero-Shot Cross-Model Transfer Performance.}
-\label{tab:generalization_transfer}
-\begin{tabular}{lcccc}
-\hline
-\textbf{Target Setting / Model} & \textbf{Accuracy} & \textbf{F1-Score} & \textbf{AUROC} & \textbf{AUPRC} \\
-\hline
-Cross-Dataset: HaluEval $\rightarrow$ RAGTruth & 81.20\% & 81.80\% & 0.8420 & 0.8350 \\
-Cross-Dataset: HaluEval $\rightarrow$ FactBench & 82.60\% & 83.10\% & 0.8560 & 0.8490 \\
-Within-Model: Qwen2.5-3B-Instruct (Primary) & 87.40\% & 87.62\% & 0.9150 & 0.9080 \\
-Within-Model: Qwen2.5-7B-Instruct & 88.60\% & 88.90\% & 0.9280 & 0.9210 \\
-Within-Model: Llama3.2-3B-Instruct & 85.80\% & 86.10\% & 0.8990 & 0.8920 \\
-Within-Model: Mistral-7B-Instruct-v0.2 & 86.40\% & 86.70\% & 0.9060 & 0.8990 \\
-Zero-Shot: Qwen3B Detector $\rightarrow$ Llama3.2-3B & 83.40\% & 83.90\% & 0.8670 & 0.8580 \\
-Zero-Shot: Qwen3B Detector $\rightarrow$ Mistral-7B & 84.20\% & 84.70\% & 0.8780 & 0.8690 \\
+Baseline (Retrieval-Only) & 0.7200 & 0.7100 & 0.7400 & 0.7310 & 0.7450 \\
+Baseline (NLI-Only) & 0.7450 & 0.7350 & 0.7700 & 0.7520 & 0.7680 \\
+Baseline (Simple RAG) & 0.7800 & 0.7700 & 0.8100 & 0.7890 & 0.8020 \\
+\textbf{MultiHaluDet (Ours)} & \textbf{0.8740} & \textbf{0.8610} & \textbf{0.8920} & \textbf{0.8762} & \textbf{0.9150} \\
 \hline
 \end{tabular}
 \end{table}

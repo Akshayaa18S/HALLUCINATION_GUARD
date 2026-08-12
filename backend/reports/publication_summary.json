@@ -1,0 +1,12 @@
+{
+  "status": "COMPLETED_SUCCESSFULLY",
+  "timestamp_utc": "2026-08-12T05:56:58.926781+00:00",
+  "backbone": "Qwen/Qwen2.5-3B-Instruct",
+  "best_fusion_alpha": 0.15000000000000002,
+  "test_metrics": {
+    "internal_roc_auc_mean": 0.996373827453284,
+    "fused_optimal_roc_auc_mean": 0.9984403029032751,
+    "delta_roc_auc": 0.0020664754499911835,
+    "p_value": 0.154
+  }
+}

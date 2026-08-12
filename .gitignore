@@ -35,3 +35,11 @@ scratch/
 # Model Checkpoints and PyTorch Binary Files (except .gitkeep)
 *.pt
 !**/checkpoints/.gitkeep
+
+# Data splits and large generated dataset/report files
+*.jsonl
+data/splits/
+data/*.json
+backend/data/*.json
+backend/evaluation_report.json
+
