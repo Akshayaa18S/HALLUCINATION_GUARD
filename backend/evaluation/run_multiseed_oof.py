@@ -179,7 +179,7 @@ def run_multiseed_evaluation(args: argparse.Namespace) -> dict[str, Any]:
                 ),
             }
 
-            # Step C: Fit fold-isolated scaler & classical ensemble strictly on train, predict val
+            # Step C: Fit classical ensemble strictly on outer train, predict outer val using inner-scaler
             for sys_name, (X_tr_sys, X_va_sys, exp_dim) in system_slices.items():
                 ens = ClassicalEnsemble(
                     seed=seed,
@@ -187,17 +187,14 @@ def run_multiseed_evaluation(args: argparse.Namespace) -> dict[str, Any]:
                     expected_feature_dim=exp_dim,
                     system_name=sys_name,
                 )
-                fold_scaler = StandardScaler()
-                X_tr_scaled = fold_scaler.fit_transform(X_tr_sys)
-                X_va_scaled = fold_scaler.transform(X_va_sys)
-
-                ens.fit_oof(X_tr_scaled, y_tr, n_splits=args.folds, seed=seed)
-                fold_probs = ens.predict_proba(X_va_scaled)["final_probability"]
+                ens.fit_oof(X_tr_sys, y_tr, n_splits=args.folds, seed=seed)
+                fold_probs = ens.predict_proba(X_va_sys)["final_probability"]
 
                 assert not np.isnan(fold_probs).any(), f"NaN detected in predictions for {sys_name} on fold {fold_idx + 1}"
 
                 oof_preds_dict[sys_name][val_idx_list] = fold_probs
                 oof_written_dict[sys_name][val_idx_list] = True
+
 
         logger.info("Nested outer-fold OOF protocol completed for seed %d; validation samples were excluded from neural training, feature scaling, and classical fitting within each fold.", seed)
 
