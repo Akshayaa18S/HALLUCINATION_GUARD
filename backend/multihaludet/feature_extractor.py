@@ -155,6 +155,8 @@ class ExplicitFeatureExtractor:
         evidence_texts: list[str] | None = None,
         retrieval_scores: list[float] | None = None,
     ) -> dict[str, float]:
+        if not evidence_texts and query:
+            evidence_texts = [query]
         evidence = " ".join(evidence_texts or []).strip()
         ev_lower = evidence.lower()
         resp_lower = response.lower()
@@ -163,8 +165,9 @@ class ExplicitFeatureExtractor:
         semantic_available = 0.0
         entity_available = 0.0
         evidence_available = 1.0 if evidence else 0.0
-        nli_available = 0.0
+        nli_available = 1.0 if self.nli_pipeline is not None else 0.0
         numeric_available = 0.0
+
 
         # 1. Semantic Similarity (Neutral default: 0.50 if unavailable, NOT 0.85)
         sem_sim = 0.50
