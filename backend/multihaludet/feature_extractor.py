@@ -70,6 +70,8 @@ CANONICAL_FEATURE_SCHEMA = load_canonical_schema()
 _SCHEMA_BYTES = json.dumps(CANONICAL_FEATURE_SCHEMA, sort_keys=True).encode("utf-8")
 FEATURE_SCHEMA_HASH = hashlib.sha256(_SCHEMA_BYTES).hexdigest()
 EXPECTED_TOTAL_FEATURE_DIM = int(CANONICAL_FEATURE_SCHEMA.get("total_feature_dim", 271))
+EXPLICIT_FEATURE_NAMES = list(CANONICAL_FEATURE_SCHEMA.get("explicit_feature_names", []))
+
 
 
 def verify_feature_dim(dim: int, context: str = "Inference") -> None:
