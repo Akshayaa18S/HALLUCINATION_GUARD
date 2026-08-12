@@ -1,8 +1,8 @@
 """
-Multi-Seed Out-Of-Fold (OOF) Comparative Validation Suite.
-Evaluates Systems A, B, C, and D across seeds 42, 123, 456, and 789 on identical 5-fold CV splits,
-generating genuine neural OOF deep features per seed (100% free of synthetic random stubs),
-and logging Mean +/- Std for AUROC, PR-AUC, Accuracy, F1, Precision, and Recall.
+Unified Outer-Fold Multi-Seed OOF Comparative Validation Suite.
+Evaluates Systems A, B, C, and D across seeds 42, 123, 456, and 789 on identical outer 5-fold CV splits.
+Within each fold, validation samples are strictly excluded from neural training, feature scaling,
+and classical ensemble fitting.
 """
 
 from __future__ import annotations
@@ -24,16 +24,32 @@ from multihaludet.training.datasets import load_halueval, load_triviaqa
 from multihaludet.feature_extractor import ExplicitFeatureExtractor
 from multihaludet.generation_backend import HFGenerationBackend, precompute_generation_bundles
 from multihaludet.pipeline import MultiHaluDetModel
-from multihaludet.ensemble import evaluate_comparative_systems
-from multihaludet.training.train import _run_epoch, _evaluate_examples, _default_dataset_path
+from multihaludet.ensemble import ClassicalEnsemble
+from multihaludet.training.train import _run_epoch, _default_dataset_path
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("multiseed_oof")
 
 
+def _compute_metrics(y_true: np.ndarray, y_prob: np.ndarray) -> dict[str, float]:
+    from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score, precision_recall_curve, auc as calc_auc
+    y_pred = (y_prob >= 0.5).astype(int)
+    has_two = len(set(y_true)) > 1
+    prec_arr, rec_arr, _ = precision_recall_curve(y_true, y_prob)
+    pr_auc = float(calc_auc(rec_arr, prec_arr)) if has_two else 0.5
+    return {
+        "accuracy": float(accuracy_score(y_true, y_pred)),
+        "precision": float(precision_score(y_true, y_pred, zero_division=0)),
+        "recall": float(recall_score(y_true, y_pred, zero_division=0)),
+        "f1": float(f1_score(y_true, y_pred, zero_division=0)),
+        "auc": float(roc_auc_score(y_true, y_prob)) if has_two else 0.5,
+        "pr_auc": pr_auc,
+    }
+
+
 def run_multiseed_evaluation(args: argparse.Namespace) -> dict[str, Any]:
-    logger.info("=== STARTING GENUINE MULTI-SEED OOF COMPARATIVE EXPERIMENT ===")
-    logger.info("Seeds to evaluate: %s | Folds: %d | Max Samples: %s | Device: %s", args.seeds, args.folds, args.max_samples, args.device)
+    logger.info("=== STARTING UNIFIED OUTER-FOLD MULTI-SEED OOF COMPARATIVE EXPERIMENT ===")
+    logger.info("Seeds: %s | Folds: %d | Max Samples: %s | Resolved Device: %s", args.seeds, args.folds, args.max_samples, args.device)
 
     # 1. Collect development dataset examples
     examples = []
@@ -92,80 +108,108 @@ def run_multiseed_evaluation(args: argparse.Namespace) -> dict[str, Any]:
     seed_results: dict[int, dict[str, dict[str, float]]] = {}
 
     from sklearn.model_selection import StratifiedKFold
+    from sklearn.preprocessing import StandardScaler
 
-    # 4. Run genuine K-fold neural deep feature generation per seed
+    # 4. Single outer-fold cross-validation loop per seed
     for seed in args.seeds:
-        logger.info("\n--- Evaluating Seed %d (Genuine Neural OOF Deep Features) ---", seed)
+        logger.info("\n--- Evaluating Seed %d (Unified Outer Fold OOF Protocol) ---", seed)
         skf = StratifiedKFold(n_splits=args.folds, shuffle=True, random_state=seed)
 
-        dummy_model = MultiHaluDetModel(hidden_size=backend.hidden_size)
-        deep_dim = dummy_model.encoder_dim
-        X_oof_deep = np.zeros((len(examples), deep_dim), dtype=np.float32)
-        oof_written = np.zeros(len(examples), dtype=bool)
+        oof_preds_dict = {sys_name: np.zeros(len(examples), dtype=np.float32) for sys_name in system_names}
+        oof_written_dict = {sys_name: np.zeros(len(examples), dtype=bool) for sys_name in system_names}
 
         for fold_idx, (train_idx_arr, val_idx_arr) in enumerate(skf.split(examples, y_labels)):
             train_idx_list = train_idx_arr.tolist()
             val_idx_list = val_idx_arr.tolist()
 
-            # Assert fold isolation
-            assert len(set(train_idx_list) & set(val_idx_list)) == 0, f"Fold {fold_idx + 1} contamination error!"
+            # Strict Outer-Fold Isolation Assertions
+            assert set(train_idx_list).isdisjoint(set(val_idx_list)), f"Fold {fold_idx + 1} contamination error!"
+            assert len(np.unique(val_idx_list)) == len(val_idx_list), f"Duplicate validation indices in fold {fold_idx + 1}"
 
-            fold_model = MultiHaluDetModel(hidden_size=backend.hidden_size).to(args.device)
+            # Step A: Train neural MultiHaluDetModel strictly on outer train_idx
+            fold_neural_model = MultiHaluDetModel(hidden_size=backend.hidden_size).to(args.device)
             fold_optimizer = torch.optim.AdamW(
-                [p for p in fold_model.parameters() if p.requires_grad],
-                lr=1e-4,
-                weight_decay=1e-2,
+                [p for p in fold_neural_model.parameters() if p.requires_grad],
+                lr=1e-4, weight_decay=1e-2
             )
 
-            # Train neural fold model on K-1 folds
             for epoch in range(min(3, args.epochs)):
-                _run_epoch(
-                    fold_model,
-                    examples,
-                    train_idx_list,
-                    cached_bundles,
-                    fold_optimizer,
-                    epoch_idx=epoch,
-                )
+                _run_epoch(fold_neural_model, examples, train_idx_list, cached_bundles, fold_optimizer, epoch_idx=epoch)
 
-            # Extract validation fold deep features strictly from this fold model
-            fold_model.eval()
+            # Step B: Extract deep features for train_idx and val_idx using the same fold neural model
+            fold_neural_model.eval()
             with torch.no_grad():
-                for idx in val_idx_list:
-                    assert idx not in train_idx_list, f"Leakage assertion failed for idx {idx}"
-                    bundle = cached_bundles[idx]
-                    if bundle.is_empty():
-                        continue
-                    fused = fold_model.compute_deep_features(bundle)
-                    fused_np = fused.cpu().numpy().reshape(-1)
-                    fnorm = float(np.linalg.norm(fused_np, ord=2))
+                tr_deep_list, va_deep_list = [], []
+                for idx in train_idx_list:
+                    b = cached_bundles[idx]
+                    fused_tr = fold_neural_model.compute_deep_features(b).cpu().numpy().reshape(-1) if not b.is_empty() else np.zeros(256, dtype=np.float32)
+                    fnorm = float(np.linalg.norm(fused_tr, ord=2))
                     if fnorm > 1e-8:
-                        fused_np = fused_np / fnorm
-                    X_oof_deep[idx] = fused_np
-                    oof_written[idx] = True
+                        fused_tr = fused_tr / fnorm
+                    tr_deep_list.append(fused_tr)
 
-            logger.info("Deep feature source: model=%s, fold=%d/%d, train_samples=%d, val_samples=%d",
-                        args.model_name, fold_idx + 1, args.folds, len(train_idx_list), len(val_idx_list))
+                for idx in val_idx_list:
+                    b = cached_bundles[idx]
+                    fused_va = fold_neural_model.compute_deep_features(b).cpu().numpy().reshape(-1) if not b.is_empty() else np.zeros(256, dtype=np.float32)
+                    fnorm = float(np.linalg.norm(fused_va, ord=2))
+                    if fnorm > 1e-8:
+                        fused_va = fused_va / fnorm
+                    va_deep_list.append(fused_va)
 
-        assert np.all(oof_written), "OOF deep feature assembly incomplete!"
-        X_oof_total = np.concatenate([X_oof_deep, X_explicit_all], axis=-1)
+            X_tr_deep = np.array(tr_deep_list, dtype=np.float32)
+            X_va_deep = np.array(va_deep_list, dtype=np.float32)
 
-        # Evaluate 4 comparative systems on identical fold splits for this seed
-        comp_systems = evaluate_comparative_systems(
-            X_oof_total,
-            y_labels,
-            n_splits=args.folds,
-            seed=seed,
-            allow_reduced=True,
-        )
-        seed_results[seed] = comp_systems
+            X_tr_explicit = X_explicit_all[train_idx_list]
+            X_va_explicit = X_explicit_all[val_idx_list]
 
+            y_tr = y_labels[train_idx_list]
+
+            # System-specific train/val feature slices for fold k
+            system_slices = {
+                "System_A_Qwen_Baseline": (X_tr_deep, X_va_deep, 256),
+                "System_B_DeBERTa_NLI_Only": (X_tr_explicit[:, 7:10], X_va_explicit[:, 7:10], 3),
+                "System_C_NLI_Plus_Evidence": (X_tr_explicit, X_va_explicit, 15),
+                "System_D_Full_Fused_MultiHaluDet": (
+                    np.concatenate([X_tr_deep, X_tr_explicit], axis=-1),
+                    np.concatenate([X_va_deep, X_va_explicit], axis=-1),
+                    271
+                ),
+            }
+
+            # Step C: Fit fold-isolated scaler & classical ensemble strictly on train, predict val
+            for sys_name, (X_tr_sys, X_va_sys, exp_dim) in system_slices.items():
+                ens = ClassicalEnsemble(
+                    seed=seed,
+                    allow_reduced_ensemble=True,
+                    expected_feature_dim=exp_dim,
+                    system_name=sys_name,
+                )
+                fold_scaler = StandardScaler()
+                X_tr_scaled = fold_scaler.fit_transform(X_tr_sys)
+                X_va_scaled = fold_scaler.transform(X_va_sys)
+
+                ens.fit_oof(X_tr_scaled, y_tr, n_splits=args.folds, seed=seed)
+                fold_probs = ens.predict_proba(X_va_scaled)["final_probability"]
+
+                assert not np.isnan(fold_probs).any(), f"NaN detected in predictions for {sys_name} on fold {fold_idx + 1}"
+
+                oof_preds_dict[sys_name][val_idx_list] = fold_probs
+                oof_written_dict[sys_name][val_idx_list] = True
+
+        logger.info("Unified outer-fold OOF protocol completed for seed %d; validation samples were excluded from neural training, feature scaling, and classical fitting within each fold.", seed)
+
+        seed_comp: dict[str, dict[str, float]] = {}
         for sys_name in system_names:
-            if sys_name in comp_systems:
-                m = comp_systems[sys_name]
-                for metric_key in ["auc", "pr_auc", "f1", "accuracy", "precision", "recall"]:
-                    if metric_key in m:
-                        metrics_history[sys_name][metric_key].append(m[metric_key])
+            assert np.all(oof_written_dict[sys_name]), f"OOF predictions incomplete for {sys_name}"
+            assert np.isfinite(oof_preds_dict[sys_name]).all(), f"Non-finite values found in {sys_name}"
+            assert len(np.unique(np.round(oof_preds_dict[sys_name], 4))) > 1, f"Degenerate predictions in {sys_name}"
+
+            m = _compute_metrics(y_labels, oof_preds_dict[sys_name])
+            seed_comp[sys_name] = m
+            for metric_key in ["auc", "pr_auc", "f1", "accuracy", "precision", "recall"]:
+                metrics_history[sys_name][metric_key].append(m[metric_key])
+
+        seed_results[seed] = seed_comp
 
     # 5. Output Mean +/- Std Summary Table
     logger.info("\n=== MULTI-SEED OUT-OF-FOLD (OOF) SUMMARY TABLE (Seeds: %s) ===", args.seeds)
@@ -201,13 +245,14 @@ def run_multiseed_evaluation(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def _build_arg_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Genuine Multi-Seed OOF Comparative Evaluator")
+    default_dev = "cuda" if torch.cuda.is_available() else "cpu"
+    p = argparse.ArgumentParser(description="Unified Outer-Fold Multi-Seed OOF Evaluator")
     p.add_argument("--halueval-qa", default=_default_dataset_path("halueval_qa.jsonl"))
     p.add_argument("--halueval-dialogue", default=_default_dataset_path("halueval_dialogue.jsonl"))
     p.add_argument("--halueval-summarization", default=_default_dataset_path("halueval_summarization.jsonl"))
     p.add_argument("--triviaqa", default=_default_dataset_path("triviaqa_labeled.jsonl"))
     p.add_argument("--model-name", default="Qwen/Qwen2.5-3B-Instruct")
-    p.add_argument("--device", default="cpu")
+    p.add_argument("--device", default=default_dev)
     p.add_argument("--folds", type=int, default=5)
     p.add_argument("--epochs", type=int, default=3)
     p.add_argument("--seeds", type=int, nargs="+", default=[42, 123, 456, 789])
