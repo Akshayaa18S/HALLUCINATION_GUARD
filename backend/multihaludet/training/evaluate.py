@@ -230,12 +230,30 @@ def evaluate_split(
         else:
             base_aucs[name] = 0.5
 
+    from sklearn.metrics import brier_score_loss
+
+    # Expected Calibration Error (ECE) calculation over 10 bins
+    bin_boundaries = np.linspace(0, 1, 11)
+    ece_val = 0.0
+    for i in range(10):
+        bin_lower, bin_upper = bin_boundaries[i], bin_boundaries[i + 1]
+        in_bin = (y_prob_arr > bin_lower) & (y_prob_arr <= bin_upper)
+        bin_size = int(np.sum(in_bin))
+        if bin_size > 0:
+            avg_acc = float(np.mean(y_true_arr[in_bin]))
+            avg_conf = float(np.mean(y_prob_arr[in_bin]))
+            ece_val += (bin_size / len(y_true_arr)) * abs(avg_acc - avg_conf)
+
+    brier_val = float(brier_score_loss(y_true_arr, y_prob_arr)) if len(y_true_arr) > 0 else 0.25
+
     return {
         "accuracy": float(accuracy_score(y_true_arr, y_pred_arr)),
         "precision": float(precision_score(y_true_arr, y_pred_arr, zero_division=0)),
         "recall": float(recall_score(y_true_arr, y_pred_arr, zero_division=0)),
         "f1": float(f1_score(y_true_arr, y_pred_arr, zero_division=0)),
         "auc": float(roc_auc_score(y_true_arr, y_prob_arr)) if has_two_classes else 0.5,
+        "brier_score": brier_val,
+        "expected_calibration_error": float(ece_val),
         "confusion_matrix": cm,
         "individual_base_learner_aucs": base_aucs,
         "n": len(y_true),
@@ -243,6 +261,7 @@ def evaluate_split(
         "y_prob": y_prob,
         "member_probs_dict": member_probs_dict,
     }
+
 
 
 def run_threshold_tuning(
@@ -382,8 +401,11 @@ def main(args: argparse.Namespace) -> None:
         logger.info("  Recall: %.4f", metrics["recall"])
         logger.info("  F1: %.4f (95%% CI: %s)", metrics["f1"], ci_dict["f1_95ci"])
         logger.info("  ROC-AUC: %.4f (95%% CI: %s)", metrics["auc"], ci_dict["auc_95ci"])
+        logger.info("  Brier Score: %.4f", metrics.get("brier_score", 0.25))
+        logger.info("  Expected Calibration Error (ECE): %.4f", metrics.get("expected_calibration_error", 0.0))
         logger.info("  Confusion Matrix: %s", metrics["confusion_matrix"])
         logger.info("  Base Learner AUCs: %s", metrics["individual_base_learner_aucs"])
+
 
         if metrics.get("y_true") and metrics.get("y_prob"):
             run_threshold_tuning(metrics["y_true"], metrics["y_prob"])

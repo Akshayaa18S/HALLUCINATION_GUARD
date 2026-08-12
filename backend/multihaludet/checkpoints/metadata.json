@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-12T15:26:03.838485+00:00",
+  "timestamp": "2026-08-12T15:47:37.132604+00:00",
   "model_name": "Qwen/Qwen2.5-3B-Instruct",
   "sampled_layers": 6,
   "num_examples_total": 500,
@@ -65,139 +65,166 @@
     "lightgbm": "4.7.0"
   },
   "feature_diagnostics": {
-    "faithful_feature_mean": 0.01275341585278511,
-    "faithful_feature_std": 0.10839032381772995,
-    "hallucinated_feature_mean": 0.01270325668156147,
-    "hallucinated_feature_std": 0.1082804799079895,
+    "faithful_feature_mean": 0.012751992791891098,
+    "faithful_feature_std": 0.10839049518108368,
+    "hallucinated_feature_mean": 0.012701909057796001,
+    "hallucinated_feature_std": 0.10828063637018204,
     "faithful_mean_l2_norm": 1.7965269088745117,
     "hallucinated_mean_l2_norm": 1.7946043014526367,
-    "centroid_distance": 0.03110102191567421,
-    "avg_cosine_similarity_within_faithful": 0.7432441711425781,
-    "avg_cosine_similarity_within_hallucinated": 0.7397487759590149,
-    "avg_cosine_similarity_across_classes": 0.7413455843925476,
-    "overall_feature_variance": 0.0030744026880711317,
+    "centroid_distance": 0.030165553092956543,
+    "avg_cosine_similarity_within_faithful": 0.7471783757209778,
+    "avg_cosine_similarity_within_hallucinated": 0.7445829510688782,
+    "avg_cosine_similarity_across_classes": 0.7457380294799805,
+    "overall_feature_variance": 0.0030222092755138874,
     "near_zero_variance_dimensions": 14,
     "probe_metrics": {
-      "accuracy": 0.494,
-      "precision": 0.4973821989528796,
-      "recall": 0.7569721115537849,
-      "f1": 0.6003159557661928,
-      "auc": 0.5033840541448664
+      "accuracy": 0.49,
+      "precision": 0.4900990099009901,
+      "recall": 0.3944223107569721,
+      "f1": 0.4370860927152318,
+      "auc": 0.4857037712603402
     }
   },
   "probability_diagnostics": {
-    "min": 0.0,
-    "max": 1.0,
-    "mean": 0.34286150336265564,
-    "std": 0.35642603039741516,
-    "percentage_predicted_positive": 50.2
+    "min": 0.20000000298023224,
+    "max": 0.6363636255264282,
+    "mean": 0.4309137761592865,
+    "std": 0.20845575630664825,
+    "percentage_predicted_positive": 49.8
   },
   "fold_validation_metrics": [
     {
-      "accuracy": 0.46,
-      "precision": 0.47058823529411764,
-      "recall": 0.64,
-      "f1": 0.5423728813559322,
-      "auc": 0.41119999999999995,
+      "accuracy": 0.53,
+      "precision": 0.5454545454545454,
+      "recall": 0.36,
+      "f1": 0.43373493975903615,
+      "auc": 0.48799999999999993,
       "n": 100,
-      "logistic_regression_val_auc": 0.3824,
-      "logistic_regression_val_acc": 0.42,
-      "linear_svm_val_auc": 0.37020000000000003,
-      "linear_svm_val_acc": 0.42
+      "logistic_regression_val_auc": 0.47200000000000003,
+      "logistic_regression_val_acc": 0.48,
+      "linear_svm_val_auc": 0.478,
+      "linear_svm_val_acc": 0.51
     },
     {
-      "accuracy": 0.51,
-      "precision": 1.0,
-      "recall": 0.02,
-      "f1": 0.0392156862745098,
-      "auc": 0.46559999999999996,
+      "accuracy": 0.49,
+      "precision": 0.4,
+      "recall": 0.04,
+      "f1": 0.07272727272727272,
+      "auc": 0.5252,
       "n": 100,
-      "logistic_regression_val_auc": 0.5052,
-      "logistic_regression_val_acc": 0.54,
-      "linear_svm_val_auc": 0.4514000000000001,
-      "linear_svm_val_acc": 0.43
-    },
-    {
-      "accuracy": 0.46,
-      "precision": 0.4722222222222222,
-      "recall": 0.68,
-      "f1": 0.5573770491803278,
-      "auc": 0.4612,
-      "n": 100,
-      "logistic_regression_val_auc": 0.4488,
-      "logistic_regression_val_acc": 0.46,
-      "linear_svm_val_auc": 0.46199999999999997,
-      "linear_svm_val_acc": 0.48
-    },
-    {
-      "accuracy": 0.4,
-      "precision": 0.3076923076923077,
-      "recall": 0.16,
-      "f1": 0.21052631578947367,
-      "auc": 0.444,
-      "n": 100,
-      "logistic_regression_val_auc": 0.4644,
-      "logistic_regression_val_acc": 0.45,
-      "linear_svm_val_auc": 0.44920000000000004,
-      "linear_svm_val_acc": 0.47
+      "logistic_regression_val_auc": 0.55,
+      "logistic_regression_val_acc": 0.56,
+      "linear_svm_val_auc": 0.5188,
+      "linear_svm_val_acc": 0.55
     },
     {
       "accuracy": 0.5,
-      "precision": 0.5111111111111111,
-      "recall": 0.45098039215686275,
-      "f1": 0.4791666666666667,
-      "auc": 0.5018007202881153,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6666666666666666,
+      "auc": 0.45,
       "n": 100,
-      "logistic_regression_val_auc": 0.5742296918767507,
-      "logistic_regression_val_acc": 0.52,
-      "linear_svm_val_auc": 0.497999199679872,
-      "linear_svm_val_acc": 0.43
+      "logistic_regression_val_auc": 0.36119999999999997,
+      "logistic_regression_val_acc": 0.37,
+      "linear_svm_val_auc": 0.38559999999999994,
+      "linear_svm_val_acc": 0.46
+    },
+    {
+      "accuracy": 0.46,
+      "precision": 0.4230769230769231,
+      "recall": 0.22,
+      "f1": 0.2894736842105263,
+      "auc": 0.4584,
+      "n": 100,
+      "logistic_regression_val_auc": 0.3892,
+      "logistic_regression_val_acc": 0.47,
+      "linear_svm_val_auc": 0.3784,
+      "linear_svm_val_acc": 0.4
+    },
+    {
+      "accuracy": 0.52,
+      "precision": 0.5205479452054794,
+      "recall": 0.7450980392156863,
+      "f1": 0.6129032258064516,
+      "auc": 0.4929971988795518,
+      "n": 100,
+      "logistic_regression_val_auc": 0.5066026410564226,
+      "logistic_regression_val_acc": 0.46,
+      "linear_svm_val_auc": 0.46998799519807927,
+      "linear_svm_val_acc": 0.47
     }
   ],
+  "comparative_system_metrics": {
+    "System_A_Qwen_Baseline": {
+      "auc": 0.5,
+      "accuracy": 0.5,
+      "error": "PUBLICATION FEATURE SCHEMA MISMATCH (ClassicalEnsemble.fit_oof): Expected 271 features (schema multihaludet_v3.2), got 256 features. Dual/legacy schemas are strictly forbidden in publication runs."
+    },
+    "System_B_DeBERTa_NLI_Only": {
+      "auc": 0.5,
+      "accuracy": 0.5,
+      "error": "PUBLICATION FEATURE SCHEMA MISMATCH (ClassicalEnsemble.fit_oof): Expected 271 features (schema multihaludet_v3.2), got 3 features. Dual/legacy schemas are strictly forbidden in publication runs."
+    },
+    "System_C_NLI_Plus_Evidence": {
+      "auc": 0.5,
+      "accuracy": 0.5,
+      "error": "PUBLICATION FEATURE SCHEMA MISMATCH (ClassicalEnsemble.fit_oof): Expected 271 features (schema multihaludet_v3.2), got 15 features. Dual/legacy schemas are strictly forbidden in publication runs."
+    },
+    "System_D_Full_Fused_MultiHaluDet": {
+      "accuracy": 0.55,
+      "precision": 0.5528455284552846,
+      "recall": 0.5418326693227091,
+      "f1": 0.5472837022132797,
+      "auc": 0.5667210675370805,
+      "optimal_threshold": 0.51,
+      "threshold_method": "youden_j",
+      "selection_dataset": "validation_oof"
+    }
+  },
   "oof_base_learner_metrics": {
     "random_forest": {
-      "accuracy": 0.484,
-      "precision": 0.49160671462829736,
-      "recall": 0.8167330677290837,
-      "f1": 0.6137724550898204,
-      "auc": 0.4932798924782797
+      "accuracy": 0.5,
+      "precision": 0.502283105022831,
+      "recall": 0.43824701195219123,
+      "f1": 0.46808510638297873,
+      "auc": 0.5047760764172227
     },
     "xgboost": {
-      "accuracy": 0.514,
-      "precision": 0.5102040816326531,
-      "recall": 0.796812749003984,
-      "f1": 0.6220839813374806,
-      "auc": 0.5139282228515656
+      "accuracy": 0.47,
+      "precision": 0.45977011494252873,
+      "recall": 0.3187250996015936,
+      "f1": 0.3764705882352941,
+      "auc": 0.4623753980063681
     },
     "lightgbm": {
-      "accuracy": 0.516,
-      "precision": 0.5118110236220472,
-      "recall": 0.7768924302788844,
-      "f1": 0.6170886075949367,
-      "auc": 0.5312725003600057
+      "accuracy": 0.496,
+      "precision": 0.498220640569395,
+      "recall": 0.5577689243027888,
+      "f1": 0.5263157894736842,
+      "auc": 0.4814157026512424
     },
     "logistic_regression": {
-      "accuracy": 0.494,
-      "precision": 0.4971590909090909,
-      "recall": 0.6972111553784861,
-      "f1": 0.5804311774461028,
-      "auc": 0.5021280340485448
+      "accuracy": 0.502,
+      "precision": 0.5043859649122807,
+      "recall": 0.4581673306772908,
+      "f1": 0.4801670146137787,
+      "auc": 0.4858797740763852
     },
     "svm": {
-      "accuracy": 0.502,
-      "precision": 0.5078125,
-      "recall": 0.2589641434262948,
-      "f1": 0.34300791556728233,
-      "auc": 0.5008720139522232
+      "accuracy": 0.498,
+      "precision": 0.5,
+      "recall": 0.8127490039840638,
+      "f1": 0.6191198786039454,
+      "auc": 0.4972079553272852
     }
   },
   "oof_meta_learner_metrics": {
-    "accuracy": 0.546,
-    "precision": 0.5298507462686567,
-    "recall": 0.848605577689243,
-    "f1": 0.6523736600306279,
-    "auc": 0.5629050064801037,
-    "optimal_threshold": 0.47,
+    "accuracy": 0.55,
+    "precision": 0.5528455284552846,
+    "recall": 0.5418326693227091,
+    "f1": 0.5472837022132797,
+    "auc": 0.5667210675370805,
+    "optimal_threshold": 0.51,
     "threshold_method": "youden_j",
     "selection_dataset": "validation_oof"
   }
