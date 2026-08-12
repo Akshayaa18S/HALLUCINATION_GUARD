@@ -22,10 +22,11 @@ if str(backend_dir) not in sys.path:
 
 from multihaludet.training.datasets import load_halueval, load_triviaqa
 from multihaludet.feature_extractor import ExplicitFeatureExtractor
-from multihaludet.generation_backend import HFGenerationBackend, precompute_generation_bundles
+from multihaludet.generation_backend import HFGenerationBackend
 from multihaludet.pipeline import MultiHaluDetModel
 from multihaludet.ensemble import ClassicalEnsemble
-from multihaludet.training.train import _run_epoch, _default_dataset_path
+from multihaludet.training.train import _run_epoch, _default_dataset_path, precompute_generation_bundles
+
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("multiseed_oof")
