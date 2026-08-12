@@ -59,7 +59,8 @@ def run_full_leakage_audit():
     logger.info("=== STARTING PUBLICATION LEAKAGE AUDIT ===")
     audit_feature_extractor_signatures()
     audit_dataset_isolation()
-    logger.info("=== LEAKAGE AUDIT COMPLETED CLEANLY: 100% LEAK-FREE ===")
+    logger.info("=== AUDIT PASSED: Static signature and dataset-isolation checks passed ===")
+
 
 
 if __name__ == "__main__":
