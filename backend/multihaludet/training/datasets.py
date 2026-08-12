@@ -130,20 +130,44 @@ def load_multilingual(path: str, language: Language) -> Iterator[HallucinationEx
             yield HallucinationExample(row["query"], row["response"], bool(row["label"]), language, f"multilingual_{language}", prov)
 
 
+def _get_stratum_key(ex: HallucinationExample) -> tuple[str, bool, str, str]:
+    """Generates 4-factor stratum key: (source, label, length_bucket, hallucination_type)."""
+    words = ex.response.split()
+    n_words = len(words)
+    if n_words < 20:
+        len_bucket = "short"
+    elif n_words <= 60:
+        len_bucket = "medium"
+    else:
+        len_bucket = "long"
+
+    import re
+    if re.search(r"\b(19\d\d|20\d\d)\b", ex.response):
+        htype = "temporal"
+    elif re.search(r"\b\d+(?:\.\d+)?\b", ex.response):
+        htype = "numeric"
+    elif any(w.istitle() and len(w) > 2 for w in words):
+        htype = "entity"
+    else:
+        htype = "attribution"
+
+    return (ex.source, ex.label, len_bucket, htype)
+
+
 def sample_representative_subset(
     examples: list[HallucinationExample], max_samples: int | None, seed: int = 42
 ) -> list[HallucinationExample]:
-    """Shuffles deterministically with seed and performs stratified sampling across
-    (source, label) pairs so max-samples N returns a representative mixture."""
+    """Shuffles deterministically with seed and performs multi-factor stratified sampling across
+    (source x label x length_bucket x hallucination_type) so max-samples N returns a representative mixture."""
     if max_samples is None or max_samples <= 0 or len(examples) <= max_samples:
         rng = random.Random(seed)
         shuffled = list(examples)
         rng.shuffle(shuffled)
         return shuffled
 
-    strata: dict[tuple[str, bool], list[HallucinationExample]] = defaultdict(list)
+    strata: dict[tuple[str, bool, str, str], list[HallucinationExample]] = defaultdict(list)
     for ex in examples:
-        strata[(ex.source, ex.label)].append(ex)
+        strata[_get_stratum_key(ex)].append(ex)
 
     rng = random.Random(seed)
     for key in strata:
@@ -168,6 +192,47 @@ def sample_representative_subset(
 
     rng.shuffle(selected)
     return selected
+
+
+
+def load_frozen_benchmark(path: str) -> list[HallucinationExample]:
+    """Dedicated loader for the frozen 500-sample evaluation benchmark.
+
+    Used strictly for held-out evaluation in evaluate.py. Never pass this to
+    training loops or development pool sample subsets.
+    """
+    p = Path(path)
+    if not p.exists():
+        raise FileNotFoundError(f"Frozen benchmark evaluation dataset not found at {path}.")
+
+    examples: list[HallucinationExample] = []
+    with p.open(encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            row = json.loads(line)
+            q = row.get("question") or row.get("query") or ""
+            resp = row.get("response") or row.get("right_answer") or row.get("hallucinated_answer") or ""
+            lbl = bool(row.get("label", row.get("is_hallucination", False)))
+            prov = row.get("provenance") or "frozen_500_benchmark"
+            examples.append(HallucinationExample(q, resp, lbl, "en", "frozen_500_benchmark", prov))
+    return examples
+
+
+def verify_no_test_contamination(
+    dev_examples: list[HallucinationExample], test_examples: list[HallucinationExample]
+) -> None:
+    """Verifies zero overlap between development dataset pool and frozen evaluation benchmark."""
+    dev_ids = {hash((e.query.strip().lower(), e.response.strip().lower())) for e in dev_examples}
+    test_ids = {hash((e.query.strip().lower(), e.response.strip().lower())) for e in test_examples}
+
+    overlap = dev_ids & test_ids
+    if overlap:
+        raise ValueError(
+            f"DATASET CONTAMINATION ERROR: {len(overlap)} samples overlap between the development pool "
+            "and the frozen test set! Test samples must remain 100% isolated from training & CV splits."
+        )
 
 
 def get_dataset_diagnostics(examples: list[HallucinationExample]) -> dict[str, Any]:
@@ -200,4 +265,5 @@ def get_dataset_diagnostics(examples: list[HallucinationExample]) -> dict[str, A
         "positive_pct": pos_pct,
         "sources": dict(sources),
     }
+
 

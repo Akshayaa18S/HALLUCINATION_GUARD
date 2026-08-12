@@ -105,9 +105,10 @@ class MultiHaluDetModel(nn.Module):
                 expected_scaler_dim = scaler.n_features_in_
                 if not is_test_mode and expected_scaler_dim != EXPECTED_TOTAL_FEATURE_DIM:
                     raise FeatureSchemaError(
-                        f"Loaded scaler expects {expected_scaler_dim} features, but canonical schema v3.1 requires {EXPECTED_TOTAL_FEATURE_DIM}. "
+                        f"Loaded scaler expects {expected_scaler_dim} features, but canonical schema v3.2 requires {EXPECTED_TOTAL_FEATURE_DIM}. "
                         "Legacy/dual feature checkpoints are strictly forbidden in publication runs."
                     )
+
 
                 if is_test_mode and expected_scaler_dim == fused_np.shape[1]:
                     combined_features = fused_np
@@ -183,8 +184,10 @@ class MultiHaluDetModel(nn.Module):
         seq_features = build_sequential_features(bundle, self.num_sampled_layers)
         global_features = build_global_features(bundle, self.global_top_k, self.num_sampled_layers)
 
-        layer_traj = torch.from_numpy(seq_features.layer_trajectories)  # [S, T, H]
-        global_vec = torch.from_numpy(global_features.values)  # [G]
+        # Ensure tensors are created on the same device as model parameters
+        dev = next(self.parameters()).device if list(self.parameters()) else torch.device("cpu")
+        layer_traj = torch.from_numpy(seq_features.layer_trajectories).to(dev)  # [S, T, H]
+        global_vec = torch.from_numpy(global_features.values).to(dev)  # [G]
 
         multiscale_out, scale_gate = self.multi_scale_attention(layer_traj)  # [S, P], [num_scales]
         encoded, layer_importance = self.layer_weighted_encoder(multiscale_out)  # [S, P], [S]
@@ -197,6 +200,7 @@ class MultiHaluDetModel(nn.Module):
             "seq_features": seq_features,
             "global_features": global_features,
             "scale_gate": scale_gate,
+
             "layer_importance": layer_importance,
             "pooling_weights": pooling_weights,
             "gate": gate,

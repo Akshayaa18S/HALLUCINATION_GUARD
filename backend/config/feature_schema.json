@@ -1,8 +1,8 @@
 {
-  "schema_version": "multihaludet_v3.1",
-  "total_feature_dim": 265,
+  "schema_version": "multihaludet_v3.2",
+  "total_feature_dim": 271,
   "deep_feature_dim": 256,
-  "explicit_feature_dim": 9,
+  "explicit_feature_dim": 15,
   "explicit_feature_names": [
     "semantic_similarity",
     "max_retrieval_confidence",
@@ -12,6 +12,13 @@
     "numeric_relative_error",
     "citation_coverage_ratio",
     "nli_contradiction_score",
-    "nli_entailment_score"
+    "nli_entailment_score",
+    "nli_neutral_score",
+    "semantic_available",
+    "entity_available",
+    "evidence_available",
+    "nli_available",
+    "numeric_available"
   ]
 }
+

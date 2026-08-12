@@ -250,13 +250,14 @@ class ClassicalEnsemble:
         if len(X_arr) < n_splits:
             raise ValueError(f"Number of samples ({len(X_arr)}) must be >= n_splits ({n_splits})")
 
-        from multihaludet.feature_extractor import FeatureSchemaError, FEATURE_SCHEMA_HASH, verify_feature_dim
+        from multihaludet.feature_extractor import FeatureSchemaError, FEATURE_SCHEMA_HASH, verify_feature_dim, CANONICAL_FEATURE_SCHEMA
         if not self.allow_reduced_ensemble:
             verify_feature_dim(X_arr.shape[1], context="ClassicalEnsemble.fit_oof")
 
         self.feature_dim = X_arr.shape[1]
-        self.schema_version = "multihaludet_v3.1"
+        self.schema_version = CANONICAL_FEATURE_SCHEMA.get("schema_version", "multihaludet_v3.2")
         self.schema_hash = FEATURE_SCHEMA_HASH
+
 
         self.scaler = StandardScaler()
         X_arr = self.scaler.fit_transform(X_arr)
@@ -356,7 +357,6 @@ class ClassicalEnsemble:
             full_model = self._create_fresh_model(name)
             full_model.fit(X_arr, y_arr)
             self.base_models[name] = full_model
-
         self.is_fitted = True
         return {
             "meta_oof_metrics": oof_metrics,
@@ -572,4 +572,63 @@ class ClassicalEnsemble:
         except Exception as exc:  # pragma: no cover
             self.is_fitted = False
             return False
+
+
+def evaluate_comparative_systems(
+    X_oof_total: np.ndarray,
+    y_labels: np.ndarray,
+    n_splits: int = 5,
+    seed: int = 42,
+    allow_reduced: bool = True,
+) -> dict[str, dict[str, float]]:
+    """Evaluates the 4 systems on IDENTICAL 5-fold CV splits:
+
+    System A: Qwen deep features (X[:, :256])
+    System B: DeBERTa NLI features (X[:, 263:266])
+    System C: DeBERTa NLI + Evidence features (X[:, 256:])
+    System D: Full Fused MultiHaluDet (X[:, :])
+    """
+    import numpy as np
+
+    systems: dict[str, dict[str, float]] = {}
+    total_dim = X_oof_total.shape[1]
+
+    # System A: Qwen only
+    if total_dim >= 256:
+        try:
+            ens_a = ClassicalEnsemble(seed=seed, allow_reduced_ensemble=allow_reduced)
+            res_a = ens_a.fit_oof(X_oof_total[:, :256], y_labels, n_splits=n_splits, seed=seed)
+            systems["System_A_Qwen_Baseline"] = res_a["meta_oof_metrics"]
+        except Exception as exc:
+            systems["System_A_Qwen_Baseline"] = {"auc": 0.5, "accuracy": 0.5, "error": str(exc)}
+
+    # System B: DeBERTa NLI only
+    if total_dim >= 266:
+        try:
+            nli_slice = X_oof_total[:, 263:266]
+            ens_b = ClassicalEnsemble(seed=seed, allow_reduced_ensemble=allow_reduced)
+            res_b = ens_b.fit_oof(nli_slice, y_labels, n_splits=n_splits, seed=seed)
+            systems["System_B_DeBERTa_NLI_Only"] = res_b["meta_oof_metrics"]
+        except Exception as exc:
+            systems["System_B_DeBERTa_NLI_Only"] = {"auc": 0.5, "accuracy": 0.5, "error": str(exc)}
+
+    # System C: NLI + Evidence Verification features
+    if total_dim > 256:
+        try:
+            ens_c = ClassicalEnsemble(seed=seed, allow_reduced_ensemble=allow_reduced)
+            res_c = ens_c.fit_oof(X_oof_total[:, 256:], y_labels, n_splits=n_splits, seed=seed)
+            systems["System_C_NLI_Plus_Evidence"] = res_c["meta_oof_metrics"]
+        except Exception as exc:
+            systems["System_C_NLI_Plus_Evidence"] = {"auc": 0.5, "accuracy": 0.5, "error": str(exc)}
+
+    # System D: Full Fused MultiHaluDet
+    try:
+        ens_d = ClassicalEnsemble(seed=seed, allow_reduced_ensemble=allow_reduced)
+        res_d = ens_d.fit_oof(X_oof_total, y_labels, n_splits=n_splits, seed=seed)
+        systems["System_D_Full_Fused_MultiHaluDet"] = res_d["meta_oof_metrics"]
+    except Exception as exc:
+        systems["System_D_Full_Fused_MultiHaluDet"] = {"auc": 0.5, "accuracy": 0.5, "error": str(exc)}
+
+    return systems
+
 

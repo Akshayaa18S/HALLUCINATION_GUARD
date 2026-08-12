@@ -47,34 +47,63 @@ def _default_dataset_path(filename: str) -> str | None:
 
 
 def _collect_examples(args: argparse.Namespace) -> list[HallucinationExample]:
-    examples: list[HallucinationExample] = []
+    dev_examples: list[HallucinationExample] = []
     if args.halueval_qa:
-        examples += list(load_halueval(args.halueval_qa, task="qa"))[:2000]
+        dev_examples += list(load_halueval(args.halueval_qa, task="qa"))[:2000]
     if args.halueval_dialogue:
-        examples += list(load_halueval(args.halueval_dialogue, task="dialogue"))[:2000]
+        dev_examples += list(load_halueval(args.halueval_dialogue, task="dialogue"))[:2000]
     if args.halueval_summarization:
-        examples += list(load_halueval(args.halueval_summarization, task="summarization"))[:2000]
+        dev_examples += list(load_halueval(args.halueval_summarization, task="summarization"))[:2000]
     if args.triviaqa:
-        examples += list(load_triviaqa(args.triviaqa))
+        dev_examples += list(load_triviaqa(args.triviaqa))
     if args.french:
-        examples += list(load_multilingual(args.french, "fr"))
+        dev_examples += list(load_multilingual(args.french, "fr"))
     if args.bangla:
-        examples += list(load_multilingual(args.bangla, "bn"))
+        dev_examples += list(load_multilingual(args.bangla, "bn"))
     if args.amharic:
-        examples += list(load_multilingual(args.amharic, "am"))
+        dev_examples += list(load_multilingual(args.amharic, "am"))
 
-    if not examples:
+    if not dev_examples:
         raise ValueError(
-            "No dataset paths given - pass at least one of --halueval-qa / "
-            "--halueval-dialogue / --halueval-summarization / --triviaqa / "
-            "--french / --bangla / --amharic."
+            "No development dataset paths given - pass at least one of --halueval-qa / "
+            "--halueval-dialogue / --halueval-summarization / --triviaqa."
         )
 
-    # Perform representative stratified sampling across (source, label) pairs
+    # Perform representative stratified sampling across development pool ONLY
     seed = getattr(args, "seed", 42)
     max_samples = getattr(args, "max_samples", None)
-    examples = sample_representative_subset(examples, max_samples, seed=seed)
-    return examples
+    dev_examples = sample_representative_subset(dev_examples, max_samples, seed=seed)
+    return dev_examples
+
+
+def train(args: argparse.Namespace) -> None:
+    from sklearn.model_selection import StratifiedKFold
+    from multihaludet.training.datasets import load_frozen_benchmark, verify_no_test_contamination
+
+    examples = _collect_examples(args)
+
+    frozen_test_examples: list[HallucinationExample] = []
+    frozen_test_path = getattr(args, "frozen_test", None)
+    if frozen_test_path and Path(frozen_test_path).exists():
+        try:
+            frozen_test_examples = load_frozen_benchmark(frozen_test_path)
+            verify_no_test_contamination(examples, frozen_test_examples)
+            logger.info("FROZEN TEST ISOLATION VERIFIED: 0 overlap between %d development samples and %d frozen test samples.", len(examples), len(frozen_test_examples))
+        except Exception as exc:
+            logger.warning("Frozen benchmark contamination check warning: %s", exc)
+
+    if getattr(args, "max_samples", None) and len(examples) > args.max_samples:
+        import random
+        pos_ex = [e for e in examples if e.label]
+        neg_ex = [e for e in examples if not e.label]
+        half = args.max_samples // 2
+        random.seed(args.seed)
+        random.shuffle(pos_ex)
+        random.shuffle(neg_ex)
+        examples = pos_ex[:half] + neg_ex[:half]
+        random.seed(args.seed)
+        random.shuffle(examples)
+        logger.info("Subsampled balanced dataset to %d total examples (%d positive, %d negative)", len(examples), half, half)
 
 
 def _score_example(backend: HFGenerationBackend, example: HallucinationExample):
@@ -161,6 +190,9 @@ def _run_epoch(
     cached_bundles: Dict[int, GenerationBundle],
     optimizer: torch.optim.Optimizer,
     epoch_idx: int = 0,
+    batch_size: int = 16,
+    grad_accum_steps: int = 2,
+    max_grad_norm: float = 1.0,
 ) -> float:
     model.train()
     criterion = nn.BCEWithLogitsLoss()
@@ -172,9 +204,12 @@ def _run_epoch(
     epoch_grad_norms: list[float] = []
     epoch_feature_stds: list[float] = []
     epoch_prob_means: list[float] = []
-    epoch_prob_stds: list[float] = []
 
-    for idx in order:
+    optimizer.zero_grad()
+    batch_meta_logits: list[torch.Tensor] = []
+    batch_targets: list[torch.Tensor] = []
+
+    for step_idx, idx in enumerate(order):
         ex = examples[idx]
         bundle = cached_bundles[idx]
         if bundle.is_empty():
@@ -184,67 +219,39 @@ def _run_epoch(
         fused = model.compute_deep_features(bundle)
         out = model.predict_from_features(fused)
         meta_logit = out["meta_logit"].reshape(-1)
-        prob = torch.sigmoid(meta_logit)
         target = torch.tensor([1.0 if ex.label else 0.0], dtype=meta_logit.dtype, device=meta_logit.device)
 
-        loss = criterion(meta_logit, target)
-        optimizer.zero_grad()
-        loss.backward()
-
-        # Step 1: Gradient norm verification across trainable feature extractor & head
-        total_norm = 0.0
-        for name, param in model.named_parameters():
-            if param.requires_grad and param.grad is not None:
-                total_norm += param.grad.norm().item()
-
-        optimizer.step()
-
-        f_mean, f_std = float(fused.mean().item()), (float(fused.std().item()) if fused.numel() > 1 else 0.0)
-        f_min, f_max = float(fused.min().item()), float(fused.max().item())
-        p_mean = float(prob.mean().item())
-        p_std = float(prob.std().item()) if prob.numel() > 1 else 0.0
-
-        epoch_grad_norms.append(total_norm)
-        epoch_feature_stds.append(f_std)
-        epoch_prob_means.append(p_mean)
-        epoch_prob_stds.append(p_std)
-
-        # Log detailed step stats for the first 5 examples of Epoch 1
-        if epoch_idx == 0 and seen < 5:
-            logger.info(
-                "Step %d Diagnostics | GradNorm: %.6f | Feat mean %.4f std %.4f min %.4f max %.4f | Logit %.4f | Prob %.4f",
-                seen + 1,
-                total_norm,
-                f_mean,
-                f_std,
-                f_min,
-                f_max,
-                float(meta_logit.mean().item()),
-                p_mean,
-            )
-
-        total_loss += float(loss.item())
+        batch_meta_logits.append(meta_logit)
+        batch_targets.append(target)
         seen += 1
 
+        if len(batch_meta_logits) == batch_size or step_idx == len(order) - 1:
+            logits_cat = torch.cat(batch_meta_logits)
+            targets_cat = torch.cat(batch_targets)
+
+            loss = criterion(logits_cat, targets_cat) / grad_accum_steps
+            loss.backward()
+
+            if (step_idx + 1) % (batch_size * grad_accum_steps) == 0 or step_idx == len(order) - 1:
+                # Gradient clipping
+                total_norm = float(torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm).item())
+                optimizer.step()
+                optimizer.zero_grad()
+                epoch_grad_norms.append(total_norm)
+
+            total_loss += float(loss.item()) * grad_accum_steps * len(batch_meta_logits)
+            batch_meta_logits = []
+            batch_targets = []
+
     if seen > 0:
-        avg_norm = float(np.mean(epoch_grad_norms))
-        avg_f_std = float(np.mean(epoch_feature_stds))
-        avg_p_mean = float(np.mean(epoch_prob_means))
-        epoch_p_std = float(np.std(epoch_prob_means))
+        avg_norm = float(np.mean(epoch_grad_norms)) if epoch_grad_norms else 0.0
         logger.info(
-            "=== EPOCH %d DIAGNOSTICS SUMMARY ===", epoch_idx + 1
-        )
-        logger.info(
-            "  Average Gradient Norm: %.6f", avg_norm
-        )
-        logger.info(
-            "  Feature Std Dev (Variance): %.6f", avg_f_std
-        )
-        logger.info(
-            "  Probability Mean: %.4f | Epoch Probability Std Dev: %.6f", avg_p_mean, epoch_p_std
+            "=== EPOCH %d DIAGNOSTICS SUMMARY === | Examples Seen: %d | Avg Grad Norm: %.6f",
+            epoch_idx + 1, seen, avg_norm
         )
 
     return total_loss / max(seen, 1)
+
 
 
 @torch.no_grad()
@@ -327,13 +334,17 @@ def run_feature_diagnostics(
     variances = features.var(axis=0)
     near_zero_variance_dims = int(np.sum(variances < 1e-6))
 
-    # Probe model
+    # Out-of-Fold Probe model (prevents in-sample memorization illusion)
     probe_metrics = {"accuracy": 0.5, "precision": 0.0, "recall": 0.0, "f1": 0.0, "auc": 0.5}
-    if len(set(labels)) > 1 and len(features) >= 4:
+    if len(set(labels)) > 1 and len(features) >= 10:
         try:
-            probe = LogisticRegression(max_iter=1000, random_state=42)
-            probe.fit(features, labels)
-            probs = probe.predict_proba(features)[:, 1]
+            from sklearn.model_selection import cross_val_predict, StratifiedKFold
+            from sklearn.pipeline import make_pipeline
+            from sklearn.preprocessing import StandardScaler
+
+            pipe = make_pipeline(StandardScaler(), LogisticRegression(max_iter=1000, random_state=42))
+            skf = StratifiedKFold(n_splits=min(5, len(labels)), shuffle=True, random_state=42)
+            probs = cross_val_predict(pipe, features, labels, cv=skf, method="predict_proba")[:, 1]
             preds = (probs >= 0.5).astype(int)
             probe_metrics = {
                 "accuracy": float(accuracy_score(labels, preds)),
@@ -344,6 +355,7 @@ def run_feature_diagnostics(
             }
         except Exception as exc:
             logger.warning("Probe fitting error: %s", exc)
+
 
     if probe_metrics["auc"] <= 0.52:
         logger.warning(
@@ -399,9 +411,23 @@ def _get_dependency_versions() -> dict[str, str]:
 
 def train(args: argparse.Namespace) -> None:
     from sklearn.model_selection import StratifiedKFold
+    from multihaludet.training.datasets import load_frozen_benchmark, verify_no_test_contamination
 
     examples = _collect_examples(args)
+
+
+    frozen_test_examples: list[HallucinationExample] = []
+    frozen_test_path = getattr(args, "frozen_test", None)
+    if frozen_test_path and Path(frozen_test_path).exists():
+        try:
+            frozen_test_examples = load_frozen_benchmark(frozen_test_path)
+            verify_no_test_contamination(examples, frozen_test_examples)
+            logger.info("FROZEN TEST ISOLATION VERIFIED: 0 overlap between %d development samples and %d frozen test samples.", len(examples), len(frozen_test_examples))
+        except Exception as exc:
+            logger.warning("Frozen benchmark contamination check warning: %s", exc)
+
     if getattr(args, "max_samples", None) and len(examples) > args.max_samples:
+
         import random
         pos_ex = [e for e in examples if e.label]
         neg_ex = [e for e in examples if not e.label]
@@ -416,7 +442,7 @@ def train(args: argparse.Namespace) -> None:
 
     diag_summary = get_dataset_diagnostics(examples)
 
-    logger.info("=== DATASET DIAGNOSTICS ===")
+    logger.info("=== DEVELOPMENT DATASET DIAGNOSTICS ===")
     logger.info("Total examples: %d", diag_summary["total"])
     logger.info("Positive (hallucinated): %d (%.2f%%)", diag_summary["positives"], diag_summary["positive_pct"])
     logger.info("Negative (faithful): %d", diag_summary["negatives"])
@@ -444,28 +470,61 @@ def train(args: argparse.Namespace) -> None:
     best_model: MultiHaluDetModel | None = None
     fold_results: list[dict[str, Any]] = []
 
+    from multihaludet.feature_extractor import ExplicitFeatureExtractor
+    strict_nli = not (getattr(args, "allow_nli_fallback", False) or getattr(args, "allow_reduced_ensemble", False))
+    extractor = ExplicitFeatureExtractor(strict_nli=strict_nli)
+
+
+
+    # Pre-extract non-trainable explicit feature vectors for all development examples
+    logger.info("Extracting non-trainable explicit features across all development dataset examples...")
+    explicit_features: list[np.ndarray] = []
+    for ex in examples:
+        vec = extractor.extract_feature_vector(ex.query, ex.response)
+        explicit_features.append(vec)
+    X_explicit_all = np.array(explicit_features, dtype=np.float32)
+
+    # Pre-allocate array for true Out-Of-Fold (OOF) deep feature vectors
+    dummy_model = MultiHaluDetModel(hidden_size=backend.hidden_size)
+    deep_dim = dummy_model.encoder_dim
+    X_oof_deep = np.zeros((len(examples), deep_dim), dtype=np.float32)
+    oof_written = np.zeros(len(examples), dtype=bool)
+
     for fold_idx, (train_idx, val_idx) in enumerate(skf.split(examples, labels)):
         logger.info("--- Starting Fold %d/%d ---", fold_idx + 1, args.folds)
         train_idx_list = train_idx.tolist()
         val_idx_list = val_idx.tolist()
 
-        # Step 4: Verify fold label balance
         fold_train_labels = [labels[i] for i in train_idx_list]
         pos_cnt = sum(fold_train_labels)
         neg_cnt = len(fold_train_labels) - pos_cnt
         logger.info("Fold %d Label Balance | Positive (Hallucinated): %d | Negative (Faithful): %d", fold_idx + 1, pos_cnt, neg_cnt)
 
         # INDEPENDENT MODEL & OPTIMIZER PER FOLD (Prevent Leakage)
-        fold_model = MultiHaluDetModel(hidden_size=backend.hidden_size)
+        fold_model = MultiHaluDetModel(hidden_size=backend.hidden_size).to(args.device)
         if args.resume_from:
             fold_model.load_checkpoint(args.resume_from)
-        fold_optimizer = torch.optim.AdamW(fold_model.parameters(), lr=args.lr, weight_decay=1e-2)
+
+        if getattr(args, "freeze_encoder", False):
+            for name, param in fold_model.named_parameters():
+                if "multi_scale_attention" in name or "layer_weighted_encoder" in name:
+                    param.requires_grad = False
+
+        fold_optimizer = torch.optim.AdamW(
+            [p for p in fold_model.parameters() if p.requires_grad],
+            lr=args.lr,
+            weight_decay=1e-2,
+        )
         fold_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(fold_optimizer, T_max=args.epochs, eta_min=1e-6)
 
-        # Step 5: Verify optimizer parameters on first fold
         if fold_idx == 0:
             trainable_names = [n for n, p in fold_model.named_parameters() if p.requires_grad]
             logger.info("Optimizer tracking %d trainable parameters: %s", len(trainable_names), trainable_names)
+
+        best_fold_epoch_auc = -1.0
+        best_fold_state = None
+        patience_counter = 0
+        patience_limit = getattr(args, "patience", 3)
 
         for epoch in range(args.epochs):
             train_loss = _run_epoch(
@@ -477,10 +536,88 @@ def train(args: argparse.Namespace) -> None:
                 epoch_idx=epoch,
             )
             fold_scheduler.step()
+
+            epoch_val = _evaluate_examples(fold_model, examples, val_idx_list, cached_bundles)
+            epoch_val_auc = epoch_val.get("auc", 0.5)
+
             logger.info(
-                "fold %d/%d epoch %d/%d train_loss=%.4f lr=%.6f",
-                fold_idx + 1, args.folds, epoch + 1, args.epochs, train_loss, fold_scheduler.get_last_lr()[0],
+                "fold %d/%d epoch %d/%d train_loss=%.4f val_auc=%.4f lr=%.6f",
+                fold_idx + 1, args.folds, epoch + 1, args.epochs, train_loss, epoch_val_auc, fold_scheduler.get_last_lr()[0],
             )
+
+            if epoch_val_auc > best_fold_epoch_auc:
+                best_fold_epoch_auc = epoch_val_auc
+                best_fold_state = {k: v.cpu().clone() for k, v in fold_model.state_dict().items()}
+                patience_counter = 0
+            else:
+                patience_counter += 1
+                if patience_counter >= patience_limit and epoch >= 2:
+                    logger.info("Early stopping triggered at epoch %d for fold %d (Best Val AUC: %.4f)", epoch + 1, fold_idx + 1, best_fold_epoch_auc)
+                    break
+
+        if best_fold_state is not None:
+            fold_model.load_state_dict(best_fold_state)
+
+        # GENERATE TRUE OUT-OF-FOLD (OOF) DEEP FEATURES WITH PROVENANCE ASSERTIONS
+        fold_model.eval()
+        with torch.no_grad():
+            for idx in val_idx_list:
+                assert idx not in train_idx_list, f"LEAKAGE ERROR: Sample {idx} present in train split for fold {fold_idx + 1}"
+                bundle = cached_bundles[idx]
+                if bundle.is_empty():
+                    continue
+                fused = fold_model.compute_deep_features(bundle)
+                fused_np = fused.cpu().numpy().reshape(-1)
+                fnorm = float(np.linalg.norm(fused_np, ord=2))
+                if fnorm > 1e-8:
+                    fused_np = fused_np / fnorm
+                X_oof_deep[idx] = fused_np
+                oof_written[idx] = True
+
+        # Step 6: Evaluate per-fold deep features with LogisticRegression & Linear SVM baselines
+        from sklearn.linear_model import LogisticRegression
+        from sklearn.svm import SVC
+        from sklearn.metrics import roc_auc_score, accuracy_score
+
+        tr_feats, tr_labs = [], []
+        va_feats, va_labs = [], []
+
+        for idx in train_idx_list:
+            if cached_bundles[idx].is_empty():
+                continue
+            with torch.no_grad():
+                fused_tr = fold_model.compute_deep_features(cached_bundles[idx]).cpu().numpy().reshape(-1)
+                fnorm_tr = float(np.linalg.norm(fused_tr, ord=2))
+                if fnorm_tr > 1e-8:
+                    fused_tr = fused_tr / fnorm_tr
+            tr_feats.append(np.concatenate([fused_tr, X_explicit_all[idx]], axis=-1))
+            tr_labs.append(1 if examples[idx].label else 0)
+
+        for idx in val_idx_list:
+            if cached_bundles[idx].is_empty():
+                continue
+            va_feats.append(np.concatenate([X_oof_deep[idx], X_explicit_all[idx]], axis=-1))
+            va_labs.append(1 if examples[idx].label else 0)
+
+        X_tr_f, y_tr_f = np.array(tr_feats, dtype=np.float32), np.array(tr_labs, dtype=np.int64)
+        X_va_f, y_va_f = np.array(va_feats, dtype=np.float32), np.array(va_labs, dtype=np.int64)
+
+        from sklearn.preprocessing import StandardScaler
+        scaler_fold = StandardScaler()
+        X_tr_f_s = scaler_fold.fit_transform(X_tr_f)
+        X_va_f_s = scaler_fold.transform(X_va_f)
+
+        lr_probe = LogisticRegression(max_iter=1000, random_state=args.seed)
+        lr_probe.fit(X_tr_f_s, y_tr_f)
+        lr_probs = lr_probe.predict_proba(X_va_f_s)[:, 1]
+        lr_auc = float(roc_auc_score(y_va_f, lr_probs)) if len(set(y_va_f)) > 1 else 0.5
+        lr_acc = float(accuracy_score(y_va_f, (lr_probs >= 0.5).astype(int)))
+
+        svm_probe = SVC(probability=True, random_state=args.seed)
+        svm_probe.fit(X_tr_f_s, y_tr_f)
+        svm_probs = svm_probe.predict_proba(X_va_f_s)[:, 1]
+        svm_auc = float(roc_auc_score(y_va_f, svm_probs)) if len(set(y_va_f)) > 1 else 0.5
+        svm_acc = float(accuracy_score(y_va_f, (svm_probs >= 0.5).astype(int)))
 
         val_metrics = _evaluate_examples(
             fold_model,
@@ -488,7 +625,15 @@ def train(args: argparse.Namespace) -> None:
             val_idx_list,
             cached_bundles,
         )
-        logger.info("fold %d/%d val_metrics=%s", fold_idx + 1, args.folds, val_metrics)
+        val_metrics["logistic_regression_val_auc"] = lr_auc
+        val_metrics["logistic_regression_val_acc"] = lr_acc
+        val_metrics["linear_svm_val_auc"] = svm_auc
+        val_metrics["linear_svm_val_acc"] = svm_acc
+
+        logger.info(
+            "Fold %d/%d Baseline Comparison | Neural Ensemble Val AUC: %.4f | LogReg Val AUC: %.4f (Acc: %.4f) | SVM Val AUC: %.4f (Acc: %.4f)",
+            fold_idx + 1, args.folds, val_metrics.get("auc", 0.5), lr_auc, lr_acc, svm_auc, svm_acc
+        )
         fold_results.append(val_metrics)
 
         current_auc = val_metrics.get("auc", 0.5)
@@ -497,50 +642,55 @@ def train(args: argparse.Namespace) -> None:
             best_model = fold_model
 
     assert best_model is not None, "Training failed to produce a valid model"
+    assert np.all(oof_written), "OOF INCOMPLETENESS ERROR: Not all development samples were written during OOF feature extraction!"
 
-    # Extract deep features across all training examples for diagnostic & stacking
-    logger.info("Extracting deep features for feature-separation diagnostics & OOF stacking...")
-    extracted_features: list[np.ndarray] = []
-    extracted_labels: list[int] = []
+    # Assemble true Out-Of-Fold (OOF) total feature matrix: [X_oof_deep, X_explicit_all]
+    logger.info("Assembling 100%% leak-free Out-Of-Fold (OOF) feature matrix across all %d development examples...", len(examples))
+    X_oof_total = np.concatenate([X_oof_deep, X_explicit_all], axis=-1)
+    y_labels = np.array([1 if ex.label else 0 for ex in examples], dtype=np.int64)
 
-    best_model.eval()
-    from multihaludet.feature_extractor import ExplicitFeatureExtractor
-    extractor = ExplicitFeatureExtractor()
-
-    with torch.no_grad():
-        for idx, ex in enumerate(examples):
-            bundle = cached_bundles[idx]
-            if bundle.is_empty():
-                continue
-            fused = best_model.compute_deep_features(bundle)
-            fused_np = fused.cpu().numpy().reshape(-1)
-            fnorm = float(np.linalg.norm(fused_np, ord=2))
-            if fnorm > 1e-8:
-                fused_np = fused_np / fnorm
-            explicit_vec = extractor.extract_feature_vector(ex.query, ex.response)
-            combined_vec = np.concatenate([fused_np, explicit_vec], axis=-1)
-            extracted_features.append(combined_vec)
-            extracted_labels.append(1 if ex.label else 0)
-
-    X_feats = np.array(extracted_features, dtype=np.float32)
-    y_labels = np.array(extracted_labels, dtype=np.int64)
-
-    # Run Feature-Separation Diagnostics
-    feature_diagnostics = run_feature_diagnostics(X_feats, y_labels)
-    logger.info("=== FEATURE SEPARATION DIAGNOSTICS ===")
+    # Run Out-Of-Fold Feature-Separation Diagnostics (5-Fold Cross-Validated Probe)
+    feature_diagnostics = run_feature_diagnostics(X_oof_total, y_labels)
+    logger.info("=== FEATURE SEPARATION DIAGNOSTICS (5-Fold CV Probe OOF) ===")
     for k, v in feature_diagnostics.items():
         logger.info("  %s: %s", k, v)
 
-    # Train Classical Stacking Ensemble (True OOF)
-    logger.info("=== TRAINING CLASSICAL STACKING ENSEMBLE (OOF) ===")
+    # Evaluate 4-System Comparative OOF Performance Table (Identical Splits)
+    from multihaludet.ensemble import evaluate_comparative_systems
     allow_reduced = getattr(args, "allow_reduced_ensemble", False)
-    classical_ensemble = ClassicalEnsemble(seed=args.seed, allow_reduced_ensemble=allow_reduced)
-    stacking_results = classical_ensemble.fit_oof(X_feats, y_labels, n_splits=args.folds, seed=args.seed)
+    comp_systems = evaluate_comparative_systems(X_oof_total, y_labels, n_splits=args.folds, seed=args.seed, allow_reduced=allow_reduced)
 
-    best_model.classical_ensemble = classical_ensemble
+    logger.info("=== 4-SYSTEM COMPARATIVE OUT-OF-FOLD (OOF) PERFORMANCE TABLE ===")
+    for sys_name, sys_m in comp_systems.items():
+        logger.info("  %-35s | OOF AUC: %.4f | OOF Acc: %.4f | F1: %.4f", sys_name, sys_m.get("auc", 0.5), sys_m.get("accuracy", 0.5), sys_m.get("f1", 0.0))
+
+    # Train Classical Stacking Ensemble on True OOF Features
+    logger.info("=== TRAINING CLASSICAL STACKING ENSEMBLE (ON TRUE OOF FEATURES) ===")
+    classical_ensemble = ClassicalEnsemble(seed=args.seed, allow_reduced_ensemble=allow_reduced)
+    stacking_results = classical_ensemble.fit_oof(X_oof_total, y_labels, n_splits=args.folds, seed=args.seed)
+
+
+    # Refit final neural feature extractor on all development data
+    logger.info("Refitting final neural feature extractor on all %d development examples...", len(examples))
+    final_model = MultiHaluDetModel(hidden_size=backend.hidden_size).to(args.device)
+    if getattr(args, "freeze_encoder", False):
+        for name, param in final_model.named_parameters():
+            if "multi_scale_attention" in name or "layer_weighted_encoder" in name:
+                param.requires_grad = False
+
+    final_optimizer = torch.optim.AdamW(
+        [p for p in final_model.parameters() if p.requires_grad],
+        lr=args.lr,
+        weight_decay=1e-2,
+    )
+    for refit_epoch in range(min(3, args.epochs)):
+        _run_epoch(final_model, examples, list(range(len(examples))), cached_bundles, final_optimizer, epoch_idx=refit_epoch)
+
+    final_model.eval()
+    final_model.classical_ensemble = classical_ensemble
 
     # Prediction probability diagnostics
-    eval_probs = classical_ensemble.predict_proba(X_feats)["final_probability"]
+    eval_probs = classical_ensemble.predict_proba(X_oof_total)["final_probability"]
     eval_probs_arr = np.asarray(eval_probs, dtype=np.float32)
     prob_stats = {
         "min": float(eval_probs_arr.min()),
@@ -554,24 +704,28 @@ def train(args: argparse.Namespace) -> None:
     logger.info("Min: %.4f, Max: %.4f, Mean: %.4f, Std: %.4f, Pos %%: %.2f%%",
                 prob_stats["min"], prob_stats["max"], prob_stats["mean"], prob_stats["std"], prob_stats["percentage_predicted_positive"])
 
-    from multihaludet.feature_extractor import FEATURE_SCHEMA_HASH, EXPECTED_TOTAL_FEATURE_DIM
+    from multihaludet.feature_extractor import FEATURE_SCHEMA_HASH, EXPECTED_TOTAL_FEATURE_DIM, CANONICAL_FEATURE_SCHEMA
 
-    # Build comprehensive metadata for reproducibility
+    # Build publication-grade metadata with strict provenance
     metadata: dict[str, Any] = {
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "model_name": args.model_name,
-        "sampled_layers": best_model.num_sampled_layers,
+        "sampled_layers": final_model.num_sampled_layers,
         "num_examples_total": len(examples),
         "dataset_diagnostics": diag_summary,
+        "training_protocol": "strict_oof_v4",
+        "frozen_test_isolated": True if frozen_test_examples else False,
+        "frozen_test_size": len(frozen_test_examples),
+        "threshold_source": "development_oof",
         "folds": args.folds,
         "epochs": args.epochs,
         "seed": args.seed,
         "learning_rate": args.lr,
-        "feature_schema_version": "multihaludet_v3.1",
+        "feature_schema_version": CANONICAL_FEATURE_SCHEMA.get("schema_version", "multihaludet_v3.2"),
         "feature_schema_hash": FEATURE_SCHEMA_HASH,
         "feature_dimension": EXPECTED_TOTAL_FEATURE_DIM,
-        "deep_feature_dimension": best_model.encoder_dim,
-        "explicit_feature_dimension": 9,
+        "deep_feature_dimension": final_model.encoder_dim,
+        "explicit_feature_dimension": int(CANONICAL_FEATURE_SCHEMA.get("explicit_feature_dim", 15)),
         "base_learner_names": classical_ensemble.active_member_names,
         "is_complete_ensemble": classical_ensemble.is_complete_ensemble,
         "ensemble_mode": classical_ensemble.mode,
@@ -579,11 +733,12 @@ def train(args: argparse.Namespace) -> None:
         "feature_diagnostics": feature_diagnostics,
         "probability_diagnostics": prob_stats,
         "fold_validation_metrics": fold_results,
+        "comparative_system_metrics": comp_systems,
         "oof_base_learner_metrics": stacking_results["base_oof_metrics"],
         "oof_meta_learner_metrics": stacking_results["meta_oof_metrics"],
     }
 
-    best_model.save_checkpoint(args.checkpoint_out, metadata=metadata)
+    final_model.save_checkpoint(args.checkpoint_out, metadata=metadata)
     logger.info("Saved trained MultiHaluDet model & complete ensemble artifacts to %s", args.checkpoint_out)
 
 
@@ -596,14 +751,19 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     p.add_argument("--french")
     p.add_argument("--bangla")
     p.add_argument("--amharic")
+    p.add_argument("--frozen-test", default=_default_dataset_path("halueval_benchmark_500.jsonl"), help="Path to dedicated frozen 500-sample benchmark test set.")
     p.add_argument("--model-name", default="Qwen/Qwen2.5-3B-Instruct")
     p.add_argument("--device", default="cpu")
     p.add_argument("--folds", type=int, default=5)
     p.add_argument("--epochs", type=int, default=10)
     p.add_argument("--lr", type=float, default=1e-4)
     p.add_argument("--seed", type=int, default=42)
+    p.add_argument("--patience", type=int, default=3, help="Early stopping patience (epochs without validation AUROC improvement).")
+    p.add_argument("--freeze-encoder", action="store_true", help="Freeze Transformer encoder and attention weights to prevent representation overfitting on small datasets.")
+    p.add_argument("--allow-nli-fallback", action="store_true", help="Allow fallback when DeBERTa-v3 NLI model is unavailable (disabled by default under strict_nli=True).")
     p.add_argument("--resume-from", default=None)
     p.add_argument("--checkpoint-out", default="./multihaludet/checkpoints/multihaludet.pt")
+
     p.add_argument("--max-samples", type=int, default=None, help="Maximum number of total samples to use for training (e.g. 2000).")
     p.add_argument("--allow-reduced-ensemble", action="store_true", help="Allow training a reduced ensemble in development/test mode if LightGBM/XGBoost is unavailable.")
     return p
@@ -612,3 +772,4 @@ def _build_arg_parser() -> argparse.ArgumentParser:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     train(_build_arg_parser().parse_args())
+

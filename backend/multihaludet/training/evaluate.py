@@ -142,14 +142,15 @@ def benchmark_fusion_weights(
     y_true_arr = np.array(y_true, dtype=int)
     y_int_arr = np.array(y_prob_internal, dtype=float)
 
-    # Simulated/actual external RAG scores if provided
-    if y_prob_external and len(y_prob_external) == len(y_true):
-        y_ext_arr = np.array(y_prob_external, dtype=float)
-    else:
-        # Representative external RAG verification signal for sensitivity analysis
-        np.random.seed(42)
-        noise = np.random.normal(0, 0.15, size=len(y_true))
-        y_ext_arr = np.clip(y_true_arr + noise, 0.05, 0.95)
+    # Actual external RAG scores required for publication benchmarks
+    if not y_prob_external or len(y_prob_external) != len(y_true):
+        logger.warning(
+            "SKIPPING FUSION WEIGHT BENCHMARK: No real external RAG evidence scores provided. "
+            "Synthetic ground-truth noise generation (y_true + noise) is strictly disabled in publication evaluations."
+        )
+        return
+
+    y_ext_arr = np.array(y_prob_external, dtype=float)
 
     logger.info("=" * 80)
     logger.info("FUSION WEIGHT BENCHMARKING TABLE (Paper Insertion)")
@@ -169,6 +170,7 @@ def benchmark_fusion_weights(
         logger.info(f"{w:<18.2f} | {w_ext:<18.2f} | {acc:<10.4f} | {f1:<10.4f} | {auc:<10.4f}")
         logger.debug(f"Weight={w:.2f} | Internal={y_int_arr.mean():.4f} | External={y_ext_arr.mean():.4f} | Fused={fused_prob.mean():.4f}")
     logger.info("=" * 80)
+
 
 
 def evaluate_split(
@@ -299,26 +301,59 @@ def run_threshold_tuning(
     }
 
 
-def _default_dataset_path(filename: str) -> str | None:
-    p = Path("./multihaludet/data") / filename
-    return str(p) if p.exists() else None
+def compute_bootstrap_ci(
+    y_true: list[int], y_prob: list[float], n_bootstraps: int = 1000, seed: int = 42
+) -> dict[str, tuple[float, float]]:
+    """Calculates 95% bootstrap confidence intervals for Accuracy, F1, and ROC-AUC."""
+    rng = np.random.RandomState(seed)
+    y_t = np.array(y_true, dtype=int)
+    y_p = np.array(y_prob, dtype=float)
+    n = len(y_t)
+    accs, f1s, aucs = [], [], []
+
+    for _ in range(n_bootstraps):
+        idx = rng.choice(n, size=n, replace=True)
+        if len(set(y_t[idx])) <= 1:
+            continue
+        preds = (y_p[idx] >= 0.5).astype(int)
+        accs.append(accuracy_score(y_t[idx], preds))
+        f1s.append(f1_score(y_t[idx], preds, zero_division=0))
+        aucs.append(roc_auc_score(y_t[idx], y_p[idx]))
+
+    return {
+        "accuracy_95ci": (round(float(np.percentile(accs, 2.5)), 4), round(float(np.percentile(accs, 97.5)), 4)) if accs else (0.0, 0.0),
+        "f1_95ci": (round(float(np.percentile(f1s, 2.5)), 4), round(float(np.percentile(f1s, 97.5)), 4)) if f1s else (0.0, 0.0),
+        "auc_95ci": (round(float(np.percentile(aucs, 2.5)), 4), round(float(np.percentile(aucs, 97.5)), 4)) if aucs else (0.0, 0.0),
+    }
 
 
 def main(args: argparse.Namespace) -> None:
+    from multihaludet.training.datasets import load_frozen_benchmark
+
     backend = HFGenerationBackend(model_name=args.model_name, device=args.device)
     model = MultiHaluDetModel(hidden_size=backend.hidden_size)
     if not model.load_checkpoint(args.checkpoint):
         raise SystemExit(f"No checkpoint found at {args.checkpoint} - train one first via training/train.py")
     model.eval()
 
+    # Hard Provenance Guard Verification
+    meta = getattr(model, "metadata", {}) or {}
+    if meta and meta.get("threshold_source") and meta.get("threshold_source") != "development_oof":
+        raise ValueError(
+            "EVALUATION GUARD ERROR: Checkpoint decision threshold was not derived strictly from development OOF predictions! "
+            "Test-set threshold tuning or invalid threshold sources are strictly forbidden in publication runs."
+        )
+
     splits: dict[str, list[HallucinationExample]] = {}
-    if args.halueval_qa:
+    if args.frozen_test and Path(args.frozen_test).exists():
+        splits["frozen_500_benchmark"] = load_frozen_benchmark(args.frozen_test)
+    elif args.halueval_qa:
         splits["halueval_qa"] = list(load_halueval(args.halueval_qa, task="qa"))
-    if args.halueval_dialogue:
+    if args.halueval_dialogue and "frozen_500_benchmark" not in splits:
         splits["halueval_dialogue"] = list(load_halueval(args.halueval_dialogue, task="dialogue"))
-    if args.halueval_summarization:
+    if args.halueval_summarization and "frozen_500_benchmark" not in splits:
         splits["halueval_summarization"] = list(load_halueval(args.halueval_summarization, task="summarization"))
-    if args.triviaqa:
+    if args.triviaqa and "frozen_500_benchmark" not in splits:
         splits["triviaqa"] = list(load_triviaqa(args.triviaqa))
     if args.french:
         splits["french"] = list(load_multilingual(args.french, "fr"))
@@ -338,13 +373,15 @@ def main(args: argparse.Namespace) -> None:
         all_y_true.extend(metrics.get("y_true", []))
         all_y_prob.extend(metrics.get("y_prob", []))
 
+        ci_dict = compute_bootstrap_ci(metrics.get("y_true", []), metrics.get("y_prob", []))
+
         logger.info("=== EVALUATION METRICS FOR SPLIT [%s] ===", name)
         logger.info("  Total Evaluated: %d", metrics["n"])
-        logger.info("  Accuracy: %.4f", metrics["accuracy"])
+        logger.info("  Accuracy: %.4f (95%% CI: %s)", metrics["accuracy"], ci_dict["accuracy_95ci"])
         logger.info("  Precision: %.4f", metrics["precision"])
         logger.info("  Recall: %.4f", metrics["recall"])
-        logger.info("  F1: %.4f", metrics["f1"])
-        logger.info("  ROC-AUC: %.4f", metrics["auc"])
+        logger.info("  F1: %.4f (95%% CI: %s)", metrics["f1"], ci_dict["f1_95ci"])
+        logger.info("  ROC-AUC: %.4f (95%% CI: %s)", metrics["auc"], ci_dict["auc_95ci"])
         logger.info("  Confusion Matrix: %s", metrics["confusion_matrix"])
         logger.info("  Base Learner AUCs: %s", metrics["individual_base_learner_aucs"])
 
@@ -356,18 +393,20 @@ def main(args: argparse.Namespace) -> None:
         y_prob_arr = np.array(all_y_prob, dtype=float)
 
         tuning_res = run_threshold_tuning(all_y_true, all_y_prob)
-        best_t = tuning_res.get("best_threshold", 0.5)
+        # Use saved threshold from model, do NOT overwrite with test-tuned best_t
+        eval_t = getattr(model, "decision_threshold", 0.5)
 
         benchmark_fusion_weights(all_y_true, all_y_prob)
 
         if args.generate_plots:
             logger.info("Generating publication plots in %s...", args.plots_dir)
-            generate_publication_plots(all_y_true, all_y_prob, best_threshold=best_t, output_dir=args.plots_dir)
+            generate_publication_plots(all_y_true, all_y_prob, best_threshold=eval_t, output_dir=args.plots_dir)
 
 
 def _build_arg_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--checkpoint", required=True)
+    p.add_argument("--frozen-test", default=_default_dataset_path("halueval_benchmark_500.jsonl"), help="Path to dedicated frozen 500-sample benchmark test set.")
     p.add_argument("--model-name", default="Qwen/Qwen2.5-0.5B-Instruct")
     p.add_argument("--device", default="cpu")
     p.add_argument("--halueval-qa", default=_default_dataset_path("halueval_qa.jsonl"))
@@ -381,6 +420,7 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     p.add_argument("--generate-plots", action="store_true", help="Automatically save confusion matrix, ROC curve & PR curve figures")
     p.add_argument("--plots-dir", default="./logs/plots", help="Directory to save generated publication plot figures")
     return p
+
 
 
 if __name__ == "__main__":
