@@ -53,6 +53,8 @@ class GenerationBundle:
     prompt_token_count: int
     step_entropy: np.ndarray | None = None
     query: str = ""
+    evidence_texts: list[str] | None = None
+    retrieval_scores: list[float] | None = None
 
     def is_empty(self) -> bool:
         return self.step_logits.shape[0] == 0

@@ -32,6 +32,7 @@ class HallucinationExample:
     language: Language = "en"
     source: str = ""
     provenance: str = ""  # metadata describing how the label/example was derived
+    evidence_texts: list[str] | None = None
 
 
 def load_halueval(path: str, task: str = "qa") -> Iterator[HallucinationExample]:
@@ -49,11 +50,11 @@ def load_halueval(path: str, task: str = "qa") -> Iterator[HallucinationExample]
             if not line:
                 continue
             row = json.loads(line)
+            knowledge = row.get("knowledge") or row.get("document") or row.get("dialogue_history")
+            ev_list = [str(knowledge).strip()] if knowledge and str(knowledge).strip() else None
             question = (
                 row.get("question")
-                or row.get("knowledge")
-                or row.get("document")
-                or row.get("dialogue_history")
+                or knowledge
                 or ""
             )
             right = (
@@ -69,9 +70,9 @@ def load_halueval(path: str, task: str = "qa") -> Iterator[HallucinationExample]
             prov = row.get("provenance") or row.get("derivation_method") or f"halueval_{task}_benchmark"
 
             if right is not None:
-                yield HallucinationExample(question, right, False, "en", f"halueval_{task}", prov)
+                yield HallucinationExample(question, right, False, "en", f"halueval_{task}", prov, evidence_texts=ev_list)
             if hallucinated is not None:
-                yield HallucinationExample(question, hallucinated, True, "en", f"halueval_{task}", prov)
+                yield HallucinationExample(question, hallucinated, True, "en", f"halueval_{task}", prov, evidence_texts=ev_list)
 
 
 def load_triviaqa(path: str) -> Iterator[HallucinationExample]:

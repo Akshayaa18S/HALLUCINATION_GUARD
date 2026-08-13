@@ -71,16 +71,26 @@ class MultiHaluDetModel(nn.Module):
         self.checkpoint_path: str | None = None
         self.metadata: dict[str, Any] = {}
 
-    def forward(self, bundle: GenerationBundle) -> dict[str, Any]:
+    def forward(
+        self,
+        bundle: GenerationBundle,
+        evidence_texts: list[str] | None = None,
+        retrieval_scores: list[float] | None = None,
+    ) -> dict[str, Any]:
         """Inference entry point (used by the live API / evaluate.py).
         Wraps the differentiable core in no_grad, since callers here only
         want scores, not gradients. Training uses `compute_deep_features`
         / `predict_from_features` directly (see those methods) to keep
         the autograd graph alive instead."""
         with torch.no_grad():
-            return self._forward_result(bundle)
+            return self._forward_result(bundle, evidence_texts=evidence_texts, retrieval_scores=retrieval_scores)
 
-    def _forward_result(self, bundle: GenerationBundle) -> dict[str, Any]:
+    def _forward_result(
+        self,
+        bundle: GenerationBundle,
+        evidence_texts: list[str] | None = None,
+        retrieval_scores: list[float] | None = None,
+    ) -> dict[str, Any]:
         if bundle.is_empty():
             return self._neutral_result(reason="empty_generation")
 
@@ -96,7 +106,15 @@ class MultiHaluDetModel(nn.Module):
             fused_norm = np.linalg.norm(fused_np, ord=2, axis=-1, keepdims=True)
             fused_norm = np.where(fused_norm > 1e-8, fused_norm, 1.0)
             fused_np = fused_np / fused_norm
-            explicit_vec = extractor.extract_feature_vector(getattr(bundle, "query", "") or "", bundle.text or "").reshape(1, -1)
+
+            ev_texts = evidence_texts or getattr(bundle, "evidence_texts", None)
+            ret_scores = retrieval_scores or getattr(bundle, "retrieval_scores", None)
+            explicit_vec = extractor.extract_feature_vector(
+                getattr(bundle, "query", "") or "",
+                bundle.text or "",
+                evidence_texts=ev_texts,
+                retrieval_scores=ret_scores,
+            ).reshape(1, -1)
 
             is_test_mode = getattr(self.classical_ensemble, "allow_reduced_ensemble", False)
             scaler = getattr(self.classical_ensemble, "scaler", None)

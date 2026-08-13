@@ -91,7 +91,8 @@ def run_multiseed_evaluation(args: argparse.Namespace) -> dict[str, Any]:
     logger.info("Extracting non-trainable explicit features across %d examples...", len(examples))
     explicit_feats = []
     for ex in examples:
-        vec = extractor.extract_feature_vector(ex.query, ex.response)
+        ev_texts = getattr(ex, "evidence_texts", None)
+        vec = extractor.extract_feature_vector(ex.query, ex.response, evidence_texts=ev_texts)
         explicit_feats.append(vec)
     X_explicit_all = np.array(explicit_feats, dtype=np.float32)
 
