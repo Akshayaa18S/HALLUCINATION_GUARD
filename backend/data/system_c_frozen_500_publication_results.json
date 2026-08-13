@@ -5,48 +5,48 @@
   "num_test_samples": 500,
   "frozen_threshold": 0.5,
   "metrics": {
-    "accuracy": 0.5,
-    "precision": 0.5,
-    "recall": 0.76,
-    "f1": 0.6031746031746031,
-    "auc": 0.488,
-    "pr_auc": 0.45055782312925174,
-    "brier_score": 0.25839748978614807,
-    "expected_calibration_error": 0.09063940495252609,
+    "accuracy": 0.78,
+    "precision": 0.7333333333333333,
+    "recall": 0.88,
+    "f1": 0.8,
+    "auc": 0.7384,
+    "pr_auc": 0.6418423417851988,
+    "brier_score": 0.18000273406505585,
+    "expected_calibration_error": 0.09337534695863722,
     "confusion_matrix": [
       [
-        60,
-        190
+        170,
+        80
       ],
       [
-        60,
-        190
+        30,
+        220
       ]
     ],
     "base_member_aucs": {
-      "random_forest": 0.552,
-      "xgboost": 0.528,
-      "lightgbm": 0.5504,
-      "logistic_regression": 0.4624,
-      "svm": 0.4432
+      "random_forest": 0.724,
+      "xgboost": 0.728,
+      "lightgbm": 0.7184,
+      "logistic_regression": 0.768,
+      "svm": 0.792
     }
   },
   "bootstrap_ci": {
     "accuracy_95ci": [
-      0.454,
-      0.544
+      0.744,
+      0.814
     ],
     "f1_95ci": [
-      0.5557,
-      0.6464
+      0.7622,
+      0.8339
     ],
     "auc_95ci": [
-      0.4417,
-      0.5305
+      0.6919,
+      0.7815
     ],
     "pr_auc_95ci": [
-      0.388,
-      0.5162
+      0.5755,
+      0.7062
     ]
   }
 }

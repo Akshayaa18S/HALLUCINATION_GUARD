@@ -119,15 +119,14 @@ def evaluate_system_c_frozen500(checkpoint_dir: str | None = None, frozen_test_p
     logger.info("Extracting 15 Explicit Verification Features on Frozen Test Set...")
     extractor = ExplicitFeatureExtractor(strict_nli=False)
     explicit_feats = []
+    from retrieval.evidence_cache import get_evidence_cache
+    evidence_cache = get_evidence_cache()
+
     for i, ex in enumerate(test_examples):
         ev_texts = getattr(ex, "evidence_texts", None)
         if not ev_texts:
-            try:
-                from predict import fetch_evidence_sync
-                snippets = fetch_evidence_sync(ex.query, top_k=3)
-                ev_texts = [s.get("text", "") for s in snippets if s.get("text")]
-            except Exception:
-                ev_texts = None
+            cached_snips = evidence_cache.get_or_fetch(ex.query, top_k=3)
+            ev_texts = [s.get("text", "") for s in cached_snips if s.get("text")]
         vec = extractor.extract_feature_vector(ex.query, ex.response, evidence_texts=ev_texts)
         explicit_feats.append(vec)
         if (i + 1) % 50 == 0 or (i + 1) == len(test_examples):
