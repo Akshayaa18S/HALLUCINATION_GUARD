@@ -1,0 +1,39 @@
+{
+  "system_name": "System_C_NLI_Plus_Evidence",
+  "feature_dim": 15,
+  "explicit_feature_names": [
+    "semantic_similarity",
+    "max_retrieval_confidence",
+    "avg_retrieval_confidence",
+    "entity_overlap_ratio",
+    "temporal_consistency_score",
+    "numeric_relative_error",
+    "citation_coverage_ratio",
+    "nli_contradiction_score",
+    "nli_entailment_score",
+    "nli_neutral_score",
+    "semantic_available",
+    "entity_available",
+    "evidence_available",
+    "nli_available",
+    "numeric_available"
+  ],
+  "num_dev_examples": 2000,
+  "development_oof_metrics": {
+    "auroc": 0.785289,
+    "accuracy": 0.724,
+    "f1": 0.7451523545706371,
+    "precision": 0.6921097770154374,
+    "recall": 0.807,
+    "frozen_threshold": 0.5
+  },
+  "frozen_threshold": 0.5,
+  "is_complete_ensemble": true,
+  "active_member_names": [
+    "random_forest",
+    "xgboost",
+    "lightgbm",
+    "logistic_regression",
+    "svm"
+  ]
+}

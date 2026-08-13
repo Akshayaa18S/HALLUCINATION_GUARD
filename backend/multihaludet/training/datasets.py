@@ -207,17 +207,29 @@ def load_frozen_benchmark(path: str) -> list[HallucinationExample]:
         raise FileNotFoundError(f"Frozen benchmark evaluation dataset not found at {path}.")
 
     examples: list[HallucinationExample] = []
-    with p.open(encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            row = json.loads(line)
-            q = row.get("question") or row.get("query") or ""
-            resp = row.get("response") or row.get("right_answer") or row.get("hallucinated_answer") or ""
-            lbl = bool(row.get("label", row.get("is_hallucination", False)))
-            prov = row.get("provenance") or "frozen_500_benchmark"
-            examples.append(HallucinationExample(q, resp, lbl, "en", "frozen_500_benchmark", prov))
+    if p.suffix.lower() == ".csv":
+        import csv
+        with p.open(encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                q = row.get("prompt") or row.get("question") or row.get("query") or ""
+                resp = row.get("generated_response") or row.get("response") or row.get("right_answer") or ""
+                raw_lbl = str(row.get("label", "0")).strip().lower()
+                lbl = raw_lbl in ("1", "true", "yes", "hallucinated")
+                prov = row.get("provenance") or "frozen_500_benchmark"
+                examples.append(HallucinationExample(q, resp, lbl, "en", "frozen_500_benchmark", prov))
+    else:
+        with p.open(encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                row = json.loads(line)
+                q = row.get("question") or row.get("query") or row.get("prompt") or ""
+                resp = row.get("response") or row.get("generated_response") or row.get("right_answer") or row.get("hallucinated_answer") or ""
+                lbl = bool(row.get("label", row.get("is_hallucination", False)))
+                prov = row.get("provenance") or "frozen_500_benchmark"
+                examples.append(HallucinationExample(q, resp, lbl, "en", "frozen_500_benchmark", prov))
     return examples
 
 
