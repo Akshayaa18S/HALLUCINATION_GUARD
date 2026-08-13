@@ -38,6 +38,11 @@ from multihaludet.training.datasets import HallucinationExample, load_halueval, 
 logger = logging.getLogger("hallucination_guard.multihaludet.evaluate")
 
 
+def _default_dataset_path(filename: str) -> str | None:
+    p = Path(__file__).resolve().parent.parent / "data" / filename
+    return str(p) if p.exists() else None
+
+
 def generate_publication_plots(
     y_true: list[int],
     y_prob: list[float],
