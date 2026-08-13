@@ -40,7 +40,19 @@ def prefetch_benchmark_cache():
             logger.info("Progress: %d/%d queries processed (Cache Hits: %d, Fetched: %d)", i + 1, len(examples), hits, fetched)
 
     cache.save()
-    logger.info("Successfully populated evidence cache at '%s'", cache.cache_file)
+    logger.info("Successfully saved evidence cache to '%s'", cache.cache_file)
+
+    # Verification: Read disk file directly and confirm 100% coverage
+    import json
+    with open(cache.cache_file, "r", encoding="utf-8") as f:
+        disk_data = json.load(f)
+
+    missing = [ex.query for ex in examples if ex.query.strip().lower() not in disk_data]
+    if missing:
+        logger.error("CACHE VERIFICATION FAILED: %d/%d benchmark queries missing from disk cache!", len(missing), len(examples))
+        raise RuntimeError(f"{len(missing)} queries missing from evidence cache file.")
+
+    logger.info("CACHE VERIFICATION SUCCESSFUL: 100%% of benchmark queries (%d/%d) present in disk cache '%s'!", len(examples), len(examples), cache.cache_file)
 
 
 if __name__ == "__main__":

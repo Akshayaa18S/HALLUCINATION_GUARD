@@ -23,10 +23,17 @@ logger = logging.getLogger("hallucination_guard.evidence_cache")
 class LocalEvidenceCache:
     """Manages persistent JSON disk cache mapping prompt/query to evidence snippet dicts."""
 
-    def __init__(self, cache_file: str | Path | None = None):
+    def __init__(self, cache_file: str | Path | None = None, auto_save: bool = True):
         self.cache_file = Path(cache_file) if cache_file else CACHE_FILE_PATH
+        self.auto_save = auto_save
         self._cache: dict[str, list[dict[str, Any]]] = {}
         self.load()
+        import atexit
+        atexit.register(self._atexit_save)
+
+    def _atexit_save(self) -> None:
+        if self.auto_save and self._cache:
+            self.save()
 
     def _normalize_key(self, query: str) -> str:
         return query.strip().lower()
@@ -60,9 +67,11 @@ class LocalEvidenceCache:
         return self._cache.get(key)
 
     def put(self, query: str, snippets: list[dict[str, Any]]) -> None:
-        """Stores evidence snippets for query in cache."""
+        """Stores evidence snippets for query in cache and persists to disk."""
         key = self._normalize_key(query)
         self._cache[key] = snippets
+        if self.auto_save:
+            self.save()
 
     def get_or_fetch(self, query: str, top_k: int = 3) -> list[dict[str, Any]]:
         """Returns cached evidence snippets if available; otherwise fetches with rate-limit retries."""
@@ -87,6 +96,8 @@ class LocalEvidenceCache:
 
         # Store in cache even if empty to prevent repeated failing requests
         self._cache[key] = snippets
+        if self.auto_save:
+            self.save()
         return snippets
 
 
